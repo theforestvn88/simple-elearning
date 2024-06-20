@@ -10,7 +10,7 @@ const Home = () => (
           A curated list of courses for expanding your skills and knowledge!
         </p>
         <hr className="my-4" />
-        <Link to="/courses" className="btn btn-lg custom-button">
+        <Link to="/courses" relative="path" className="btn btn-lg btn-secondary">
           Get Start
         </Link>
       </div>

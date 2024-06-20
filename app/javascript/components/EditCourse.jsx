@@ -52,11 +52,7 @@ const EditCourse = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <Link to="/courses" className="btn btn-link mt-3">
-        Back to courses
-      </Link>
-
+    <>
       <div className="row">
         <div className="col-sm-12 col-lg-6 offset-lg-3">
           <h1 className="font-weight-normal mb-5">Edit course</h1>
@@ -67,7 +63,7 @@ const EditCourse = () => {
           />
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -44,14 +44,11 @@ const Course = () => {
   }
 
   return (
-    <div className="container">
+    <>
       <div className="p-6">
         <h1 className="display-4">{course.name}</h1>
       </div>
       <div className="d-flex align-items-center justify-content-between">
-        <Link to="/courses" className="btn btn-link">
-          Back to courses
-        </Link>
         <div className="d-flex align-items-center justify-content-end">
           <Link to={`/courses/${course.id}/edit`} className="btn btn-light">
             Edit
@@ -65,7 +62,7 @@ const Course = () => {
           </button>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
