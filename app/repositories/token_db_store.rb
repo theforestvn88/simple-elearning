@@ -1,0 +1,2 @@
+class TokenDbStore < TokenStore
+end

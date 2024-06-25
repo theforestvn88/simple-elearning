@@ -1,0 +1,7 @@
+<h1>Account Verification</h1>
+
+<p>Hi <%= @user.name %>!</p>
+<p>This is your account verification link: <%= link_to "verify-link", auth_email_verify_url(token: @token) %></p>
+<p>This link will be expired at: <%= User::EMAIL_VERIFICATION_EXPIRE_TIME.from_now.utc %></p>
+
+<p>Best Regard!</p>
