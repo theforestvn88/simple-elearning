@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import React from 'react'
+import { Outlet } from 'react-router-dom'
 import Breadcrumbs from './Breadcrumbs'
-
+import Nav from './Nav'
+ 
 const Courses = () => {
   return (
     <>
       <div className="container py-5">
-        <Breadcrumbs/>
+        <Nav />
+        <Breadcrumbs />
         <Outlet />
       </div>
     </>

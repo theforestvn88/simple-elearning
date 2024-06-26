@@ -6,6 +6,9 @@ import Course from '../components/Course'
 import NewCourse from '../components/NewCourse'
 import EditCourse from '../components/EditCourse'
 import CoursesList from '../components/CoursesList'
+import Auth from '../components/auth/Auth'
+import LogIn from '../components/auth/LogIn'
+import SignUp from '../components/auth/SignUp'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -14,6 +17,19 @@ const router = createBrowserRouter(
         path="/"
         element={<Home />} 
       />
+      <Route 
+        path='/auth'
+        element={<Auth />}
+      >
+        <Route 
+          path='/auth/login'
+          element={<LogIn />}
+        />
+        <Route 
+          path='/auth/signup'
+          element={<SignUp />}
+        />
+      </Route>
       <Route 
         path="/courses"
         element={<Courses />}

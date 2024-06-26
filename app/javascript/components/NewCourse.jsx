@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import CourseForm from './CourseForm'
 
 const NewCourse = () => {
@@ -25,14 +25,14 @@ const NewCourse = () => {
       },
       body: JSON.stringify(createParams),
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json()
-        }
-        throw new Error('Something went wrong!')
-      })
-      .then((response) => navigate(`/courses/${response.id}`))
-      .catch((error) => console.log(error))
+    .then((response) => {
+      if (response.ok) {
+        return response.json()
+      }
+      throw new Error('Something went wrong!')
+    })
+    .then((response) => navigate(`/courses/${response.id}`))
+    .catch((error) => console.log(error))
   }
 
   return (
