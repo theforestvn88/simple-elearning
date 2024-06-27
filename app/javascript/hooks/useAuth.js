@@ -1,12 +1,10 @@
 import { useState } from "react"
 
-const TokenCacheKey = 'open-courses-token'
-const UserCacheKey = 'open-courses-current-user'
+const AuthCacheKey = 'open-courses-auth'
 
 const useAuth = () => {
-    const [token, setToken] = useState(localStorage.getItem(TokenCacheKey) || null)
-    const [user, setUser] = useState(localStorage.getItem(UserCacheKey) || {})
-
+    const [authInfo, setAuthInfo] = useState(JSON.parse(localStorage.getItem(AuthCacheKey) || '{}'))
+    
     const login = async (loginParams) => {
         const loginUrl = '/api/auth/login'
     
@@ -25,10 +23,12 @@ const useAuth = () => {
         })
         .then((response) => {
             console.log(response)
-            setToken(response.token)
-            localStorage.setItem(TokenCacheKey, response.token)
-            setUser(response.user)
-            localStorage.setItem(UserCacheKey, response.user)
+            localStorage.setItem(AuthCacheKey, JSON.stringify({
+              ...authInfo,
+              token: response.token,
+              user: response.user
+            }))
+            setAuthInfo(JSON.parse(localStorage.getItem(AuthCacheKey)))
 
             return response
         })
@@ -41,23 +41,19 @@ const useAuth = () => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'X-Auth-Token': token
+            'X-Auth-Token': authInfo.token
           },
         })
         .then((response) => {
-          if (response.ok) {
+          if (response.status == 200 || response.status == 401) {
+            console.log(response)
+            localStorage.removeItem(AuthCacheKey)
+            setAuthInfo({})
+
             return response.json()
           }
-          throw new Error('Something went wrong!')
-        })
-        .then((response) => {
-            console.log(response)
-            setToken(null)
-            localStorage.removeItem(TokenCacheKey)
-            setUser({})
-            localStorage.removeItem(UserCacheKey)
 
-            return response
+          throw new Error('Something went wrong!')
         })
     }
 
@@ -79,18 +75,19 @@ const useAuth = () => {
         })
         .then((response) => {
             console.log(response)
-            setToken(response.token)
-            localStorage.setItem(TokenCacheKey, response.token)
-            setUser(response.user)
-            localStorage.setItem(UserCacheKey, response.user)
+            localStorage.setItem(AuthCacheKey, JSON.stringify({
+              ...authInfo,
+              token: response.token,
+              user: response.user
+            }))
+            setAuthInfo(JSON.parse(localStorage.getItem(AuthCacheKey)))
 
             return response
         })
     }
 
     return {
-        token,
-        user,
+        authInfo,
         login,
         logout,
         signup

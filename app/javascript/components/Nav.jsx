@@ -4,8 +4,6 @@ import { useAppContext } from "../context/AppProvider"
 
 const Nav = () => {
     const { auth } = useAppContext()
-    console.log(auth)
-    console.log(auth.token)
     const logOut = async () => {
         auth.logout()
             .catch((error) => console.log(error))
@@ -19,7 +17,7 @@ const Nav = () => {
             </button>
 
             <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    { !auth.token ? (
+                    { !auth.info.token ? (
                             <ul className="navbar-nav">
                                 <li className="nav-item">
                                     <Link to="/auth/login" className="nav-link">Log In</Link>
@@ -34,7 +32,7 @@ const Nav = () => {
                                     {auth.user?.name}
                                 </h1>
                                 <button onClick={logOut} className="btn-submit">
-                                    logout
+                                    Log Out
                                 </button>
                             </div>
                         )
