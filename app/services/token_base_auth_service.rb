@@ -26,6 +26,14 @@ class TokenBaseAuthService
         end
     end
 
+    def refresh_token(token, user)
+        # TODO: validate user ???
+        auth_info = generate_token(user)
+        # should delete old-token ???
+        ::TokenCacheStore.new.delete(token)
+        auth_info
+    end
+
     private
 
         TOKEN_LIFE_TIME = 1.day.freeze

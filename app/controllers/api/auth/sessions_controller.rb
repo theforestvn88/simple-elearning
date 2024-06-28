@@ -12,8 +12,16 @@ module Api
             end
 
             def destroy
-                ::TokenBaseAuthService.new.logout(extract_token_from_header)
+                ::TokenBaseAuthService.new.logout(@token)
                 render json: { message: 'Logged out Successfully' }
+            end
+
+            def refresh
+                if auth_info = ::TokenBaseAuthService.new.refresh_token(@token, @current_user)
+                    render json: { **auth_info }
+                else
+                    render json: { error: 'Invalid credentials' }, status: :bad_request
+                end
             end
         end
     end

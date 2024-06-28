@@ -117,4 +117,28 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
             end
         end
     end
+
+    test 'refresh token' do
+        old_token = 'xxx'
+        new_token = 'zzz'
+
+        mock_token_service = Minitest::Mock.new
+        mock_token_service.expect :encode, new_token, [Object]
+        
+        mock_token_cache_store = Minitest::Mock.new
+        mock_token_cache_store.expect :save, nil, [new_token], expires_at: Time
+        mock_token_cache_store.expect :delete, nil, [old_token]
+
+        ::TokenService.stub :new, mock_token_service do
+            ::TokenCacheStore.stub :new, mock_token_cache_store do
+                Time.stub(:now, t_now_utc = Time.now.utc) do
+                    auth_info = @subject.refresh_token(old_token, @user)
+                    assert_equal auth_info, { token: new_token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME }
+                end
+            end
+        end
+
+        mock_token_service.verify
+        mock_token_cache_store.verify
+    end
 end

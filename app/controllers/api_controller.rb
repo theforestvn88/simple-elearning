@@ -3,8 +3,8 @@ class ApiController < ActionController::API
 
     private
         def authenticate!
-            token = extract_token_from_header
-            unless @current_user = ::TokenBaseAuthService.new.authorized_user(token)
+            @token = extract_token_from_header
+            unless @current_user = ::TokenBaseAuthService.new.authorized_user(@token)
                 render json: {}, status: :unauthorized
             end
         end
