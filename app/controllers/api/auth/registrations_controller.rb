@@ -3,8 +3,9 @@ module Api
         class RegistrationsController < ::ApiController
             def create
                 if result = ::TokenBaseAuthService.new.register(register_params)
-                    ::AccountVerificationService.new.send_account_verification_email_to_user(result[:user])
-                    render json: { message: 'register successfully', token: result[:token] }, status: :created
+                    user, auth_info = result
+                    ::AccountVerificationService.new.send_account_verification_email_to_user(user)
+                    render json: { message: 'register successfully', **auth_info }, status: :created
                 else
                     render json: { error: 'Invalid credentials' }, status: :bad_request
                 end

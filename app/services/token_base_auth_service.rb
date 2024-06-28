@@ -2,7 +2,7 @@ class TokenBaseAuthService
     def login(email, password)
         user = User.find_by(email: email)
         if user && user.authenticate(password)
-            generate_token(user)
+            generate_token(user).merge(user_info_response(user))
         end
     end
 
@@ -13,7 +13,7 @@ class TokenBaseAuthService
     def register(user_params)
         user = User.new(user_params)
         if user.save
-            return { token: generate_token(user), user: user }
+            return user, generate_token(user).merge(user_info_response(user))
         end
     end
 
@@ -29,18 +29,26 @@ class TokenBaseAuthService
     private
 
         TOKEN_LIFE_TIME = 1.day.freeze
-
-        def generate_token(user)
-            payload = generate_payload(user)
-            ::TokenService.new.encode(payload).tap do |token|
-                ::TokenCacheStore.new.save(token, expires_at: payload[:expire])
-            end
-        end
-
         def generate_payload(user)
             {
                 user_id: user.id,
                 expire: TOKEN_LIFE_TIME.from_now.utc
+            }
+        end
+
+        def generate_token(user)
+            payload = generate_payload(user)
+            token = ::TokenService.new.encode(payload)
+            ::TokenCacheStore.new.save(token, expires_at: payload[:expire])
+
+            return { token: token, token_expire_at: payload[:expire] }
+        end
+
+        def user_info_response(user)
+            {
+                user: {
+                    name: user.name
+                }
             }
         end
 end

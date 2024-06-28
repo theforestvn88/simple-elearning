@@ -18,7 +18,10 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
 
         ::TokenService.stub :new, mock_token_service do
             ::TokenCacheStore.stub :new, mock_token_cache_store do
-                @subject.login(@user.email, @pass)
+                Time.stub(:now, t_now_utc = Time.now.utc) do
+                    auth_info = @subject.login(@user.email, @pass)
+                    assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { name: @user.name } }
+                end
             end
         end
 
@@ -50,7 +53,10 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         assert_difference("User.count") do
             ::TokenService.stub :new, mock_token_service do
                 ::TokenCacheStore.stub :new, mock_token_cache_store do
-                    @subject.register(email: 'tester111@example.com', password: @pass, password_confirmation: @pass, name: 'tester')
+                    Time.stub(:now, t_now_utc = Time.now.utc) do
+                        user, auth_info = @subject.register(email: 'tester111@example.com', password: @pass, password_confirmation: @pass, name: 'tester')
+                        assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { name: 'tester' } }
+                    end
                 end
             end
         end

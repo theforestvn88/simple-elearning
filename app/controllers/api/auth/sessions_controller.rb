@@ -4,8 +4,8 @@ module Api
             before_action :authenticate!, except: [:create]
 
             def create
-                if token = ::TokenBaseAuthService.new.login(params[:email], params[:password])
-                    render json: { message: 'Logged in Successfully', token: token }
+                if auth_info = ::TokenBaseAuthService.new.login(params[:email], params[:password])
+                    render json: { message: 'Logged in Successfully', **auth_info }
                 else
                     render json: { error: 'Invalid credentials' }, status: :bad_request
                 end

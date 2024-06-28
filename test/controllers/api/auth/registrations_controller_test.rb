@@ -7,6 +7,8 @@ class ApiAuthRegistrationsControllerTest < ActionDispatch::IntegrationTest
         end
         assert_response :success
         assert response.parsed_body['token'].present?
+        assert response.parsed_body['token_expire_at'].present?
+        assert response.parsed_body['user'].present?
     end
 
     test 'register failed when missing email' do
