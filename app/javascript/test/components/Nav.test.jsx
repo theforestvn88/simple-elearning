@@ -22,11 +22,12 @@ describe('LogIn', () => {
     })
 
     it('authorized user', async () => {
-        localStorageMockReturn({token: 'xxx'})
+        localStorageMockReturn({token: 'xxx', user: { name: 'User A' }})
 
         await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
 
         expect(screen.getByRole('button', { name: 'Log Out'})).toBeInTheDocument()
+        expect(screen.getByText('User A')).toBeInTheDocument()
     })
     
     it('logout user with valid token', async () => {
