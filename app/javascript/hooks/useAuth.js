@@ -1,89 +1,82 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import useApi from "./useApi"
 
 const AuthCacheKey = 'open-courses-auth'
 
 const useAuth = () => {
+    const { BaseApi } = useApi()
     const [authInfo, setAuthInfo] = useState(JSON.parse(localStorage.getItem(AuthCacheKey) || '{}'))
     
     const saveAuthInfo = (newAuthInfo) => {
       const mergeAuthInfo = {
         ...authInfo,
-        token: newAuthInfo.token || token_expire_at.token,
+        token: newAuthInfo.token || authInfo.token,
         token_expire_at: newAuthInfo.token_expire_at || authInfo.token_expire_at,
         user: newAuthInfo.user || authInfo.user
       }
+      console.log(mergeAuthInfo)
       localStorage.setItem(AuthCacheKey, JSON.stringify(mergeAuthInfo))
       setAuthInfo(JSON.parse(localStorage.getItem(AuthCacheKey)))
     }
 
-    const login = async (loginParams) => {
-        const loginUrl = '/api/auth/login'
-    
-        return fetch(loginUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(loginParams),
-        })
-        .then((response) => {
-          if (response.ok) {
-            return response.json()
-          }
-          throw new Error('Something went wrong!')
-        })
-        .then((loginInfo) => {
-            console.log(loginInfo)
-            saveAuthInfo(loginInfo)
-            return loginInfo
-        })
-    }
-    
-    const logout = async () => {
-        const logoutUrl = '/api/auth/logout'
-    
-        return fetch(logoutUrl, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': authInfo.token
-          },
-        })
-        .then((response) => {
-          if (response.status == 200 || response.status == 401) {
-            console.log(response)
-            localStorage.removeItem(AuthCacheKey)
-            setAuthInfo({})
+    const isSuccess = (status) => status >= 200 && status <= 299
+    const handleAuthSuccess = (authPromise) => {
+      return authPromise.then((response) => {
+        if (isSuccess(response.status)) {
+          return response.json()
+        }
 
-            return response.json()
-          }
-
-          throw new Error('Something went wrong!')
-        })
+        throw new Error('Something went wrong!')
+      })
+      .then((data) => {
+        saveAuthInfo(data)
+        return data
+      })
     }
 
-    const signup = async (signupParams) => {
-        const loginUrl = '/api/auth/signup'
+    const requireAuthorizedApi = useMemo(() => {
+      return async (method, path, headers, params) => {
+        return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
+          .then((response) => {
+            if (response.status == 401) { // handle unauthorized
+              localStorage.removeItem(AuthCacheKey)
+              setAuthInfo({})
+            }
+            return response
+          })
+        }
+    }, [])
+
+    const login = useMemo(() => {
+      return async (loginParams) => {
+        return handleAuthSuccess(
+          BaseApi('POST', '/api/auth/login', {}, loginParams)
+        )
+      }
+    }, [])
     
-        fetch(loginUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(signupParams),
-        })
-        .then((response) => {
-          if (response.ok) {
-            return response.json()
-          }
-          throw new Error('Something went wrong!')
-        })
-        .then((signupInfo) => {
-            console.log(signupInfo)
-            saveAuthInfo(signupInfo)
-            return signupInfo
-        })
-    }
+    const logout = useMemo(() => {
+      return async () => {
+        return requireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
+          .then((response) => {
+            if (isSuccess(response.status)) {
+              localStorage.removeItem(AuthCacheKey)
+              setAuthInfo({})
+              return response.json()
+            }
+
+            throw new Error('Something went wrong!')
+          })
+        }
+    }, [])
+
+    const signup = useMemo(() => {
+      return async (signupParams) => {
+        return handleAuthSuccess(
+          BaseApi('POST', '/api/auth/signup', {}, signupParams)
+        )
+      }
+    }, [])
 
     const hasBeenExpiredToken = () => {
       return authInfo.token_expire_at && (Date.parse(authInfo.token_expire_at) <= Date.now())
@@ -93,29 +86,13 @@ const useAuth = () => {
       return authInfo.token_expire_at && (Date.parse(authInfo.token_expire_at) <= Date.now() + 1000*60*60)
     }
 
-    const refreshToken = async () => {
-      const refeshTokenUrl = '/api/auth/refresh_token'
-      fetch(refeshTokenUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': authInfo.token
-        },
-      })
-      .then((response) => {
-        if (response.ok) {
-          return response.json()
-        }
-
-        throw new Error('Something went wrong!')
-      })
-      .then((tokenInfo) => {
-        console.log(tokenInfo)
-        saveAuthInfo(tokenInfo)
-        return tokenInfo
-      })
-      .catch(() => {})
-    }
+    const refreshToken = useMemo(() => {
+      return async () => {
+        return handleAuthSuccess(
+          requireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
+        )
+      }
+    }, [])
 
     return {
         authInfo,
@@ -124,7 +101,8 @@ const useAuth = () => {
         signup,
         refreshToken,
         hasBeenExpiredToken,
-        willExpiredToken
+        willExpiredToken,
+        requireAuthorizedApi
     }
 }
 

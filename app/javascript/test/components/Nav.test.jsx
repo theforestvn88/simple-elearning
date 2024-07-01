@@ -41,8 +41,9 @@ describe('LogIn', () => {
         expect(fetchMock).toHaveBeenCalledWith(
             '/api/auth/logout',
             {
+                "method": "DELETE",
                 "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
-                "method": "DELETE"
+                "body": "{}"
             }
         )
     })

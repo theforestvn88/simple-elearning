@@ -54,6 +54,7 @@ describe('App', () => {
         expect(fetchMock).toHaveBeenCalledWith('/api/auth/refresh_token', {
             "method": "POST",
             "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"},
+            "body": "{}"
         })
     })
 
@@ -65,6 +66,7 @@ describe('App', () => {
         expect(fetchMock).not.toHaveBeenCalledWith('/api/auth/refresh_token', {
             "method": "POST",
             "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"},
+            "body": "{}"
         })
     })
 })

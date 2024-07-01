@@ -22,7 +22,7 @@ describe('LogIn', () => {
         fireEvent.change(screen.getByLabelText(/^Password$/i), {target: {value: '1111111111'}})
         fireEvent.change(screen.getByLabelText(/Password Confirmation/i), {target: {value: '1111111111'}})
 
-        fireEvent.click(screen.getByText('Sign Up'))
+        fireEvent.click(screen.getByDisplayValue('Sign Up'))
 
         expect(fetchMock).toHaveBeenCalledWith(
             '/api/auth/signup', 
