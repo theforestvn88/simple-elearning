@@ -1,12 +1,24 @@
 class ApiController < ActionController::API
     include TokenBaseAuthHelper
+    include Pundit::Authorization
+
+    rescue_from Pundit::NotAuthorizedError, with: :response_unauthorized
 
     private
-        def authenticate!
+
+        def try_authenticate
             @token = extract_token_from_header
-            unless @current_user = ::TokenBaseAuthService.new.authorized_user(@token)
-                render json: {}, status: :unauthorized
-            end
+            return if @token.nil?
+
+            @current_user = ::TokenBaseAuthService.new.authorized_user(@token)
+        end
+
+        def authenticate!
+            response_unauthorized unless try_authenticate
+        end
+
+        def response_unauthorized
+            render json: {}, status: :unauthorized
         end
 
         def current_user

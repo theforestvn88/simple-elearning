@@ -24,6 +24,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_075259) do
     t.string "email", null: false
     t.string "password_digest", null: false
     t.string "name", null: false
+    t.string "location"
+    t.text "introduction"
+    t.json "social_links", default: {}
     t.boolean "verified", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
