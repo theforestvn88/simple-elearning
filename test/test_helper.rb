@@ -22,3 +22,21 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+# policy test helper
+def permit_policy?(user, record, action)
+  cls = self.class.to_s.gsub(/Test/, '')
+  cls.constantize.new(user, record).public_send("#{action.to_s}?")
+end
+
+def assert_permit_policy(user, record, action)
+  msg = "User #{user.inspect} should be permitted to #{action} #{record}, but isn't permitted"
+  assert permit_policy?(user, record, action), msg
+end
+
+def refute_permit_policy(user, record, action)
+  msg = "User #{user.inspect} should NOT be permitted to #{action} #{record}, but is permitted"
+  refute permit_policy?(user, record, action), msg
+end
+
+
