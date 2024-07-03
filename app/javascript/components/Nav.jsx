@@ -29,9 +29,7 @@ const Nav = ({ showAuth = true }) => {
                                 </ul>
                             ) : (
                                 <div className="navbar-nav">
-                                    <button className="nav-item me-2 btn">
-                                        {auth.info.user?.name}
-                                    </button>
+                                    <Link to={`/profile/${auth.info.user?.id}`} className="nav-item me-2 btn">{auth.info.user?.name}</Link>
                                     <button onClick={logOut} className="nav-item btn btn-dark">
                                         Log Out
                                     </button>

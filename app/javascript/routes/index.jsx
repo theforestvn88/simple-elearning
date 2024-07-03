@@ -9,6 +9,7 @@ import CoursesList from '../components/CoursesList'
 import Auth from '../components/auth/Auth'
 import LogIn from '../components/auth/LogIn'
 import SignUp from '../components/auth/SignUp'
+import Profile from '../components/Profile'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,10 @@ const router = createBrowserRouter(
           element={<SignUp />}
         />
       </Route>
+      <Route
+        path='/profile/:id'
+        element={<Profile />}
+      />
       <Route 
         path="/courses"
         element={<Courses />}

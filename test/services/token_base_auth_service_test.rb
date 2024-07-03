@@ -20,7 +20,7 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
             ::TokenCacheStore.stub :new, mock_token_cache_store do
                 Time.stub(:now, t_now_utc = Time.now.utc) do
                     auth_info = @subject.login(@user.email, @pass)
-                    assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { name: @user.name } }
+                    assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { id: @user.id, name: @user.name } }
                 end
             end
         end
@@ -55,7 +55,7 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
                 ::TokenCacheStore.stub :new, mock_token_cache_store do
                     Time.stub(:now, t_now_utc = Time.now.utc) do
                         user, auth_info = @subject.register(email: 'tester111@example.com', password: @pass, password_confirmation: @pass, name: 'tester')
-                        assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { name: 'tester' } }
+                        assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { id: user.id, name: 'tester' } }
                     end
                 end
             end

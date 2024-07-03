@@ -34,7 +34,7 @@ const useAuth = () => {
       })
     }
 
-    const requireAuthorizedApi = useMemo(() => {
+    const RequireAuthorizedApi = useMemo(() => {
       return async (method, path, headers, params) => {
         return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
           .then((response) => {
@@ -57,7 +57,7 @@ const useAuth = () => {
     
     const logout = useMemo(() => {
       return async () => {
-        return requireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
+        return RequireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
           .then((response) => {
             if (isSuccess(response.status)) {
               localStorage.removeItem(AuthCacheKey)
@@ -89,7 +89,7 @@ const useAuth = () => {
     const refreshToken = useMemo(() => {
       return async () => {
         return handleAuthSuccess(
-          requireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
+          RequireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
         )
       }
     }, [])
@@ -102,7 +102,7 @@ const useAuth = () => {
         refreshToken,
         hasBeenExpiredToken,
         willExpiredToken,
-        requireAuthorizedApi
+        RequireAuthorizedApi
     }
 }
 

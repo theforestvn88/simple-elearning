@@ -4,7 +4,16 @@ import useAuth from "../hooks/useAuth"
 const AppContext = createContext()
 
 const AppProvider = ({ children }) => {
-    const { authInfo, login, logout, signup, refreshToken, hasBeenExpiredToken, willExpiredToken } = useAuth()
+    const { 
+        authInfo, 
+        login, 
+        logout, 
+        signup, 
+        refreshToken, 
+        hasBeenExpiredToken, 
+        willExpiredToken,
+        RequireAuthorizedApi
+    } = useAuth()
     
     return (
         <AppContext.Provider value={{ 
@@ -16,7 +25,8 @@ const AppProvider = ({ children }) => {
                 refreshToken, 
                 hasBeenExpiredToken,
                 willExpiredToken 
-            } 
+            },
+            RequireAuthorizedApi
         }}>
             {children}
         </AppContext.Provider>

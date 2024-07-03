@@ -12,7 +12,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
         assert_response :success
         assert_equal response.parsed_body, {
             "id" => @user.id, 
-            "name" => @user.name, 
+            "name" => @user.name,
+            "title" => @user.title, 
             "introduction" => @user.introduction, 
             "location" => @user.location, 
             "social_links"=> @user.social_links
@@ -27,7 +28,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
         assert_response :success
         assert_equal response.parsed_body, {
             "id" => @user.id, 
-            "name" => @user.name, 
+            "name" => @user.name,
+            "title" => @user.title,
             "introduction" => @user.introduction, 
             "location" => @user.location, 
             "social_links" => @user.social_links,
@@ -44,7 +46,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
         assert_response :success
         assert_equal response.parsed_body, {
             "id" => @user.id, 
-            "name" => @user.name, 
+            "name" => @user.name,
+            "title" => @user.title,
             "introduction" => @user.introduction, 
             "location" => @user.location, 
             "social_links" => @user.social_links,

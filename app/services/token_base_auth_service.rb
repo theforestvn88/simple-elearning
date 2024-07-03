@@ -55,6 +55,7 @@ class TokenBaseAuthService
         def user_info_response(user)
             {
                 user: {
+                    id: user.id,
                     name: user.name
                 }
             }
