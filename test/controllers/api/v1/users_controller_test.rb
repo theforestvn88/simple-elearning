@@ -16,7 +16,9 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
             "title" => @user.title, 
             "introduction" => @user.introduction, 
             "location" => @user.location, 
-            "social_links"=> @user.social_links
+            "social_links"=> @user.social_links,
+            "skills" => [],
+            "certificates" => [],
         }
     end
 
@@ -33,6 +35,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
             "introduction" => @user.introduction, 
             "location" => @user.location, 
             "social_links" => @user.social_links,
+            "skills" => [],
+            "certificates" => [],
             "can_edit" => true,
             "can_delete" => true
         }
@@ -51,6 +55,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
             "introduction" => @user.introduction, 
             "location" => @user.location, 
             "social_links" => @user.social_links,
+            "skills" => [],
+            "certificates" => [],
             "can_edit" => false,
             "can_delete" => false
         }
@@ -60,8 +66,29 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
         post api_auth_login_url, params: { email: @user.email, password: '0123456789' }
         token = response.parsed_body['token']
 
-        patch api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { user: { name: 'new user name' } }, as: :json
+        put api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { 
+            user: { 
+                name: 'new user name', 
+                title: 'new title',
+                location: 'new location',
+                introduction: 'new introduction',
+                social_links: [{"id"=>0, "name"=>"Google", "link"=>"https://google.com"}],
+            } 
+        }, as: :json
+
         assert_response :success
+        assert_equal response.parsed_body, {
+            "id" => @user.id,
+            "name" => "new user name", 
+            "title" => "new title",
+            "introduction" => "new introduction",
+            "location" => "new location",
+            "social_links" => [{"id"=>0, "name"=>"Google", "link"=>"https://google.com"}],
+            "skills" => [],
+            "certificates" => [],
+            "can_edit"=>true, 
+            "can_delete"=>true
+        }
     end
 
     test 'other-user could not update user profile' do

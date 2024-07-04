@@ -5,7 +5,7 @@ FactoryBot.define do
     password_confirmation { "0123456789" }
     name { "tester" }
     location { "location" }
-    social_links { "{}" }
+    social_links { "[]" }
     introduction { "introduction" }
     verified { false }
   end

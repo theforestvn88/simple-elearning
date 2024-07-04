@@ -1,5 +1,5 @@
 import React, { act } from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
 import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
 import Profile from '../../components/Profile'
@@ -17,13 +17,12 @@ describe('Profile', () => {
         name: 'Tester',
         title: 'Full Stack Developer',
         location: 'Mars',
-        social_links: "[{\"name\":\"Google\",\"link\":\"https://google.com\"},{\"name\":\"Facebook\",\"link\":\"https://facebook.com\"}]",
-        skills: "[{\"name\":\"Frontend\",\"level\":8},{\"name\":\"Backend\",\"level\":5.5},{\"name\":\"Mobile\",\"level\":7.2}]",
-        certificates: "[{\"name\":\"Senior Developer\",\"grade\":8.0}]"
+        social_links: [{name: "Google", link: "https://google.com"},{name: "Facebook", link: "https://facebook.com"}],
+        skills: [{name: "Frontend", level: 8}, {name: "Backend", level: 5.5}, {name: "Mobile", level: 7.2}],
+        certificates: [{name: "Senior Developer", grade: 8.0}]
     }
 
     beforeEach(() => {
-        fetchMockReturn(fakeUser)
         jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
     })
 
@@ -32,8 +31,9 @@ describe('Profile', () => {
         jest.restoreAllMocks()
     })
 
-    it('should show course info', async () => {
+    it('should show profile info', async () => {
         localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
+        fetchMockReturn(fakeUser)
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
@@ -46,16 +46,40 @@ describe('Profile', () => {
         expect(screen.getByText(fakeUser.title)).toBeInTheDocument()
         expect(screen.getByText(fakeUser.location)).toBeInTheDocument()
 
-        JSON.parse(fakeUser.social_links).forEach((socialLink) => {
+        fakeUser.social_links.forEach((socialLink) => {
             expect(screen.getByText(socialLink.name)).toBeInTheDocument()
         })
 
-        JSON.parse(fakeUser.skills).forEach((skill) => {
+        fakeUser.skills.forEach((skill) => {
             expect(screen.getByText(skill.name)).toBeInTheDocument()
         })
 
-        JSON.parse(fakeUser.certificates).forEach((cert) => {
+        fakeUser.certificates.forEach((cert) => {
             expect(screen.getByText(cert.name)).toBeInTheDocument()
         })
+    })
+
+    it('update profile', async () => {
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
+        fetchMockReturn({...fakeUser, can_edit: true})
+
+        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+
+        fetchMock.mockRestore()
+
+        fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
+
+        fireEvent.change(screen.getByDisplayValue(fakeUser.name), {target: {value: 'updated-name'}})
+
+        fireEvent.submit(screen.getByTestId('update-profile-form'))
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/v1/users/1', 
+            {
+                "body": "{\"user\":{\"name\":\"updated-name\"}}",
+                "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
+                "method": "PUT"
+            }
+        )
     })
 })

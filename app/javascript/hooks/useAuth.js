@@ -14,7 +14,7 @@ const useAuth = () => {
         token_expire_at: newAuthInfo.token_expire_at || authInfo.token_expire_at,
         user: newAuthInfo.user || authInfo.user
       }
-      console.log(mergeAuthInfo)
+
       localStorage.setItem(AuthCacheKey, JSON.stringify(mergeAuthInfo))
       setAuthInfo(JSON.parse(localStorage.getItem(AuthCacheKey)))
     }
@@ -34,18 +34,16 @@ const useAuth = () => {
       })
     }
 
-    const RequireAuthorizedApi = useMemo(() => {
-      return async (method, path, headers, params) => {
-        return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
-          .then((response) => {
-            if (response.status == 401) { // handle unauthorized
-              localStorage.removeItem(AuthCacheKey)
-              setAuthInfo({})
-            }
-            return response
-          })
-        }
-    }, [])
+    const RequireAuthorizedApi = async (method, path, headers, params) => {
+      return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
+        .then((response) => {
+          if (response.status == 401) { // handle unauthorized
+            localStorage.removeItem(AuthCacheKey)
+            setAuthInfo({})
+          }
+          return response
+        })
+    }
 
     const login = useMemo(() => {
       return async (loginParams) => {
