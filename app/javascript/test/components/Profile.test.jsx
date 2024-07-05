@@ -82,4 +82,25 @@ describe('Profile', () => {
             }
         )
     })
+
+    it('delete account', async () => {
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
+        fetchMockReturn({...fakeUser, can_delete: true})
+
+        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+
+        fetchMock.mockRestore()
+
+        fireEvent.click(screen.getByRole('button', { name: 'Delete Account'}))
+        fireEvent.click(screen.getByRole('button', { name: 'Confirm'}))
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/v1/users/1', 
+            {
+                "body": "{}",
+                "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
+                "method": "DELETE"
+            }
+        )
+    })
 })

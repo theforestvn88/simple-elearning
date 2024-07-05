@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import useApi from "../hooks/useApi"
 import { useAppContext } from "../context/AppProvider"
 import Nav from "./Nav"
 import ProfileForm from "./ProfileForm"
+import Confirmation from "./Confirmation"
+import Spinner from "./Spinner"
+import Overlay from "./Overlay"
 
 const Profile = () => {
+    const navigate = useNavigate()
     const { BaseApi } = useApi()
-    const { auth } = useAppContext()
+    const { auth, clearAuth, RequireAuthorizedApi } = useAppContext()
     const params = useParams()
 
     const [editMode, setEditMode] = useState(false)
@@ -18,13 +22,33 @@ const Profile = () => {
         certificates: []
     })
 
+    const [onDeleteAccount, setOnDeleteAccount] = useState(false)
+
     const onUpdateProfileSuccess = (updateProfile) => {
         setProfile(updateProfile)
         setEditMode(false)
     }
 
-    const deleteProfile = () => {
+    const deleteAccount = () => {
+        setOnDeleteAccount(true)
 
+        RequireAuthorizedApi('DELETE', `/api/v1/users/${profile.id}`, {}, {})
+        .then((response) => {
+            if (response.ok) {
+                setOnDeleteAccount(false)
+                clearAuth()
+                navigate('/')
+            } else if (response.status == 401) {
+                navigate('/auth/login')
+                return
+            }
+
+            throw new Error('Something went wrong!')
+        })
+        .catch((error) => {
+            console.log(error)
+            setOnDeleteAccount(false)
+        })
     }
 
     useEffect(() => {
@@ -56,7 +80,7 @@ const Profile = () => {
             <>
                 <div className="d-flex align-items-center justify-content-start mb-2">
                     {profile.can_edit && <button onClick={() => setEditMode(true)} className="btn btn-dark">Edit Profile</button>}
-                    {profile.can_delete && <button onClick={deleteProfile} className="ms-3 btn btn-danger">Delete Profile</button>}
+                    {profile.can_delete && <button data-bs-toggle="modal" data-bs-target="#deleteAccountConfirmation" className="ms-3 btn btn-danger">Delete Account</button>}
                 </div>
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
@@ -123,6 +147,17 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
+                
+                {profile.can_delete && 
+                    <Confirmation
+                        id="deleteAccountConfirmation" 
+                        title="Delete Account"
+                        description="Are you sure ?"
+                        onConfirm={deleteAccount}
+                    />
+                }
+
+                {onDeleteAccount && <Overlay><Spinner size={8} /></Overlay>}
             </>
         )}
         </div>

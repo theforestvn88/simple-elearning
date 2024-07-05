@@ -68,6 +68,13 @@ const useAuth = () => {
         }
     }, [])
 
+    const clearAuth = useMemo(() => {
+      return () => {
+        localStorage.removeItem(AuthCacheKey)
+        setAuthInfo({})
+      }
+    }, [])
+
     const signup = useMemo(() => {
       return async (signupParams) => {
         return handleAuthSuccess(
@@ -100,6 +107,7 @@ const useAuth = () => {
         refreshToken,
         hasBeenExpiredToken,
         willExpiredToken,
+        clearAuth,
         RequireAuthorizedApi
     }
 }

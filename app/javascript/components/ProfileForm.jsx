@@ -35,7 +35,7 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
         })
     }
 
-    const onSubmit = async (event) => {
+    const updateSubmit = async (event) => {
         event.preventDefault()
 
         RequireAuthorizedApi('PUT', `/api/v1/users/${profile.id}`, {}, {
@@ -61,8 +61,8 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
 
     return (
         <div className="container py-5 px-5">
-            <h3>Update User Profile</h3>
-            <form data-testid="update-profile-form" onSubmit={onSubmit}>
+            <h3>Update Profile</h3>
+            <form onSubmit={updateSubmit} data-testid="update-profile-form">
                 <div className="form-group">
                     <label htmlFor="userName">Name</label>
                     <input

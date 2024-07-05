@@ -12,6 +12,7 @@ const AppProvider = ({ children }) => {
         refreshToken, 
         hasBeenExpiredToken, 
         willExpiredToken,
+        clearAuth,
         RequireAuthorizedApi
     } = useAuth()
     
@@ -26,6 +27,7 @@ const AppProvider = ({ children }) => {
                 hasBeenExpiredToken,
                 willExpiredToken 
             },
+            clearAuth,
             RequireAuthorizedApi
         }}>
             {children}
