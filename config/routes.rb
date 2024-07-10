@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :users, only: [:show, :update, :destroy]
       resources :courses
     end
 
@@ -10,6 +11,7 @@ Rails.application.routes.draw do
       post '/signup', to: 'registrations#create'
       post '/login', to: 'sessions#create'
       delete '/logout', to: 'sessions#destroy'
+      post '/refresh_token', to: 'sessions#refresh'
     end
   end
 

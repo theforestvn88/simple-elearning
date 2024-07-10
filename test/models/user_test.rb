@@ -12,4 +12,8 @@ class UserTest < ActiveSupport::TestCase
       should validate_presence_of(:name).on(:create)
       should normalize(:email).from(" ME@XYZ.COM\n").to("me@xyz.com")
     end
+
+    context 'associations' do
+      should have_one_attached(:avatar) 
+    end
 end

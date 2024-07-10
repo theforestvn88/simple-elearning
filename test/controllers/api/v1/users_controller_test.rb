@@ -91,6 +91,29 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
         }
     end
 
+    test 'owner could update his profile avatar' do
+        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }
+        token = response.parsed_body['token']
+
+        avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
+
+        put api_v1_user_url(@user, format: :json), 
+            headers: { 
+                "X-Auth-Token" => "Bearer #{token}",
+                'Content-Type' => 'multipart/form-data'
+            }, 
+            params: { 
+                user: { 
+                    avatar: avatar_file
+                } 
+            }
+
+        assert_response :success
+        assert_equal response.parsed_body["avatar"]["name"], "test_img.png"
+        assert response.parsed_body["avatar"]["url"].present?
+        assert  @user.reload.avatar.attached?
+    end
+
     test 'other-user could not update user profile' do
         post api_auth_login_url, params: { email: @other.email, password: '0123456789' }
         token = response.parsed_body['token']

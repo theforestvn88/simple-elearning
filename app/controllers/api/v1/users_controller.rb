@@ -33,7 +33,7 @@ module Api
                 end
 
                 def user_params
-                    params.require(:user).permit(:name, :title, :location, :introduction, :social_links => [[:id, :name, :link]])
+                    params.require(:user).permit(:name, :title, :location, :introduction, :avatar, :social_links => [[:id, :name, :link]])
                 end
         end
     end
