@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import useApi from "./useApi"
 
 const AuthCacheKey = 'open-courses-auth'
@@ -45,42 +45,34 @@ const useAuth = () => {
         })
     }
 
-    const login = useMemo(() => {
-      return async (loginParams) => {
-        return handleAuthSuccess(
-          BaseApi('POST', '/api/auth/login', {}, loginParams)
-        )
-      }
+    const login = useCallback(async (loginParams) => {
+      return handleAuthSuccess(
+        BaseApi('POST', '/api/auth/login', {}, loginParams)
+      )
     }, [])
     
-    const logout = useMemo(() => {
-      return async () => {
-        return RequireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
-          .then((response) => {
-            if (isSuccess(response.status)) {
-              localStorage.removeItem(AuthCacheKey)
-              setAuthInfo({})
-              return response.json()
-            }
+    const logout = useCallback(async () => {
+      return RequireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
+        .then((response) => {
+          if (isSuccess(response.status)) {
+            localStorage.removeItem(AuthCacheKey)
+            setAuthInfo({})
+            return response.json()
+          }
 
-            throw new Error('Something went wrong!')
-          })
-        }
+          throw new Error('Something went wrong!')
+        })
     }, [])
 
-    const clearAuth = useMemo(() => {
-      return () => {
-        localStorage.removeItem(AuthCacheKey)
-        setAuthInfo({})
-      }
+    const clearAuth = useCallback(() => {
+      localStorage.removeItem(AuthCacheKey)
+      setAuthInfo({})
     }, [])
 
-    const signup = useMemo(() => {
-      return async (signupParams) => {
-        return handleAuthSuccess(
-          BaseApi('POST', '/api/auth/signup', {}, signupParams)
-        )
-      }
+    const signup = useCallback(async (signupParams) => {
+      return handleAuthSuccess(
+        BaseApi('POST', '/api/auth/signup', {}, signupParams)
+      )
     }, [])
 
     const hasBeenExpiredToken = () => {
@@ -91,12 +83,10 @@ const useAuth = () => {
       return authInfo.token_expire_at && (Date.parse(authInfo.token_expire_at) <= Date.now() + 1000*60*60)
     }
 
-    const refreshToken = useMemo(() => {
-      return async () => {
-        return handleAuthSuccess(
-          RequireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
-        )
-      }
+    const refreshToken = useCallback(async () => {
+      return handleAuthSuccess(
+        RequireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
+      )
     }, [])
 
     return {
