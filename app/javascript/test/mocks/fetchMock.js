@@ -12,3 +12,8 @@ export const fetchMockReturn = (res) => fetchMock.mockImplementation(() => Promi
 export const fetchMockError = (status, err) => fetchMock.mockImplementation(() => Promise.resolve({ status: status, json: () => Promise.resolve(err) }))
 
 export const fetchMockReject = (err) => fetchMock.mockImplementation(() => Promise.reject(err))
+
+export const getSubmitBodyFromFetchMock = (fm) => {
+    return Array.from(fm.mock.lastCall[1].body.entries())
+          .reduce((acc, f) => ({ ...acc, [f[0]]: f[1] }), {})
+}

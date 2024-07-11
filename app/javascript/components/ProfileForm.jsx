@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react"
 import { useAppContext } from "../context/AppProvider"
 import { useNavigate } from "react-router-dom"
+import SingleImageDropZone from "./SingleImageDropZone"
 
 const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const navigate = useNavigate()
@@ -8,39 +9,47 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
 
     const [profile, setProfile] = useState({...userProfile})
 
-    const updateProfile = {}
+    const updateProfile = new FormData()
     const onChangeInfo = (event) => {
-        updateProfile[event.target.name] = event.target.value
+        updateProfile.append(`user[${event.target.name}]`, event.target.value)
     }
     
-    const addSocialLink = (event) => {
-        event.preventDefault()
+    const updateAvatar = (image) => {
+        if (image) {
+            updateProfile.append('user[avatar]', image)
+        } else {
+            updateProfile.delete('user[avatar]')
+        }
+    }
 
-        updateProfile['social_links'] = profile.social_links.concat({id: profile.social_links.length, name: "", link: ""})
+    const updateSocialLinks = (social_links) => {
+        updateProfile.append('user[social_links]', social_links)
 
         setProfile({
             ...profile,
-            social_links: updateProfile['social_links']
+            social_links: social_links
         })
+    }
+
+    const addSocialLink = (event) => {
+        event.preventDefault()
+
+        const new_social_links = profile.social_links.concat({id: profile.social_links.length, name: "", link: ""})
+        updateSocialLinks(new_social_links)
     }
 
     const deleteSocial = (social, event) => {
         event.preventDefault()
 
-        updateProfile['social_links'] = profile.social_links.filter((s) => s.id !== social.id)
-
-        setProfile({
-            ...profile,
-            social_links: updateProfile['social_links']
-        })
+        const filter_social_links = profile.social_links.filter((s) => s.id !== social.id)
+        updateSocialLinks(filter_social_links)
     }
 
     const updateSubmit = async (event) => {
         event.preventDefault()
-
-        RequireAuthorizedApi('PUT', `/api/v1/users/${profile.id}`, {}, {
-            user: updateProfile
-        })
+        RequireAuthorizedApi('PUT', `/api/v1/users/${profile.id}`, {
+            'Content-Type': 'multipart/form-data'
+        }, updateProfile)
         .then((response) => {
             if (response.ok) {
                 return response.json()
@@ -55,7 +64,6 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
             onSubmitSuccess(updateProfile)
         })
         .catch((error) => {
-
         })
     }
 
@@ -63,6 +71,20 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
         <div className="container py-5 px-5">
             <h3>Update Profile</h3>
             <form onSubmit={updateSubmit} data-testid="update-profile-form">
+                <div className="form-group">
+                <label htmlFor="userName">Avatar</label>
+                    <SingleImageDropZone
+                        id="avatar-dropzone"
+                        acceptedFiles="image/jpeg,image/png"
+                        image={profile.avatar}
+                        selectImage={(image) => {
+                            updateAvatar(image)
+                        }}
+                        unselectImage={(image) => {
+                            updateAvatar(null)
+                        }}
+                    />
+                </div>
                 <div className="form-group">
                     <label htmlFor="userName">Name</label>
                     <input

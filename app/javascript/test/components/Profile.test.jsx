@@ -1,10 +1,11 @@
 import React, { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
-import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
+import { fetchMock, fetchMockReturn, getSubmitBodyFromFetchMock } from '../mocks/fetchMock'
 import Profile from '../../components/Profile'
 import { localStorageMockReturn } from '../mocks/localStorageMock'
 import AppProvider from '../../context/AppProvider'
+import { upload } from '@testing-library/user-event/dist/cjs/utility/upload.js'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -17,6 +18,11 @@ describe('Profile', () => {
         name: 'Tester',
         title: 'Full Stack Developer',
         location: 'Mars',
+        avatar: {
+            name: '',
+            byte_size: 0,
+            url: ''
+        },
         social_links: [{name: "Google", link: "https://google.com"},{name: "Facebook", link: "https://facebook.com"}],
         skills: [{name: "Frontend", level: 8}, {name: "Backend", level: 5.5}, {name: "Mobile", level: 7.2}],
         certificates: [{name: "Senior Developer", grade: 8.0}]
@@ -72,15 +78,50 @@ describe('Profile', () => {
         fireEvent.change(screen.getByDisplayValue(fakeUser.name), {target: {value: 'updated-name'}})
 
         fireEvent.submit(screen.getByTestId('update-profile-form'))
+        
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/v1/users/1', 
+            {
+                "body": expect.any(FormData),
+                "headers": {"X-Auth-Token": "xxx"}, 
+                "method": "PUT"
+            }
+        )
+
+        const formData = getSubmitBodyFromFetchMock(fetchMock)
+        expect(formData).toMatchObject({ 'user[name]': 'updated-name' })
+    })
+
+    it('update avatar', async () => {
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
+        fetchMockReturn({...fakeUser, can_edit: true})
+
+        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+
+        fetchMock.mockRestore()
+
+        fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
+
+        fireEvent.drop(document.querySelector('#avatar-dropzone'), {
+            dataTransfer: {
+              files: [new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'})],
+            },
+        })
+
+        fireEvent.submit(screen.getByTestId('update-profile-form'))
 
         expect(fetchMock).toHaveBeenCalledWith(
             '/api/v1/users/1', 
             {
-                "body": "{\"user\":{\"name\":\"updated-name\"}}",
-                "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
+                "body": expect.any(FormData),
+                "headers": {"X-Auth-Token": "xxx"}, 
                 "method": "PUT"
             }
         )
+
+        const formData = getSubmitBodyFromFetchMock(fetchMock)
+    
+        expect(formData['user[avatar]']['upload']['filename']).toEqual('chucknorris.png')
     })
 
     it('delete account', async () => {

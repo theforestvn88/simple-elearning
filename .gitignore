@@ -40,3 +40,6 @@
 /node_modules
 
 /coverage
+
+*.log
+yarn-error.log*

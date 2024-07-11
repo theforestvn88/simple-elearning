@@ -1,6 +1,8 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
+@import 'dropzone/dist/dropzone.css';
+
 .breadcrumbs {
     margin-bottom: 20px;
     font-size: 16px;
@@ -31,4 +33,16 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.dropzone-one-file {
+    font-family: sans-serif;
+    width: 50%;
+    margin: 1%;
+    text-align: center;
+    padding: 5px;
+    background-color: #E1E1E1;
+    border-radius: 5px;
+    min-height: 60px;
+    border: 2px dashed #C7C7C7;
 }
