@@ -26,6 +26,7 @@ const Profile = () => {
     const [onDeleteAccount, setOnDeleteAccount] = useState(false)
 
     const onUpdateProfileSuccess = (updateProfile) => {
+        auth.saveUserInfo(updateProfile)
         setProfile(updateProfile)
         setEditMode(false)
     }

@@ -19,6 +19,17 @@ const useAuth = () => {
       setAuthInfo(JSON.parse(localStorage.getItem(AuthCacheKey)))
     }
 
+    const saveUserInfo = (userInfo) => {
+      if (userInfo) {
+        saveAuthInfo({
+          user: {
+            id: userInfo.id || authInfo.user?.id,
+            name: userInfo.name || authInfo.user?.name,
+          }
+        })
+      }
+    }
+
     const isSuccess = (status) => status >= 200 && status <= 299
     const handleAuthSuccess = (authPromise) => {
       return authPromise.then((response) => {
@@ -91,6 +102,7 @@ const useAuth = () => {
 
     return {
         authInfo,
+        saveUserInfo,
         login,
         logout,
         signup,

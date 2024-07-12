@@ -5,7 +5,8 @@ const AppContext = createContext()
 
 const AppProvider = ({ children }) => {
     const { 
-        authInfo, 
+        authInfo,
+        saveUserInfo, 
         login, 
         logout, 
         signup, 
@@ -25,7 +26,8 @@ const AppProvider = ({ children }) => {
                 signup, 
                 refreshToken, 
                 hasBeenExpiredToken,
-                willExpiredToken 
+                willExpiredToken,
+                saveUserInfo,
             },
             clearAuth,
             RequireAuthorizedApi
