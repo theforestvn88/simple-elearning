@@ -23,8 +23,12 @@ const useAuth = () => {
       if (userInfo) {
         saveAuthInfo({
           user: {
+            ...authInfo.user,
             id: userInfo.id || authInfo.user?.id,
             name: userInfo.name || authInfo.user?.name,
+            avatar: {
+              url: userInfo.avatar?.url || authInfo.user?.avatar?.url
+            }
           }
         })
       }

@@ -5,7 +5,6 @@ import { fetchMock, fetchMockReturn, getSubmitBodyFromFetchMock } from '../mocks
 import Profile from '../../components/Profile'
 import { localStorageMockReturn, localStorageSetItemSpy } from '../mocks/localStorageMock'
 import AppProvider from '../../context/AppProvider'
-import { upload } from '@testing-library/user-event/dist/cjs/utility/upload.js'
 import flushPromises from '../helper/flushPromises'
 
 jest.mock('react-router-dom', () => ({
@@ -22,7 +21,7 @@ describe('Profile', () => {
         avatar: {
             name: '',
             byte_size: 0,
-            url: ''
+            url: 'avatar-url'
         },
         social_links: [{name: "Google", link: "https://google.com"},{name: "Facebook", link: "https://facebook.com"}],
         skills: [{name: "Frontend", level: 8}, {name: "Backend", level: 5.5}, {name: "Mobile", level: 7.2}],
@@ -39,7 +38,7 @@ describe('Profile', () => {
     })
 
     it('should show profile info', async () => {
-        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A', avatar: { url: 'avatar-url' } }})
         fetchMockReturn(fakeUser)
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
@@ -52,6 +51,7 @@ describe('Profile', () => {
         expect(screen.getByText(fakeUser.name)).toBeInTheDocument()
         expect(screen.getByText(fakeUser.title)).toBeInTheDocument()
         expect(screen.getByText(fakeUser.location)).toBeInTheDocument()
+        expect(screen.getByRole('img', {src: 'avatar-url'})).toBeInTheDocument()
 
         fakeUser.social_links.forEach((socialLink) => {
             expect(screen.getByText(socialLink.name)).toBeInTheDocument()
@@ -107,6 +107,8 @@ describe('Profile', () => {
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
         fetchMock.mockRestore()
+        fetchMockReturn({...fakeUser, avatar: { url: 'avatar-url' } })
+        const spy = localStorageSetItemSpy()
 
         fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
 
@@ -130,6 +132,11 @@ describe('Profile', () => {
         const formData = getSubmitBodyFromFetchMock(fetchMock)
     
         expect(formData['user[avatar]']['upload']['filename']).toEqual('chucknorris.png')
+
+        // should save user updated avatar url to localstorage
+        await flushPromises()
+        expect(spy).toHaveBeenCalled()
+        expect(JSON.parse(spy.mock.lastCall[1])['user']['avatar']['url']).toEqual('avatar-url')
     })
 
     it('delete account', async () => {

@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { useAppContext } from "../context/AppProvider"
+import UserAvatar from "./UserAvatar"
 
 const Nav = ({ showAuth = true }) => {
     const { auth } = useAppContext()
@@ -28,11 +29,17 @@ const Nav = ({ showAuth = true }) => {
                                     </li>
                                 </ul>
                             ) : (
-                                <div className="navbar-nav">
-                                    <Link to={`/profile/${auth.info.user?.id}`} className="nav-item me-2 btn">{auth.info.user?.name}</Link>
-                                    <button onClick={logOut} className="nav-item btn btn-dark">
-                                        Log Out
-                                    </button>
+                                <div className="nav navbar-nav navbar-right dropdown">
+                                    <a className="btn btn-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <UserAvatar user={auth.info.user} size={40} showName={true} />
+                                    </a>
+                
+                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <Link to={`/profile/${auth.info.user?.id}`} className="dropdown-item">Update Profile</Link>
+                                        <button onClick={logOut} className="btn btn-dark dropdown-item">
+                                            Log Out
+                                        </button>
+                                    </ul>
                                 </div>
                             )
                         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import useApi from "../hooks/useApi"
 import { useAppContext } from "../context/AppProvider"
 import Nav from "./Nav"
@@ -7,7 +7,7 @@ import ProfileForm from "./ProfileForm"
 import Confirmation from "./Confirmation"
 import Spinner from "./Spinner"
 import Overlay from "./Overlay"
-import DefaultAvatar from "./icons/DefaultAvatar"
+import UserAvatar from "./UserAvatar"
 
 const Profile = () => {
     const navigate = useNavigate()
@@ -89,11 +89,7 @@ const Profile = () => {
                         <div className="card">
                             <div className="card-body">
                                 <div className="d-flex flex-column align-items-center text-center">
-                                    {!!profile.avatar ? (
-                                        <img src={profile.avatar?.url} className="rounded-circle" width="150" />
-                                    ) : (
-                                        <DefaultAvatar />
-                                    )}
+                                    <UserAvatar user={profile} size={150} showName={false} />
                                     <div className="mt-3">
                                         <h4>{profile.name}</h4>
                                         <p className="text-secondary mb-1">{profile.title}</p>
