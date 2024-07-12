@@ -7,6 +7,7 @@ import ProfileForm from "./ProfileForm"
 import Confirmation from "./Confirmation"
 import Spinner from "./Spinner"
 import Overlay from "./Overlay"
+import DefaultAvatar from "./icons/DefaultAvatar"
 
 const Profile = () => {
     const navigate = useNavigate()
@@ -17,9 +18,6 @@ const Profile = () => {
     const [editMode, setEditMode] = useState(false)
 
     const [profile, setProfile] = useState({
-        avatar: {
-            url: ''
-        },
         social_links: [],
         skills: [],
         certificates: []
@@ -90,7 +88,11 @@ const Profile = () => {
                         <div className="card">
                             <div className="card-body">
                                 <div className="d-flex flex-column align-items-center text-center">
-                                    <img src={profile.avatar.url} alt="Admin" className="rounded-circle" width="150" />
+                                    {!!profile.avatar ? (
+                                        <img src={profile.avatar?.url} className="rounded-circle" width="150" />
+                                    ) : (
+                                        <DefaultAvatar />
+                                    )}
                                     <div className="mt-3">
                                         <h4>{profile.name}</h4>
                                         <p className="text-secondary mb-1">{profile.title}</p>
