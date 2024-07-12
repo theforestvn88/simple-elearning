@@ -19,8 +19,10 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         ::TokenService.stub :new, mock_token_service do
             ::TokenCacheStore.stub :new, mock_token_cache_store do
                 Time.stub(:now, t_now_utc = Time.now.utc) do
-                    auth_info = @subject.login(@user.email, @pass)
-                    assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { id: @user.id, name: @user.name } }
+                    session = @subject.login(@user.email, @pass)
+                    assert_equal session.token, token
+                    assert_equal session.token_expire_at, t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME
+                    assert_equal session.user, @user
                 end
             end
         end
@@ -54,8 +56,10 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
             ::TokenService.stub :new, mock_token_service do
                 ::TokenCacheStore.stub :new, mock_token_cache_store do
                     Time.stub(:now, t_now_utc = Time.now.utc) do
-                        user, auth_info = @subject.register(email: 'tester111@example.com', password: @pass, password_confirmation: @pass, name: 'tester')
-                        assert_equal auth_info, { token: token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME, user: { id: user.id, name: 'tester' } }
+                        session = @subject.register(email: 'tester111@example.com', password: @pass, password_confirmation: @pass, name: 'tester')
+                        assert_equal session.token, token
+                        assert_equal session.token_expire_at, t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME
+                        assert_equal session.user, User.last
                     end
                 end
             end
@@ -132,8 +136,9 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         ::TokenService.stub :new, mock_token_service do
             ::TokenCacheStore.stub :new, mock_token_cache_store do
                 Time.stub(:now, t_now_utc = Time.now.utc) do
-                    auth_info = @subject.refresh_token(old_token, @user)
-                    assert_equal auth_info, { token: new_token, token_expire_at: t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME }
+                    session = @subject.refresh_token(old_token, @user)
+                    assert_equal session.token, new_token
+                    assert_equal session.token_expire_at, t_now_utc + TokenBaseAuthService::TOKEN_LIFE_TIME
                 end
             end
         end

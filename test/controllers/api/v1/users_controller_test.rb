@@ -23,7 +23,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'only user could view edit/delete in his profile' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         get api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
@@ -43,7 +44,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'other user could not view edit/delete in user profile' do
-        post api_auth_login_url, params: { email: @other.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @other.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         get api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
@@ -63,7 +65,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'owner could update his profile' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         put api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { 
@@ -92,7 +95,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'owner could update his profile avatar' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
@@ -115,7 +119,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'other-user could not update user profile' do
-        post api_auth_login_url, params: { email: @other.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @other.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         patch api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { user: { name: 'new user name' } }, as: :json
@@ -123,7 +128,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'owner could delete his account' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         delete api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
@@ -131,7 +137,8 @@ class ApiV1UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'other-user could not delete user account' do
-        post api_auth_login_url, params: { email: @other.email, password: '0123456789' }
+        post api_auth_login_url, params: { email: @other.email, password: '0123456789' }, as: :json
+        assert_response :success
         token = response.parsed_body['token']
 
         delete api_v1_user_url(@user), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json

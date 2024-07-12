@@ -2,7 +2,7 @@ class TokenBaseAuthService
     def login(email, password)
         user = User.find_by(email: email)
         if user && user.authenticate(password)
-            generate_token(user).merge(user_info_response(user))
+            generate_session(user)
         end
     end
 
@@ -13,7 +13,8 @@ class TokenBaseAuthService
     def register(user_params)
         user = User.new(user_params)
         if user.save
-            return user, generate_token(user).merge(user_info_response(user))
+            generate_session(user)
+            # return user, generate_token(user).merge(user_info_response(user))
         end
     end
 
@@ -31,7 +32,7 @@ class TokenBaseAuthService
         auth_info = generate_token(user)
         # should delete old-token ???
         ::TokenCacheStore.new.delete(token)
-        auth_info
+        Session.new(**auth_info)
     end
 
     private
@@ -52,11 +53,15 @@ class TokenBaseAuthService
             return { token: token, token_expire_at: payload[:expire] }
         end
 
+        def generate_session(user)
+            Session.new(**generate_token(user).merge({user: user}))
+        end
+
         def user_info_response(user)
             {
                 user: {
                     id: user.id,
-                    name: user.name
+                    name: user.name,
                 }
             }
         end

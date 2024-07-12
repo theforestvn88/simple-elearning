@@ -1,0 +1,1 @@
+json.extract! @session, :token, :token_expire_at
