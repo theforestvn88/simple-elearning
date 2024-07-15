@@ -3,10 +3,9 @@ import Dropzone from "dropzone"
 
 Dropzone.autoDiscover = false
 
-const DropZoneComponent = ({configs, init, addFileSuccess, removeFileSuccess, existedFiles, className, ...others}) => {
+const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploadedFile, addFileSuccess, removeFileSuccess, existedFiles, className, ...others}) => {
     const dropzoneRef = useRef(null)
     const [thisDropZone, setThisDropZone] = useState(null)
-    const [upload, setUpload] = useState(false)
 
     const showPreview = (file) => {
         if(!thisDropZone || !file) return
@@ -27,6 +26,8 @@ const DropZoneComponent = ({configs, init, addFileSuccess, removeFileSuccess, ex
           thisDropZone.options.thumbnailMethod,
           true,
           thumbnail => {
+            console.log("thumbnail")
+            console.log(thumbnail)
             thisDropZone.emit('thumbnail', mockFile, thumbnail);
             thisDropZone.emit("complete", mockFile);
           }
@@ -35,12 +36,9 @@ const DropZoneComponent = ({configs, init, addFileSuccess, removeFileSuccess, ex
 
     // create dropzone
     useEffect(() => {
-        if (configs.upload) {
-            setUpload(true)
-        } else {
-            setUpload(false)
-            configs.url = 'no-upload'
-        }
+        // NOT use dropzone.js buil-in upload
+        configs.url = 'no-upload'
+        configs.autoProcessQueue = false
 
         setThisDropZone(new Dropzone(dropzoneRef.current, configs))
     }, [dropzoneRef])
@@ -70,13 +68,31 @@ const DropZoneComponent = ({configs, init, addFileSuccess, removeFileSuccess, ex
                 addFileSuccess(file)
             }
 
-            if (!upload) { // force complete if in not-upload mode
+            if (!directUpload) { // force complete if in not-upload mode
                 thisDropZone.emit("complete", file)
             }
         })
 
-        thisDropZone.on('removedfile', removeFileSuccess)
+        if (removeFileSuccess) {
+            thisDropZone.on('removedfile', removeFileSuccess)
+        }
+
     }, [thisDropZone])
+
+    useEffect(() => {
+        if (!uploadedProgress) return
+
+        dropzoneRef.current.querySelector(".dz-upload").style.width = `${uploadedProgress}%`
+    }, [uploadedProgress])
+
+    useEffect(() => {
+        if (!uploadedFile) return
+
+        const file = thisDropZone.getAcceptedFiles().find((f) => f.name == uploadedFile.filename)
+        if (file) {
+            thisDropZone.emit("complete", file)
+        }
+    }, [uploadedFile])
 
     return (
         <>

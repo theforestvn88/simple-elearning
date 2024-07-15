@@ -6,11 +6,28 @@ import Profile from '../../components/Profile'
 import { localStorageMockReturn, localStorageSetItemSpy } from '../mocks/localStorageMock'
 import AppProvider from '../../context/AppProvider'
 import flushPromises from '../helper/flushPromises'
+import * as RailsActiveStorage from "@rails/activestorage"
+
+jest.mock('@rails/activestorage', () => ({
+    ...jest.requireActual('@rails/activestorage'),
+    DirectUpload: jest.fn(),
+}))
+
+const DirectUploadSpy = jest.spyOn(RailsActiveStorage, 'DirectUpload')
+
+const DirectUploadMockReturn = (blob) => DirectUploadSpy.mockImplementation(() => {
+    return {
+        create: jest.fn().mockImplementation((callback) => {
+            callback(null, blob)
+        })
+    }
+})
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useParams: jest.fn(),
 }))
+
 
 describe('Profile', () => {
     const fakeUser = {
@@ -106,9 +123,8 @@ describe('Profile', () => {
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
-        fetchMock.mockRestore()
-        fetchMockReturn({...fakeUser, avatar: { url: 'avatar-url' } })
-        const spy = localStorageSetItemSpy()
+        const fakeSignedId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        DirectUploadMockReturn({signed_id: fakeSignedId})
 
         fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
 
@@ -117,6 +133,14 @@ describe('Profile', () => {
               files: [new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'})],
             },
         })
+
+        await flushPromises()
+        expect(DirectUploadSpy).toHaveBeenCalled()
+
+        fetchMock.mockRestore()
+        fetchMockReturn({...fakeUser, avatar: { url: 'avatar-url' } })
+
+        const spy = localStorageSetItemSpy()
 
         fireEvent.submit(screen.getByTestId('update-profile-form'))
 
@@ -131,7 +155,7 @@ describe('Profile', () => {
 
         const formData = getSubmitBodyFromFetchMock(fetchMock)
     
-        expect(formData['user[avatar]']['upload']['filename']).toEqual('chucknorris.png')
+        expect(formData['user[avatar]']).toEqual(fakeSignedId)
 
         // should save user updated avatar url to localstorage
         await flushPromises()

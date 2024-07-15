@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 import { useAppContext } from "../context/AppProvider"
 import { useNavigate } from "react-router-dom"
-import SingleImageDropZone from "./SingleImageDropZone"
+import SingleFileUploader from "./SingleFileUploader"
 
 const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const navigate = useNavigate()
@@ -73,15 +73,12 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
             <form onSubmit={updateSubmit} data-testid="update-profile-form">
                 <div className="form-group">
                 <label htmlFor="userName">Avatar</label>
-                    <SingleImageDropZone
+                    <SingleFileUploader
                         id="avatar-dropzone"
                         acceptedFiles="image/jpeg,image/png"
-                        image={profile.avatar}
-                        selectImage={(image) => {
-                            updateAvatar(image)
-                        }}
-                        unselectImage={(image) => {
-                            updateAvatar(null)
+                        file={profile.avatar}
+                        uploadedFile={(imageBlobSignedId) => {
+                            updateAvatar(imageBlobSignedId)
                         }}
                     />
                 </div>

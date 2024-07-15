@@ -1,7 +1,7 @@
 import React from "react"
 import DropZoneComponent from "./DropZone"
 
-const SingleImageDropZone = ({acceptedFiles, image, selectImage, unselectImage, ...others}) => {
+const SingleFileDropZone = ({acceptedFiles, file, droppedFile, undroppedFile, ...others}) => {
     return (
         <DropZoneComponent
             configs={{
@@ -11,15 +11,15 @@ const SingleImageDropZone = ({acceptedFiles, image, selectImage, unselectImage, 
                 autoProcessQueue: false,
                 uploadMultiple: false,
                 addRemoveLinks: true,
-                upload: false,
             }}
-            addFileSuccess={selectImage}
-            removeFileSuccess={unselectImage}
-            existedFiles={[image]}
+            directUpload={false}
+            addFileSuccess={droppedFile}
+            removeFileSuccess={undroppedFile}
+            existedFiles={[file]}
             className="dropzone-one-file"
             {...others}
         />
     )
 }
 
-export default SingleImageDropZone
+export default SingleFileDropZone
