@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [:show, :update, :destroy]
       resources :courses
+
+      post '/presigned_url', to: 'direct_upload#create'
     end
 
     namespace :auth do
