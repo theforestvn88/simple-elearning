@@ -72,6 +72,7 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
                     <SingleFileUploader
                         id="avatar-dropzone"
                         acceptedFiles="image/jpeg,image/png"
+                        maxFilesize={256}
                         file={profile.avatar}
                         uploadedFile={(imageBlobSignedId) => {
                             updateAvatar(imageBlobSignedId)

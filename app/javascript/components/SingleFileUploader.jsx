@@ -7,6 +7,7 @@ const SingleFileUploader = ({uploadedFile, unloadedFile, ...props}) => {
     const { auth } = useAppContext()
     const [uploadFile, progress, blob] = useUploader(auth.info.token)
 
+    // TODO: cancel uploading file
     useEffect(() => {
         if (!blob) return
 

@@ -1,12 +1,13 @@
 import React from "react"
 import DropZoneComponent from "./DropZone"
 
-const SingleFileDropZone = ({acceptedFiles, file, droppedFile, removedFile, ...others}) => {
+const SingleFileDropZone = ({acceptedFiles, maxFilesize, file, droppedFile, removedFile, ...others}) => {
     return (
         <DropZoneComponent
             configs={{
                 acceptedFiles: acceptedFiles,
                 maxFiles: 1,
+                maxFilesize: maxFilesize,
                 autoHandleWhenMaxFilesExceeded: true,
                 autoProcessQueue: false,
                 uploadMultiple: false,

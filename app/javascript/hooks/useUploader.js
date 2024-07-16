@@ -10,7 +10,7 @@ class Uploader {
         this.upload = new DirectUpload(file, '/api/v1/presigned_url', this, headers)
     }
 
-    uploadFile(file) {
+    uploadFile() {
         this.upload.create((error, blob) => {
             if (error) {
                 console.log(error)
@@ -22,13 +22,15 @@ class Uploader {
     }
     
     directUploadWillStoreFileWithXHR(request) {
-        request.upload.addEventListener("progress",
-            event => this.directUploadDidProgress(event))
+        this.request = request
+        request.upload.addEventListener("progress", event => this.directUploadDidProgress(event))
     }
 
     directUploadDidProgress(event) {
         this.progressCallback((event.loaded/event.total) * 100)
     }
+
+    // TODO: handle cancel uploading file
 }
 
 const useUploader = (token, isUploadMultipleFile = false) => {
@@ -40,7 +42,11 @@ const useUploader = (token, isUploadMultipleFile = false) => {
         if (!file) return
 
         const uploader = new Uploader(token, file, setProgress, setBlob)
-        uploader.uploadFile(file)
+        uploader.uploadFile()
+
+        return () => {
+            uploader.request?.abort()
+        }
     }, [file])
 
     return [

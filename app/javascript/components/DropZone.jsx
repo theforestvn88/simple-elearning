@@ -26,10 +26,8 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
           thisDropZone.options.thumbnailMethod,
           true,
           thumbnail => {
-            console.log("thumbnail")
-            console.log(thumbnail)
-            thisDropZone.emit('thumbnail', mockFile, thumbnail);
-            thisDropZone.emit("complete", mockFile);
+            thisDropZone.emit('thumbnail', mockFile, thumbnail)
+            thisDropZone.emit("complete", mockFile)
           }
         )
     }
@@ -88,7 +86,7 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
     useEffect(() => {
         if (!uploadedFile) return
 
-        const file = thisDropZone.getAcceptedFiles().find((f) => f.name == uploadedFile.filename)
+        const file = thisDropZone.getAcceptedFiles().find((f) => f.name == uploadedFile.filename && f.size == uploadedFile.byte_size)
         if (file) {
             thisDropZone.emit("complete", file)
         }
@@ -96,7 +94,16 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
 
     return (
         <>
-            <div className={`dropzone ${className}`} ref={dropzoneRef} {...others}></div>
+            <div className={`dropzone dropzone-default dz-clickable ${className}`} ref={dropzoneRef} {...others}>
+                <div className="dropzone-msg dz-message text-black-50">
+                    {directUpload ? (
+                        <h5 className="dropzone-msg-title">Drop file here to upload or click here to browse</h5>
+                    ) : (
+                        <h5 className="dropzone-msg-title">Drop file here or click here to browse</h5>
+                    )}
+                    <span className="dropzone-msg-desc">{(configs.maxFilesize/1000).toFixed(1)} MB file size maximum. Allowed file types: {configs.acceptedFiles}.</span>
+                </div>
+            </div>
         </>
     )
 }
