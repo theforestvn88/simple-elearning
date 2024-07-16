@@ -15,11 +15,7 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     }
     
     const updateAvatar = (image) => {
-        if (image) {
-            updateProfile.append('user[avatar]', image)
-        } else {
-            updateProfile.delete('user[avatar]')
-        }
+        updateProfile.append('user[avatar]', image)
     }
 
     const updateSocialLinks = (social_links) => {
@@ -79,6 +75,9 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
                         file={profile.avatar}
                         uploadedFile={(imageBlobSignedId) => {
                             updateAvatar(imageBlobSignedId)
+                        }}
+                        unloadedFile={_ => {
+                            updateAvatar('')
                         }}
                     />
                 </div>

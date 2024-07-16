@@ -3,7 +3,7 @@ import SingleFileDropZone from "./SingleFileDropZone"
 import useUploader from "../hooks/useUploader"
 import { useAppContext } from "../context/AppProvider"
 
-const SingleFileUploader = ({uploadedFile, ...props}) => {
+const SingleFileUploader = ({uploadedFile, unloadedFile, ...props}) => {
     const { auth } = useAppContext()
     const [uploadFile, progress, blob] = useUploader(auth.info.token)
 
@@ -18,6 +18,7 @@ const SingleFileUploader = ({uploadedFile, ...props}) => {
             {...props}
             directUpload={true}
             droppedFile={uploadFile}
+            removedFile={unloadedFile}
             uploadedProgress={progress}
             uploadedFile={blob}
         />

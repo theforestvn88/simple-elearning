@@ -7,6 +7,7 @@ import { localStorageMockReturn, localStorageSetItemSpy } from '../mocks/localSt
 import AppProvider from '../../context/AppProvider'
 import flushPromises from '../helper/flushPromises'
 import * as RailsActiveStorage from "@rails/activestorage"
+import { fakeUser1 } from '../mocks/fakeUsers'
 
 jest.mock('@rails/activestorage', () => ({
     ...jest.requireActual('@rails/activestorage'),
@@ -30,21 +31,6 @@ jest.mock('react-router-dom', () => ({
 
 
 describe('Profile', () => {
-    const fakeUser = {
-        id: 1,
-        name: 'Tester',
-        title: 'Full Stack Developer',
-        location: 'Mars',
-        avatar: {
-            name: '',
-            byte_size: 0,
-            url: 'avatar-url'
-        },
-        social_links: [{name: "Google", link: "https://google.com"},{name: "Facebook", link: "https://facebook.com"}],
-        skills: [{name: "Frontend", level: 8}, {name: "Backend", level: 5.5}, {name: "Mobile", level: 7.2}],
-        certificates: [{name: "Senior Developer", grade: 8.0}]
-    }
-
     beforeEach(() => {
         jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
     })
@@ -55,8 +41,8 @@ describe('Profile', () => {
     })
 
     it('should show profile info', async () => {
-        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A', avatar: { url: 'avatar-url' } }})
-        fetchMockReturn(fakeUser)
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1', avatar: { url: 'avatar-url' } }})
+        fetchMockReturn(fakeUser1)
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
@@ -65,37 +51,37 @@ describe('Profile', () => {
             {"body": null, "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, "method": "GET"}
         )
 
-        expect(screen.getByText(fakeUser.name)).toBeInTheDocument()
-        expect(screen.getByText(fakeUser.title)).toBeInTheDocument()
-        expect(screen.getByText(fakeUser.location)).toBeInTheDocument()
+        expect(screen.getByText(fakeUser1.name)).toBeInTheDocument()
+        expect(screen.getByText(fakeUser1.title)).toBeInTheDocument()
+        expect(screen.getByText(fakeUser1.location)).toBeInTheDocument()
         expect(screen.getByRole('img', {src: 'avatar-url'})).toBeInTheDocument()
 
-        fakeUser.social_links.forEach((socialLink) => {
+        fakeUser1.social_links.forEach((socialLink) => {
             expect(screen.getByText(socialLink.name)).toBeInTheDocument()
         })
 
-        fakeUser.skills.forEach((skill) => {
+        fakeUser1.skills.forEach((skill) => {
             expect(screen.getByText(skill.name)).toBeInTheDocument()
         })
 
-        fakeUser.certificates.forEach((cert) => {
+        fakeUser1.certificates.forEach((cert) => {
             expect(screen.getByText(cert.name)).toBeInTheDocument()
         })
     })
 
     it('update profile', async () => {
-        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
-        fetchMockReturn({...fakeUser, can_edit: true})
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
+        fetchMockReturn({...fakeUser1, can_edit: true})
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
         fetchMock.mockRestore()
-        fetchMockReturn({...fakeUser, name: 'updated-name'})
+        fetchMockReturn({...fakeUser1, name: 'updated-name'})
         const spy = localStorageSetItemSpy()
 
         fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
 
-        fireEvent.change(screen.getByDisplayValue(fakeUser.name), {target: {value: 'updated-name'}})
+        fireEvent.change(screen.getByDisplayValue(fakeUser1.name), {target: {value: 'updated-name'}})
 
         fireEvent.submit(screen.getByTestId('update-profile-form'))
         
@@ -118,8 +104,8 @@ describe('Profile', () => {
     })
 
     it('update avatar', async () => {
-        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
-        fetchMockReturn({...fakeUser, can_edit: true})
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
+        fetchMockReturn({...fakeUser1, can_edit: true})
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
@@ -138,7 +124,7 @@ describe('Profile', () => {
         expect(DirectUploadSpy).toHaveBeenCalled()
 
         fetchMock.mockRestore()
-        fetchMockReturn({...fakeUser, avatar: { url: 'avatar-url' } })
+        fetchMockReturn({...fakeUser1, avatar: { url: 'avatar-url' } })
 
         const spy = localStorageSetItemSpy()
 
@@ -163,9 +149,26 @@ describe('Profile', () => {
         expect(JSON.parse(spy.mock.lastCall[1])['user']['avatar']['url']).toEqual('avatar-url')
     })
 
+    it('delete avatar', async () => {
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
+        fetchMockReturn({...fakeUser1, can_edit: true})
+
+        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+
+        fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
+
+        fireEvent.click(screen.getByText(/Remove file/i))
+
+        fireEvent.submit(screen.getByTestId('update-profile-form'))
+
+        const formData = getSubmitBodyFromFetchMock(fetchMock)
+    
+        expect(formData['user[avatar]']).toEqual('')
+    })
+
     it('delete account', async () => {
-        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User A' }})
-        fetchMockReturn({...fakeUser, can_delete: true})
+        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
+        fetchMockReturn({...fakeUser1, can_delete: true})
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 

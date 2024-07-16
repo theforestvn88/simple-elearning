@@ -1,7 +1,7 @@
 import React from "react"
 import DropZoneComponent from "./DropZone"
 
-const SingleFileDropZone = ({acceptedFiles, file, droppedFile, undroppedFile, ...others}) => {
+const SingleFileDropZone = ({acceptedFiles, file, droppedFile, removedFile, ...others}) => {
     return (
         <DropZoneComponent
             configs={{
@@ -14,7 +14,7 @@ const SingleFileDropZone = ({acceptedFiles, file, droppedFile, undroppedFile, ..
             }}
             directUpload={false}
             addFileSuccess={droppedFile}
-            removeFileSuccess={undroppedFile}
+            removeFileSuccess={removedFile}
             existedFiles={[file]}
             className="dropzone-one-file"
             {...others}
