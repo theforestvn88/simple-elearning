@@ -1,0 +1,12 @@
+---
+:verbose: false
+:concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY", 5) %>
+:timeout: 25
+:max_retries: 3
+:queues:
+  - critical
+  - high
+  - default
+  - mailers
+  - low
+  - active_storage_purge

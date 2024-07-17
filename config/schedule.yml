@@ -1,0 +1,7 @@
+# executed At 00:00 on Monday (weekly)
+purge_unattached_blobs:
+  cron: '0 0 * * 1'
+  class: 'PurgeUnattachedBlobsJob'
+  queue: active_storage_purge
+  args:
+    period_in_days: 30

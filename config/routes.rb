@@ -20,4 +20,14 @@ Rails.application.routes.draw do
   namespace :auth do
       get '/email_verify', to: 'email_verifications#verify'
   end
+
+  #
+  # TODO: admin 
+  # Cron Jobs Controller
+  #   require 'sidekiq/web'
+  #   require 'sidekiq/cron/web'
+  #
+  #   mount Sidekiq::Web => '/monitoring/sidekiq'
+  #
+  #
 end
