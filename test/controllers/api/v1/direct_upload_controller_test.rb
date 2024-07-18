@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'api_helper'
 
 class ApiV1DirectUploadControllerTest < ActionDispatch::IntegrationTest
     setup do
@@ -7,9 +8,7 @@ class ApiV1DirectUploadControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'user could get direct-upload-url for his profile avatar' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token = response.parsed_body['token']
+        token = sign_in(@user.email, @user.password)
 
         avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
 

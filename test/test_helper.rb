@@ -38,5 +38,3 @@ def refute_permit_policy(user, record, action)
   msg = "User #{user.inspect} should NOT be permitted to #{action} #{record}, but is permitted"
   refute permit_policy?(user, record, action), msg
 end
-
-

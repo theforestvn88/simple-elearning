@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'api_helper'
 
 class ApiAuthSessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -29,9 +30,7 @@ class ApiAuthSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'log out with valid token' do
-    post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-    assert_response :success
-    token = response.parsed_body['token']
+    token = sign_in(@user.email, @user.password)
 
     delete api_auth_logout_url, headers: { "X-Auth-Token" => "Bearer #{token}" }
     assert_response :success
@@ -45,9 +44,7 @@ class ApiAuthSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'refresh token' do
-    post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-    assert_response :success
-    token = response.parsed_body['token']
+    token = sign_in(@user.email, @user.password)
 
     post api_auth_refresh_token_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
     

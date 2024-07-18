@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'api_helper'
 
 class ApiV1PasswordsControllerTest < ActionDispatch::IntegrationTest
     setup do
@@ -11,9 +12,7 @@ class ApiV1PasswordsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'should not change password with wrong old password' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token = response.parsed_body['token']
+        token = sign_in(@user.email, @user.password)
 
         put api_auth_password_update_url, 
             headers: { "X-Auth-Token" => "Bearer #{token}" }, 
@@ -27,68 +26,57 @@ class ApiV1PasswordsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'should not change password with invalid password' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token = response.parsed_body['token']
+        token = sign_in(@user.email, @user.password)
 
         put api_auth_password_update_url, 
             headers: { "X-Auth-Token" => "Bearer #{token}" }, 
             params: {
                 password: '123456789',
                 password_confirmation: '123456789',
-                password_challenge: '0123456789'
+                password_challenge: @user.password
             }, as: :json
             
         assert_response :bad_request
     end
 
     test 'should not change password with wrong password-confirmation' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token = response.parsed_body['token']
+        token = sign_in(@user.email, @user.password)
 
         put api_auth_password_update_url, 
             headers: { "X-Auth-Token" => "Bearer #{token}" }, 
             params: {
                 password: '123456789',
                 password_confirmation: 'xxxxxxxxxx',
-                password_challenge: '0123456789'
+                password_challenge: @user.password
             }, as: :json
             
         assert_response :bad_request
     end
 
     test 'should change pasword success with valid params' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token = response.parsed_body['token']
+        token = sign_in(@user.email, @user.password)
 
         put api_auth_password_update_url, 
             headers: { "X-Auth-Token" => "Bearer #{token}" }, 
             params: {
                 password: 'updated-password',
                 password_confirmation: 'updated-password',
-                password_challenge: '0123456789'
+                password_challenge: @user.password
             }, as: :json
             
         assert_response :success
     end
 
     test 'after change password success, all existed tokens should be delete' do
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token1 = response.parsed_body['token']
-
-        post api_auth_login_url, params: { email: @user.email, password: '0123456789' }, as: :json
-        assert_response :success
-        token2 = response.parsed_body['token']
+        token1 = sign_in(@user.email, @user.password)
+        token2 = sign_in(@user.email, @user.password)
 
         put api_auth_password_update_url, 
             headers: { "X-Auth-Token" => "Bearer #{token2}" }, 
             params: {
                 password: 'updated-password',
                 password_confirmation: 'updated-password',
-                password_challenge: '0123456789'
+                password_challenge: @user.password
             }, as: :json
         assert_response :success
 
