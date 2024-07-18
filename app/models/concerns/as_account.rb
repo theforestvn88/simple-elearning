@@ -7,8 +7,8 @@ module AsAccount
 
         validates :email, presence: true, on: :create
         validates :name, presence: true, on: :create
-        validates :password, presence: true, length: { minimum: 10 }, on: :create
-        validates :password_confirmation, presence: true, length: { minimum: 10 }, on: :create
+        validates :password, presence: true, length: { minimum: 10 }, if: -> { new_record? || password_digest_changed? }
+        validates :password_confirmation, presence: true, length: { minimum: 10 }, if: -> { new_record? || password_digest_changed? }
     
         normalizes :email, with: -> { _1.strip.downcase }
         

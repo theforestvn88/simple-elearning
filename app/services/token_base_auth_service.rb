@@ -14,7 +14,6 @@ class TokenBaseAuthService
         user = User.new(user_params)
         if user.save
             generate_session(user)
-            # return user, generate_token(user).merge(user_info_response(user))
         end
     end
 
@@ -30,9 +29,12 @@ class TokenBaseAuthService
     def refresh_token(token, user)
         # TODO: validate user ???
         auth_info = generate_token(user)
-        # should delete old-token ???
         ::TokenCacheStore.new.delete(token)
         Session.new(**auth_info)
+    end
+
+    def clear_user_tokens(user)
+        ::TokenCacheStore.new.clear_tokens_by_user(user)
     end
 
     private
@@ -48,21 +50,12 @@ class TokenBaseAuthService
         def generate_token(user)
             payload = generate_payload(user)
             token = ::TokenService.new.encode(payload)
-            ::TokenCacheStore.new.save(token, expires_at: payload[:expire])
+            ::TokenCacheStore.new.save(token, user, expires_at: payload[:expire])
 
             return { token: token, token_expire_at: payload[:expire] }
         end
 
         def generate_session(user)
             Session.new(**generate_token(user).merge({user: user}))
-        end
-
-        def user_info_response(user)
-            {
-                user: {
-                    id: user.id,
-                    name: user.name,
-                }
-            }
         end
 end

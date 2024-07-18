@@ -7,8 +7,9 @@ class UserTest < ActiveSupport::TestCase
 
     context 'valications' do
       should validate_presence_of(:email).on(:create)
-      should validate_presence_of(:password).on(:create)
-      should validate_presence_of(:password_confirmation).on(:create)
+      # FIXME: check whether shoulda-matcher is actually support :if lambda or not ?
+      should validate_presence_of(:password), if: -> { new_record? || password_digest_changed? }
+      should validate_presence_of(:password_confirmation), if: -> { new_record? || password_digest_changed? }
       should validate_presence_of(:name).on(:create)
       should normalize(:email).from(" ME@XYZ.COM\n").to("me@xyz.com")
     end

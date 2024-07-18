@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       post '/login', to: 'sessions#create'
       delete '/logout', to: 'sessions#destroy'
       post '/refresh_token', to: 'sessions#refresh'
+      put '/password/update', to: 'passwords#update'
     end
   end
 

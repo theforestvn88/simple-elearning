@@ -14,7 +14,7 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         mock_token_service.expect :encode, token, [Object]
         
         mock_token_cache_store = Minitest::Mock.new
-        mock_token_cache_store.expect :save, nil, [token], expires_at: Time
+        mock_token_cache_store.expect :save, nil, [token, @user], expires_at: Time
 
         ::TokenService.stub :new, mock_token_service do
             ::TokenCacheStore.stub :new, mock_token_cache_store do
@@ -50,7 +50,7 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         mock_token_service.expect :encode, token, [Object]
         
         mock_token_cache_store = Minitest::Mock.new
-        mock_token_cache_store.expect :save, nil, [token], expires_at: Time
+        mock_token_cache_store.expect :save, nil, [token, User], expires_at: Time
 
         assert_difference("User.count") do
             ::TokenService.stub :new, mock_token_service do
@@ -130,7 +130,7 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         mock_token_service.expect :encode, new_token, [Object]
         
         mock_token_cache_store = Minitest::Mock.new
-        mock_token_cache_store.expect :save, nil, [new_token], expires_at: Time
+        mock_token_cache_store.expect :save, nil, [new_token, @user], expires_at: Time
         mock_token_cache_store.expect :delete, nil, [old_token]
 
         ::TokenService.stub :new, mock_token_service do
@@ -144,6 +144,17 @@ class TokenBaseAuthServiceTest < ActiveSupport::TestCase
         end
 
         mock_token_service.verify
+        mock_token_cache_store.verify
+    end
+
+    test 'clear tokens by user' do
+        mock_token_cache_store = Minitest::Mock.new
+        mock_token_cache_store.expect :clear_tokens_by_user, nil, [@user]
+
+        ::TokenCacheStore.stub :new, mock_token_cache_store do
+            @subject.clear_user_tokens(@user)
+        end
+
         mock_token_cache_store.verify
     end
 end
