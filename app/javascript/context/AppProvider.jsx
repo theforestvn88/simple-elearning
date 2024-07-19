@@ -14,6 +14,7 @@ const AppProvider = ({ children }) => {
         hasBeenExpiredToken, 
         willExpiredToken,
         clearAuth,
+        changePassword,
         RequireAuthorizedApi
     } = useAuth()
     
@@ -28,6 +29,7 @@ const AppProvider = ({ children }) => {
                 hasBeenExpiredToken,
                 willExpiredToken,
                 saveUserInfo,
+                changePassword,
             },
             clearAuth,
             RequireAuthorizedApi

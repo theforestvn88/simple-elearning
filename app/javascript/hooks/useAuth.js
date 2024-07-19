@@ -49,12 +49,16 @@ const useAuth = () => {
       })
     }
 
+    const clearAuth = useCallback(() => {
+      localStorage.removeItem(AuthCacheKey)
+      setAuthInfo({})
+    }, [])
+
     const RequireAuthorizedApi = async (method, path, headers, params) => {
       return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
         .then((response) => {
           if (response.status == 401) { // handle unauthorized
-            localStorage.removeItem(AuthCacheKey)
-            setAuthInfo({})
+            clearAuth()
           }
           return response
         })
@@ -70,18 +74,12 @@ const useAuth = () => {
       return RequireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
         .then((response) => {
           if (isSuccess(response.status)) {
-            localStorage.removeItem(AuthCacheKey)
-            setAuthInfo({})
+            clearAuth()
             return response.json()
           }
 
           throw new Error('Something went wrong!')
         })
-    }, [])
-
-    const clearAuth = useCallback(() => {
-      localStorage.removeItem(AuthCacheKey)
-      setAuthInfo({})
     }, [])
 
     const signup = useCallback(async (signupParams) => {
@@ -103,6 +101,18 @@ const useAuth = () => {
         RequireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
       )
     }, [])
+    
+    const changePassword = useCallback(async (params) => {
+      return RequireAuthorizedApi('PUT', '/api/auth/password/update', {}, params)
+        .then((response) => {
+          if (response.ok) {
+            clearAuth()
+            return response
+          }
+
+          throw new Error('Something went wrong!')
+        })
+    })
 
     return {
         authInfo,
@@ -114,6 +124,7 @@ const useAuth = () => {
         hasBeenExpiredToken,
         willExpiredToken,
         clearAuth,
+        changePassword,
         RequireAuthorizedApi
     }
 }

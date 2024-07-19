@@ -1,13 +1,13 @@
 import React, { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
-import { fetchMock, fetchMockReturn, getSubmitBodyFromFetchMock } from '../mocks/fetchMock'
-import Profile from '../../components/Profile'
-import { localStorageMockReturn, localStorageSetItemSpy } from '../mocks/localStorageMock'
-import AppProvider from '../../context/AppProvider'
-import flushPromises from '../helper/flushPromises'
+import { fetchMock, fetchMockReturn, getSubmitBodyFromFetchMock } from '../../mocks/fetchMock'
+import { localStorageMockReturn, localStorageSetItemSpy } from '../../mocks/localStorageMock'
+import AppProvider from '../../../context/AppProvider'
+import flushPromises from '../../helper/flushPromises'
 import * as RailsActiveStorage from "@rails/activestorage"
-import { fakeUser1 } from '../mocks/fakeUsers'
+import { fakeUser1 } from '../../mocks/fakeUsers'
+import Profile from '../../../components/account/Profile'
 
 jest.mock('@rails/activestorage', () => ({
     ...jest.requireActual('@rails/activestorage'),
