@@ -54,7 +54,7 @@ const useAuth = () => {
       setAuthInfo({})
     }, [])
 
-    const RequireAuthorizedApi = async (method, path, headers, params) => {
+    const RequireAuthorizedApi = useCallback(async (method, path, headers, params) => {
       return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
         .then((response) => {
           if (response.status == 401) { // handle unauthorized
@@ -62,7 +62,7 @@ const useAuth = () => {
           }
           return response
         })
-    }
+    }, [authInfo])
 
     const login = useCallback(async (loginParams) => {
       return handleAuthSuccess(
@@ -75,12 +75,12 @@ const useAuth = () => {
         .then((response) => {
           if (isSuccess(response.status)) {
             clearAuth()
-            return response.json()
+            return response
           }
 
           throw new Error('Something went wrong!')
         })
-    }, [])
+    }, [authInfo])
 
     const signup = useCallback(async (signupParams) => {
       return handleAuthSuccess(
@@ -100,7 +100,7 @@ const useAuth = () => {
       return handleAuthSuccess(
         RequireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
       )
-    }, [])
+    }, [authInfo])
     
     const changePassword = useCallback(async (params) => {
       return RequireAuthorizedApi('PUT', '/api/auth/password/update', {}, params)
@@ -112,7 +112,7 @@ const useAuth = () => {
 
           throw new Error('Something went wrong!')
         })
-    })
+    }, [authInfo])
 
     return {
         authInfo,
