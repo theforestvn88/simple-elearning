@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
-import { useAppContext } from "../context/AppProvider"
+import { useAppContext } from "../../context/AppProvider"
 import { useNavigate } from "react-router-dom"
-import SingleFileUploader from "./SingleFileUploader"
+import SingleFileUploader from "../SingleFileUploader"
 
 const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const navigate = useNavigate()

@@ -35,7 +35,8 @@ const Nav = ({ showAuth = true }) => {
                                     </a>
                 
                                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <Link to={`/profile/${auth.info.user?.id}`} className="dropdown-item">Update Profile</Link>
+                                        <Link to={`/account/${auth.info.user?.id}/profile`} className="dropdown-item">Profile</Link>
+                                        <Link to={`/account/${auth.info.user?.id}/settings`} className="dropdown-item">Settings</Link>
                                         <button onClick={logOut} className="btn btn-dark dropdown-item">
                                             Log Out
                                         </button>
