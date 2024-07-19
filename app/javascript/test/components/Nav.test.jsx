@@ -1,11 +1,19 @@
 import React, { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import react_router, { MemoryRouter } from 'react-router-dom'
 import { fetchMock, fetchMockReturn, fetchMockError } from '../mocks/fetchMock'
 import AppProvider from '../../context/AppProvider'
 import Nav from '../../components/Nav'
 import { localStorageMockReturn, localStorageRemoveItemSpy } from '../mocks/localStorageMock'
 import flushPromises from '../helper/flushPromises'
+
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: jest.fn(),
+}))
+
+const navigateSpy = jest.fn()
+jest.spyOn(react_router, 'useNavigate').mockImplementation(() => navigateSpy)
 
 describe('LogIn', () => {
     afterEach(() => {
@@ -49,7 +57,7 @@ describe('LogIn', () => {
     })
 
     it('logout user with expired token', async () => {
-        const spy = localStorageRemoveItemSpy()
+        const clearAuthSpy = localStorageRemoveItemSpy()
         fetchMockError(401, {message: 'unauthrorized'})
         localStorageMockReturn({token: 'xxx'})
 
@@ -59,6 +67,10 @@ describe('LogIn', () => {
 
         await flushPromises()
         
-        expect(spy).toHaveBeenCalled()
+        // should delete auth from local-storage
+        expect(clearAuthSpy).toHaveBeenCalled()
+
+        // should navigate to home page
+        expect(navigateSpy).toHaveBeenCalledWith('/courses')
     })
 })

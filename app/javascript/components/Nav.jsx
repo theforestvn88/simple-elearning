@@ -1,12 +1,17 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppProvider"
 import UserAvatar from "./UserAvatar"
 
 const Nav = ({ showAuth = true }) => {
+    const navigate = useNavigate()
     const { auth } = useAppContext()
+
     const logOut = async () => {
         auth.logout()
+            .then(res => {
+                navigate('/courses')         
+            })
             .catch((error) => console.log(error))
     }
 
