@@ -11,15 +11,15 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
 
     const updateProfile = new FormData()
     const onChangeInfo = (event) => {
-        updateProfile.append(`user[${event.target.name}]`, event.target.value)
+        updateProfile.set(`user[${event.target.name}]`, event.target.value)
     }
     
     const updateAvatar = (image) => {
-        updateProfile.append('user[avatar]', image)
+        updateProfile.set('user[avatar]', image)
     }
 
     const updateSocialLinks = (social_links) => {
-        updateProfile.append('user[social_links]', social_links)
+        updateProfile.set('user[social_links]', social_links)
 
         setProfile({
             ...profile,

@@ -11,8 +11,6 @@ const Settings = () => {
 
     const { auth } = useAppContext()
 
-    // TODO: move delete account here
-
     return (
         <>
             <div className="container">

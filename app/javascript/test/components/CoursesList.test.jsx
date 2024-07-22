@@ -17,7 +17,10 @@ describe('CoursesList', () => {
     it('should show courses list', async () => {
         await act( async () => render(<MemoryRouter><CoursesList /></MemoryRouter>))
 
-        expect(fetchMock).toHaveBeenCalledWith('/api/v1/courses')
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/v1/courses', 
+            {"body": null, "headers": {"Content-Type": "application/json"}, "method": "GET"}
+        )
 
         fakeCourses.forEach((course) => {
             expect(screen.getByText(course.name)).toBeInTheDocument()
