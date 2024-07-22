@@ -34,23 +34,23 @@ class Uploader {
 }
 
 const useUploader = (token, isUploadMultipleFile = false) => {
-    const [file, setFile] = useState(null)
+    const [selectedFile, setSelectedFile] = useState(null)
     const [progress, setProgress] = useState(0)
     const [blob, setBlob] = useState(null)
 
     useEffect(() => {
-        if (!file) return
-
-        const uploader = new Uploader(token, file, setProgress, setBlob)
+        if (!selectedFile) return
+        
+        const uploader = new Uploader(token, selectedFile, setProgress, setBlob)
         uploader.uploadFile()
 
         return () => {
             uploader.request?.abort()
         }
-    }, [file])
+    }, [selectedFile])
 
     return [
-        setFile,
+        setSelectedFile,
         progress,
         blob
     ]

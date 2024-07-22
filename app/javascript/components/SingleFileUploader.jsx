@@ -5,7 +5,7 @@ import { useAppContext } from "../context/AppProvider"
 
 const SingleFileUploader = ({uploadedFile, unloadedFile, ...props}) => {
     const { auth } = useAppContext()
-    const [uploadFile, progress, blob] = useUploader(auth.info.token)
+    const [setSelectedFile, progress, blob] = useUploader(auth.info.token)
 
     // TODO: cancel uploading file
     useEffect(() => {
@@ -18,7 +18,7 @@ const SingleFileUploader = ({uploadedFile, unloadedFile, ...props}) => {
         <SingleFileDropZone 
             {...props}
             directUpload={true}
-            droppedFile={uploadFile}
+            droppedFile={setSelectedFile}
             removedFile={unloadedFile}
             uploadedProgress={progress}
             uploadedFile={blob}

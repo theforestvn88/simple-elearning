@@ -14,22 +14,13 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
           name: file.name,
           size: file.byte_size,
           dataURL: file.url,
-          accepted: true
+          imageUrl: file.url,
+          accepted: true,
+          uploaded: true,
+          type: 'image/png'
         }
 
-        thisDropZone.files.push(mockFile)
-        thisDropZone.emit("addedfile", mockFile)
-        thisDropZone.createThumbnailFromUrl(
-          mockFile,
-          thisDropZone.options.thumbnailWidth,
-          thisDropZone.options.thumbnailHeight,
-          thisDropZone.options.thumbnailMethod,
-          true,
-          thumbnail => {
-            thisDropZone.emit('thumbnail', mockFile, thumbnail)
-            thisDropZone.emit("complete", mockFile)
-          }
-        )
+        thisDropZone.displayExistingFile(mockFile, file.url)
     }
 
     // create dropzone
@@ -48,10 +39,6 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
         if (typeof(init) === 'function') {
             init(thisDropZone)
         }
-
-        if (existedFiles) {
-            existedFiles.forEach(file => showPreview(file))
-        }
         
         thisDropZone.on('addedfile', (file) => {
             if (configs.autoHandleWhenMaxFilesExceeded) {
@@ -61,8 +48,7 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
                     thisDropZone.removeFile(firstFile)
                 }
             }
-
-            if (typeof(addFileSuccess) === 'function') {
+            if (typeof(addFileSuccess) === 'function' && !file.uploaded) {
                 addFileSuccess(file)
             }
 
@@ -78,6 +64,14 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
     }, [thisDropZone])
 
     useEffect(() => {
+        if (!thisDropZone) return
+
+        if (existedFiles) {
+            existedFiles.forEach(file => showPreview(file))
+        }
+    }, [existedFiles])
+
+    useEffect(() => {
         if (!uploadedProgress) return
 
         dropzoneRef.current.querySelector(".dz-upload").style.width = `${uploadedProgress}%`
@@ -85,7 +79,7 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
 
     useEffect(() => {
         if (!uploadedFile) return
-
+        
         const file = thisDropZone.getAcceptedFiles().find((f) => f.name == uploadedFile.filename && f.size == uploadedFile.byte_size)
         if (file) {
             thisDropZone.emit("complete", file)

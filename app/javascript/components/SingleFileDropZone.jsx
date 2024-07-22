@@ -1,7 +1,13 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import DropZoneComponent from "./DropZone"
 
 const SingleFileDropZone = ({acceptedFiles, maxFilesize, file, droppedFile, removedFile, ...others}) => {
+    const [existedFiles, setExistedFiles] = useState(file)
+
+    useEffect(() => {
+        setExistedFiles([file])
+    }, [file])
+
     return (
         <DropZoneComponent
             configs={{
@@ -16,7 +22,7 @@ const SingleFileDropZone = ({acceptedFiles, maxFilesize, file, droppedFile, remo
             directUpload={false}
             addFileSuccess={droppedFile}
             removeFileSuccess={removedFile}
-            existedFiles={[file]}
+            existedFiles={existedFiles}
             className="dropzone-one-file"
             {...others}
         />
