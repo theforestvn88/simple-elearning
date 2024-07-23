@@ -6,13 +6,14 @@ module Api
       # GET /courses
       # GET /courses.json
       def index
-        @courses = Course.all
+        @pagy, @courses = pagy(Course.all)
+        @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
       end
 
       # GET /courses/1
       # GET /courses/1.json
       def show; end
-
+ 
       # POST /courses
       # POST /courses.json
       def create

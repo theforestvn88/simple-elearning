@@ -5,9 +5,17 @@ class ApiV1CoursesControllerTest < ActionDispatch::IntegrationTest
     @course = create(:course)
   end
 
-  test 'should get index' do
+  test 'should get index with pagination' do
     get api_v1_courses_url, as: :json
+
     assert_response :success
+    assert_equal response.parsed_body['courses'], [{
+      "id" => @course.id,
+      "name" => @course.name,
+      "summary" => @course.summary,
+      "last_update_time"=>"less than a minute"
+    }]
+    assert_equal response.parsed_body['pagination'], { "pages" => ["1"], "total" => 1 }
   end
 
   test 'should create course' do

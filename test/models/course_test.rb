@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CourseTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  context 'associations' do
+    should have_one_attached(:cover) 
+  end
 end
