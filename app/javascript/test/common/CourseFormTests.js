@@ -1,54 +1,40 @@
-import React, { act } from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
-import react_router, { MemoryRouter } from 'react-router-dom'
-import { fakeCourses } from '../mocks/fakeCourses'
+import React from 'react'
+import { fireEvent, render, screen, act } from '@testing-library/react'
 import { fetchMock, fetchMockReturn, getSubmitBodyFromFetchMock } from '../mocks/fetchMock'
-import AppProvider from '../../context/AppProvider'
 import { localStorageMockReturn } from '../mocks/localStorageMock'
-import * as RailsActiveStorage from "@rails/activestorage"
 import flushPromises from '../helper/flushPromises'
+import { RailsActiveStorageDirectUploadSpy, DirectUploadMockReturn } from '../mocks/useUploaderMock'
 
-jest.mock('@rails/activestorage', () => ({
-    ...jest.requireActual('@rails/activestorage'),
-    DirectUpload: jest.fn(),
-}))
-
-const DirectUploadSpy = jest.spyOn(RailsActiveStorage, 'DirectUpload')
-
-const DirectUploadMockReturn = (blob) => DirectUploadSpy.mockImplementation(() => {
-    return {
-        create: jest.fn().mockImplementation((callback) => {
-            callback(null, blob)
-        })
-    }
-})
-
-export const CourseFormCommonTests = (container, expectedSubmitEndpoint, exepctedSubmitMethod) => {
+export const CourseFormCommonTests = (view, course, expectedSubmitEndpoint, exepctedSubmitMethod) => {
     describe('Course Form', () => {
         test('submit', async () => {
             localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
-            fetchMockReturn(fakeCourses[0])
-    
-            await act( async () => render(<MemoryRouter><AppProvider>{container}</AppProvider></MemoryRouter>))
-    
-            fetchMock.mockRestore()
-            fetchMockReturn(fakeCourses[0])
+            if (course) {
+                fetchMockReturn(course)
+            }
+            
+            await act( async () => render(view))
     
             fireEvent.change(screen.getByLabelText('Course name'), {target: {value: 'updated-name'}})
 
             const fakeSignedId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             DirectUploadMockReturn({signed_id: fakeSignedId})
 
-            fireEvent.drop(document.querySelector('#courseCover'), {
-                dataTransfer: {
-                  files: [new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'})],
-                },
+            const fakeFile = new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'})
+            await act( async () => {
+                fireEvent.drop(document.querySelector('#courseCover'), {
+                    dataTransfer: {
+                        files: [fakeFile],
+                    },
+                })
             })
-            
-            await flushPromises()
-            expect(DirectUploadSpy).toHaveBeenCalled()
 
-            fireEvent.submit(screen.getByTestId('submit-course-form'))
+            await flushPromises()
+            expect(RailsActiveStorageDirectUploadSpy).toHaveBeenCalled()
+
+            await act( async () => {
+                fireEvent.submit(screen.getByTestId('submit-course-form'))
+            })
             
             expect(fetchMock).toHaveBeenCalledWith(
                 expectedSubmitEndpoint, 

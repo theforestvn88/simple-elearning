@@ -48,6 +48,7 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
                     thisDropZone.removeFile(firstFile)
                 }
             }
+            
             if (typeof(addFileSuccess) === 'function' && !file.uploaded) {
                 addFileSuccess(file)
             }
@@ -65,19 +66,21 @@ const DropZoneComponent = ({configs, init, directUpload, uploadedProgress, uploa
 
     useEffect(() => {
         if (!thisDropZone) return
-
+        
         if (existedFiles) {
             existedFiles.forEach(file => showPreview(file))
         }
     }, [existedFiles])
 
     useEffect(() => {
+        if (!thisDropZone) return
         if (!uploadedProgress) return
 
         dropzoneRef.current.querySelector(".dz-upload").style.width = `${uploadedProgress}%`
     }, [uploadedProgress])
 
     useEffect(() => {
+        if (!thisDropZone) return
         if (!uploadedFile) return
         
         const file = thisDropZone.getAcceptedFiles().find((f) => f.name == uploadedFile.filename && f.size == uploadedFile.byte_size)

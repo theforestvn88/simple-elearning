@@ -1,11 +1,10 @@
 import React, { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
-import { fetchMock, fetchMockReturn, fetchMockError } from '../mocks/fetchMock'
 import AppProvider from '../../context/AppProvider'
 import Nav from '../../components/Nav'
-import { localStorageMockReturn, localStorageRemoveItemSpy } from '../mocks/localStorageMock'
 import flushPromises from '../helper/flushPromises'
+import { mockAuth, logoutSpy } from '../mocks/useAuthMock'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -21,7 +20,7 @@ describe('LogIn', () => {
     })
 
     it('anynomous user', async () => {
-        localStorageMockReturn({})
+        mockAuth({})
 
         await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
 
@@ -30,7 +29,7 @@ describe('LogIn', () => {
     })
 
     it('authorized user', async () => {
-        localStorageMockReturn({token: 'xxx', user: { name: 'User A' }})
+        mockAuth({token: 'xxx', user: { name: 'User A' }})
 
         await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
 
@@ -39,37 +38,29 @@ describe('LogIn', () => {
     })
     
     it('logout user with valid token', async () => {
-        fetchMockReturn({message: 'logout success'})
-        localStorageMockReturn({token: 'xxx'})
+        mockAuth({token: 'xxx'})
 
         await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
 
-        fireEvent.click(screen.getByRole('button', { name: 'Log Out'}))
+        await act( async () => {
+            fireEvent.click(screen.getByRole('button', { name: 'Log Out'}))
+        })
 
-        expect(fetchMock).toHaveBeenCalledWith(
-            '/api/auth/logout',
-            {
-                "method": "DELETE",
-                "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
-                "body": "{}"
-            }
-        )
+        expect(logoutSpy).toHaveBeenCalled()
     })
 
     it('logout user with expired token', async () => {
-        const clearAuthSpy = localStorageRemoveItemSpy()
-        fetchMockError(401, {message: 'unauthrorized'})
-        localStorageMockReturn({token: 'xxx'})
+        mockAuth({token: 'xxx'})
 
         await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
 
-        fireEvent.click(screen.getByRole('button', { name: 'Log Out'}))
+        logoutSpy.mockImplementation(() => Promise.resolve({ ok: false, status: 401, json: () => Promise.resolve({}) }))
+        await act( async () => {
+            fireEvent.click(screen.getByRole('button', { name: 'Log Out'}))
+        })
 
         await flushPromises()
         
-        // should delete auth from local-storage
-        expect(clearAuthSpy).toHaveBeenCalled()
-
         // should navigate to home page
         expect(navigateSpy).toHaveBeenCalledWith('/courses')
     })

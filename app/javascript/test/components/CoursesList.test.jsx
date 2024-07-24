@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom'
 import CoursesList from '../../components/CoursesList'
 import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
 import { fakeCourses } from '../mocks/fakeCourses'
-import flushPromises from '../helper/flushPromises'
 
 describe('CoursesList', () => {
     const FakePagination = { pages: ['1', '2', 'gap', '3', '4'], total: 10 }
@@ -58,7 +57,9 @@ describe('CoursesList', () => {
         it('click on normal page should start loading that page courses', async () => {
             await act( async () => render(<MemoryRouter><CoursesList /></MemoryRouter>))
 
-            fireEvent.click(screen.getByRole('button', {name: 2}))
+            await act( async () => {
+                fireEvent.click(screen.getByRole('button', {name: 2}))
+            })
 
             expect(fetchMock).toHaveBeenCalledWith(
                 '/api/v1/courses?page=2', 
@@ -69,7 +70,9 @@ describe('CoursesList', () => {
         it('click on the last page should start loading the last page courses', async () => {
             await act( async () => render(<MemoryRouter><CoursesList /></MemoryRouter>))
 
-            fireEvent.click(screen.getByRole('button', {name: 'Last'}))
+            await act( async () => {
+                fireEvent.click(screen.getByRole('button', {name: 'Last'}))
+            })
     
             expect(fetchMock).toHaveBeenCalledWith(
                 '/api/v1/courses?page=10', 
@@ -80,7 +83,9 @@ describe('CoursesList', () => {
         it('click on the first page should start loading the first page courses', async () => {
             await act( async () => render(<MemoryRouter><CoursesList /></MemoryRouter>))
 
-            fireEvent.click(screen.getByRole('button', {name: 'First'}))
+            await act( async () => {
+                fireEvent.click(screen.getByRole('button', {name: 'First'}))
+            })
     
             expect(fetchMock).toHaveBeenCalledWith(
                 '/api/v1/courses?page=1', 

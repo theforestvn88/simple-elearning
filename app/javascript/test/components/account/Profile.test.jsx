@@ -1,34 +1,18 @@
 import React, { act } from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
 import { fetchMock, fetchMockReturn, getSubmitBodyFromFetchMock } from '../../mocks/fetchMock'
 import { localStorageMockReturn, localStorageSetItemSpy } from '../../mocks/localStorageMock'
 import AppProvider from '../../../context/AppProvider'
 import flushPromises from '../../helper/flushPromises'
-import * as RailsActiveStorage from "@rails/activestorage"
 import { fakeUser1 } from '../../mocks/fakeUsers'
 import Profile from '../../../components/account/Profile'
-
-jest.mock('@rails/activestorage', () => ({
-    ...jest.requireActual('@rails/activestorage'),
-    DirectUpload: jest.fn(),
-}))
-
-const DirectUploadSpy = jest.spyOn(RailsActiveStorage, 'DirectUpload')
-
-const DirectUploadMockReturn = (blob) => DirectUploadSpy.mockImplementation(() => {
-    return {
-        create: jest.fn().mockImplementation((callback) => {
-            callback(null, blob)
-        })
-    }
-})
+import { mockUseUploader, directUploadFileSpy, fakeDirectUploadedBlobSignedId } from '../../mocks/useUploaderMock'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useParams: jest.fn(),
 }))
-
 
 describe('Profile', () => {
     beforeEach(() => {
@@ -38,6 +22,7 @@ describe('Profile', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        cleanup()
     })
 
     it('should show profile info', async () => {
@@ -50,7 +35,7 @@ describe('Profile', () => {
             '/api/v1/users/1', 
             {"body": null, "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, "method": "GET"}
         )
-
+        
         expect(screen.getByText(fakeUser1.name)).toBeInTheDocument()
         expect(screen.getByText(fakeUser1.title)).toBeInTheDocument()
         expect(screen.getByText(fakeUser1.location)).toBeInTheDocument()
@@ -75,60 +60,29 @@ describe('Profile', () => {
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
-        fetchMock.mockRestore()
-        fetchMockReturn({...fakeUser1, name: 'updated-name'})
-        const spy = localStorageSetItemSpy()
-
-        fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
-
-        fireEvent.change(screen.getByDisplayValue(fakeUser1.name), {target: {value: 'updated-name'}})
-
-        fireEvent.submit(screen.getByTestId('update-profile-form'))
-        
-        expect(fetchMock).toHaveBeenCalledWith(
-            '/api/v1/users/1', 
-            {
-                "body": expect.any(FormData),
-                "headers": {"X-Auth-Token": "xxx"}, 
-                "method": "PUT"
-            }
-        )
-
-        const formData = getSubmitBodyFromFetchMock(fetchMock)
-        expect(formData).toMatchObject({ 'user[name]': 'updated-name' })
-
-        // should save user updated info to localstorage
-        await flushPromises()
-        expect(spy).toHaveBeenCalled()
-        expect(JSON.parse(spy.mock.lastCall[1])['user']['name']).toEqual('updated-name')
-    })
-
-    it('update avatar', async () => {
-        localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
-        fetchMockReturn({...fakeUser1, can_edit: true})
-
-        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
-
-        const fakeSignedId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        DirectUploadMockReturn({signed_id: fakeSignedId})
-
-        fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
-
-        fireEvent.drop(document.querySelector('#avatar-dropzone'), {
-            dataTransfer: {
-              files: [new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'})],
-            },
+        mockUseUploader()
+        await act( async () => {
+            fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
         })
 
-        await flushPromises()
-        expect(DirectUploadSpy).toHaveBeenCalled()
+        const fakeFile = new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'})
+        await act( async () => {
+            fireEvent.change(screen.getByDisplayValue(fakeUser1.name), {target: {value: 'updated-name'}})
+            fireEvent.drop(document.querySelector('#avatar-dropzone'), {
+                dataTransfer: {
+                    files: [fakeFile],
+                },
+            })
+        })
+        
+        expect(directUploadFileSpy).toHaveBeenCalledWith(fakeFile)
+        
+        const localStorageSpy = localStorageSetItemSpy()
+        fetchMockReturn({ ...fakeUser1, id: 1, name: 'updated-name', avatar: { url: 'new-avatar-url' } })
 
-        fetchMock.mockRestore()
-        fetchMockReturn({...fakeUser1, avatar: { url: 'avatar-url' } })
-
-        const spy = localStorageSetItemSpy()
-
-        fireEvent.submit(screen.getByTestId('update-profile-form'))
+        await act( async () => {
+            fireEvent.submit(screen.getByTestId('update-profile-form'))
+        })
 
         expect(fetchMock).toHaveBeenCalledWith(
             '/api/v1/users/1', 
@@ -140,13 +94,14 @@ describe('Profile', () => {
         )
 
         const formData = getSubmitBodyFromFetchMock(fetchMock)
-    
-        expect(formData['user[avatar]']).toEqual(fakeSignedId)
+        expect(formData['user[avatar]']).toEqual(fakeDirectUploadedBlobSignedId)
+        expect(formData['user[name]']).toEqual('updated-name')
 
         // should save user updated avatar url to localstorage
         await flushPromises()
-        expect(spy).toHaveBeenCalled()
-        expect(JSON.parse(spy.mock.lastCall[1])['user']['avatar']['url']).toEqual('avatar-url')
+        expect(localStorageSpy).toHaveBeenCalled()
+        expect(JSON.parse(localStorageSpy.mock.lastCall[1])['user']['avatar']['url']).toEqual('new-avatar-url')
+        expect(JSON.parse(localStorageSpy.mock.lastCall[1])['user']['name']).toEqual('updated-name')
     })
 
     it('delete avatar', async () => {
@@ -155,11 +110,17 @@ describe('Profile', () => {
 
         await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
 
-        fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
+        await act( async () => {
+            fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
+        })
 
-        fireEvent.click(screen.getByText(/Remove file/i))
+        await act( async () => {
+            fireEvent.click(screen.getByText(/Remove file/i))
+        })
 
-        fireEvent.submit(screen.getByTestId('update-profile-form'))
+        await act( async () => {
+            fireEvent.submit(screen.getByTestId('update-profile-form'))
+        })
 
         const formData = getSubmitBodyFromFetchMock(fetchMock)
     
@@ -174,8 +135,13 @@ describe('Profile', () => {
 
         fetchMock.mockRestore()
 
-        fireEvent.click(screen.getByRole('button', { name: 'Delete Account'}))
-        fireEvent.click(screen.getByRole('button', { name: 'Confirm'}))
+        await act( async () => {
+            fireEvent.click(screen.getByRole('button', { name: 'Delete Account'}))
+        })
+
+        await act( async () => {
+            fireEvent.click(screen.getByRole('button', { name: 'Confirm'}))
+        })
 
         expect(fetchMock).toHaveBeenCalledWith(
             '/api/v1/users/1', 
