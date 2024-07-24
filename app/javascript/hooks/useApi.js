@@ -18,7 +18,8 @@ const useApi = () => {
     }
     
     const BaseApi = useCallback(async (method, path, headers = {}, params = {}) => {
-        const apiUrl = method === 'GET' ? Base + path + (new URLSearchParams(params).toString()) : Base + path
+        const urlParams = method === 'GET' ? (new URLSearchParams(params)).toString() : ''
+        const apiUrl = Base + path + (!!urlParams ? '?' + urlParams : '')
         const apiHeaders = {
             ...DefaultHeader,
             ...headers
