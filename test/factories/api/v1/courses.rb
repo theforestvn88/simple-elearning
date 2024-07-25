@@ -3,5 +3,6 @@ FactoryBot.define do
     sequence(:name) { |n| "course #{n}" }
     sequence(:summary) { |n| "summary course #{n}" }
     sequence(:description) { |n| "description course #{n}" }
+    association :instructor
   end
 end

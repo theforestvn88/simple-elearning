@@ -1,3 +1,5 @@
+EMAIL_VERIFICATION_EXPIRE_TIME = 1.day
+
 module AsAccount
     extend ActiveSupport::Concern
 
@@ -12,7 +14,6 @@ module AsAccount
     
         normalizes :email, with: -> { _1.strip.downcase }
         
-        EMAIL_VERIFICATION_EXPIRE_TIME = 1.day
         generates_token_for :email_verification, expires_in: EMAIL_VERIFICATION_EXPIRE_TIME do
             email
         end
