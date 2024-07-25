@@ -22,6 +22,13 @@ Rails.application.routes.draw do
       get '/email_verify', to: 'email_verifications#verify'
   end
 
+  namespace :admin do
+    resources :courses, only: %i(index show destroy)
+    resources :users, only: %i(index show ban destroy)
+
+    root to: "courses#index"
+  end
+
   #
   # TODO: admin 
   # Cron Jobs Controller

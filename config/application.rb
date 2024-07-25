@@ -25,5 +25,12 @@ module RailsReactExample
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.api_only = true
+
+    # Enable Flash, Cookies, MethodOverride for Administrate Gem
+    config.middleware.use ActionDispatch::Flash
+    config.session_store :cookie_store
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
+    config.middleware.use ::Rack::MethodOverride
   end
 end
