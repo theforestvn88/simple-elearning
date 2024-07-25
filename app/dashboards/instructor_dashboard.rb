@@ -1,6 +1,6 @@
 require "administrate/base_dashboard"
 
-class CourseDashboard < Administrate::BaseDashboard
+class InstructorDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
   # a hash that describes the type of each of the model's fields.
   #
@@ -9,12 +9,14 @@ class CourseDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
+    email: Field::String.with_options(searchable: true),
     name: Field::String.with_options(searchable: true),
-    summary: Field::String.with_options(searchable: true),
-    description: Field::Text,
+    introduction: Field::Text,
+    courses: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-    instructor: Field::BelongsTo.with_options(searchable: true, searchable_field: 'name', order: 'id DESC'),
+    password: Field::Password,
+    password_confirmation: Field::Password
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -24,9 +26,8 @@ class CourseDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
+    email
     name
-    summary
-    instructor
     created_at
     updated_at
   ].freeze
@@ -35,10 +36,10 @@ class CourseDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    email
     name
-    summary
-    instructor
-    description
+    introduction
+    courses
     created_at
     updated_at
   ].freeze
@@ -47,9 +48,10 @@ class CourseDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
+    email
     name
-    summary
-    description
+    password
+    password_confirmation
   ].freeze
 
   # COLLECTION_FILTERS
@@ -64,10 +66,10 @@ class CourseDashboard < Administrate::BaseDashboard
   #   }.freeze
   COLLECTION_FILTERS = {}.freeze
 
-  # Overwrite this method to customize how courses are displayed
+  # Overwrite this method to customize how instructors are displayed
   # across all pages of the admin dashboard.
   #
-  def display_resource(course)
-    course.name
+  def display_resource(instructor)
+    instructor.name
   end
 end

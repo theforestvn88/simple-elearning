@@ -9,13 +9,13 @@ class UserDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    email: Field::String,
-    name: Field::String,
+    email: Field::String.with_options(searchable: true),
+    name: Field::String.with_options(searchable: true),
+    title: Field::String.with_options(searchable: true),
     introduction: Field::Text,
     location: Field::String,
     password_digest: Field::String,
-    social_links: Field::String.with_options(searchable: false),
-    title: Field::String,
+    social_links: Field::String,
     verified: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,

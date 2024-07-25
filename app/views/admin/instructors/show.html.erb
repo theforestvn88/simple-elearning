@@ -1,8 +1,7 @@
 <%#
 # TODO
-# - assign reviewers
-# - approve to publish
-#
+# - ban
+# - courses counter -> link to courses
 %>
 
 <% content_for(:title) { t("administrate.actions.show_resource", name: page.page_title) } %>
@@ -37,14 +36,6 @@
           <legend><%= t "helpers.label.#{page.resource_name}.#{title}", default: title %></legend>
         <% end %>
 
-        <% if page.resource.cover.attached? %>
-          <dt>
-            <%= image_tag page.resource.cover %>
-          </dt>
-        <% end %>
-
-        <br />
-        
         <% attributes.each do |attribute| %>
           <dt class="attribute-label" id="<%= attribute.name %>">
           <%= t(
