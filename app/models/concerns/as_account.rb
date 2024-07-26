@@ -1,7 +1,7 @@
-EMAIL_VERIFICATION_EXPIRE_TIME = 1.day
-
 module AsAccount
     extend ActiveSupport::Concern
+    
+    EMAIL_VERIFICATION_EXPIRE_TIME = 1.day
 
     included do
         has_secure_password
