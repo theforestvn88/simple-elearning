@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :courses, only: %i(index show destroy)
+    resources :instructors, only: %i(index show new create destroy)
     resources :users, only: %i(index show ban destroy)
 
     root to: "courses#index"

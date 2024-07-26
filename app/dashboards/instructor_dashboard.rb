@@ -15,8 +15,8 @@ class InstructorDashboard < Administrate::BaseDashboard
     courses: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-    password: Field::Password,
-    password_confirmation: Field::Password
+    # password: Field::Password,
+    # password_confirmation: Field::Password
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -50,8 +50,6 @@ class InstructorDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     email
     name
-    password
-    password_confirmation
   ].freeze
 
   # COLLECTION_FILTERS
