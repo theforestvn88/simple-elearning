@@ -11,10 +11,10 @@ class TokenService
     private
 
         def serect_key
-            Rails.application.credentials.dig(:token, :serect_key)
+            ENV['TOKEN_SERECT_KEY']
         end
 
         def algorithm
-            Rails.application.credentials.dig(:token, :algorithm)
+            ENV['TOKEN_ALGORITHM']
         end
 end
