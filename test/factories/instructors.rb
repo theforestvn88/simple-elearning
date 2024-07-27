@@ -6,5 +6,6 @@ FactoryBot.define do
     name { "MyString" }
     introduction { "MyText" }
     info { "" }
+    rank { "Lecturer" }
   end
 end
