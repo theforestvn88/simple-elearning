@@ -10,9 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_25_113434) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_27_081343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "academic_rank", ["Lecturer", "Assistant Professor", "Associate Professor", "Professor", "President"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -49,7 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_113434) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "instructor_id"
-    t.index ["instructor_id"], name: "index_courses_on_instructor_id"
+    t.index ["instructor_id"], name: "index_courses_on_instructor_id", unique: true
   end
 
   create_table "instructors", force: :cascade do |t|
@@ -58,9 +62,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_113434) do
     t.string "name"
     t.text "introduction"
     t.json "info"
+    t.enum "rank", default: "Lecturer", null: false, enum_type: "academic_rank"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "partner_id"
     t.index ["email"], name: "index_instructors_on_email", unique: true
+    t.index ["partner_id"], name: "index_instructors_on_partner_id", unique: true
+  end
+
+  create_table "partners", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "email"], name: "index_partner_name_email_uniqueness", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -80,4 +95,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_113434) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "courses", "instructors"
+  add_foreign_key "instructors", "partners"
 end

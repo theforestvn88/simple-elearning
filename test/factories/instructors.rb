@@ -7,5 +7,6 @@ FactoryBot.define do
     introduction { "MyText" }
     info { "" }
     rank { "Lecturer" }
+    association :partner
   end
 end
