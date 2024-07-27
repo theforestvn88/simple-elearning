@@ -8,7 +8,7 @@ class InstructorMailerTest < ActionMailer::TestCase
     @instructor = create(:instructor)
   end
 
-  test 'email account verification' do
+  test 'inform new account' do
       mailer = InstructorMailer.with(instructor: @instructor, random_password: 'xxxxxxxxxxx').inform_new_account
       assert_send_email(from_mailer: mailer, to: [@instructor.email], with_subject: 'Inform New Account')
   end

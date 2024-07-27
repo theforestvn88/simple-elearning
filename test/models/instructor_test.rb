@@ -19,4 +19,12 @@ class InstructorTest < ActiveSupport::TestCase
   context 'associations' do
     should belong_to(:partner)
   end
+
+  test 'default rank' do
+    assert_equal 'Lecturer', Instructor.default_rank
+  end
+
+  test 'admin rank' do
+    assert_equal 'President', Instructor.admin_rank
+  end
 end

@@ -23,11 +23,12 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :courses, only: %i(index show destroy)
+    resources :partners, only: %i(index show new create destroy)
     resources :instructors, only: %i(index show new create destroy)
     resources :users, only: %i(index show ban destroy)
+    resources :courses, only: %i(index show destroy)
 
-    root to: "courses#index"
+    root to: "partners#index"
   end
 
   #

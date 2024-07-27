@@ -11,10 +11,12 @@ class InstructorDashboard < Administrate::BaseDashboard
     id: Field::Number,
     email: Field::String.with_options(searchable: true),
     name: Field::String.with_options(searchable: true),
+    partner: Field::BelongsTo.with_options(searchable: true, searchable_field: 'name', order: 'id DESC'),
     introduction: Field::Text,
     courses: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
+    rank: Field::Select.with_options(searchable: true, collection: Instructor.ranks.values),
     # password: Field::Password,
     # password_confirmation: Field::Password
   }.freeze
@@ -28,6 +30,8 @@ class InstructorDashboard < Administrate::BaseDashboard
     id
     email
     name
+    partner
+    rank
     created_at
     updated_at
   ].freeze
@@ -38,6 +42,8 @@ class InstructorDashboard < Administrate::BaseDashboard
     id
     email
     name
+    partner
+    rank
     introduction
     courses
     created_at
@@ -50,6 +56,8 @@ class InstructorDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     email
     name
+    partner
+    rank
   ].freeze
 
   # COLLECTION_FILTERS
