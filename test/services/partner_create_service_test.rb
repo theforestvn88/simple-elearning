@@ -9,22 +9,22 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
     test 'require email and name and slug' do
         assert_no_difference("Partner.count") do
             invalid_params = {email: '', name: 'partner', slug: 'partner-slug'}
-            result = @subject.call(invalid_params)
+            result = @subject.create(invalid_params)
             assert !result.success
             
             invalid_params = {email: 'partner@example.com', name: '', slug: 'partner-slug'}
-            result = @subject.call(invalid_params)
+            result = @subject.create(invalid_params)
             assert !result.success
 
             invalid_params = {email: 'partner@example.com', name: 'partner', slug: ''}
-            result = @subject.call(invalid_params)
+            result = @subject.create(invalid_params)
             assert !result.success
         end
     end
 
     test 'auto create administrator instructor for partner' do
         assert_difference("Partner.count") do
-            result = @subject.call(@valid_params)
+            result = @subject.create(@valid_params)
             assert result.success
             
             assert result.partner.present?
@@ -39,9 +39,29 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
         mock_partner_mailer.expect :deliver_later, nil, []
 
         ::PartnerMailer.stub :with, mock_partner_mailer do
-            @subject.call(@valid_params)
+            @subject.create(@valid_params)
         end
 
         mock_partner_mailer.verify
+    end
+
+    test 'should not create partner without an admin account' do
+        mock_instructor_creator = Minitest::Mock.new
+        mock_instructor_creator.expect :create, ::InstructorCreateService::Result.new(false, ::Instructor.new, nil), [], **{
+            email: String, 
+            name: String, 
+            partner_id: Integer, 
+            rank: String, 
+            send_email: Object
+        }
+    
+
+        ::InstructorCreateService.stub :new, mock_instructor_creator do
+            assert_no_difference("Partner.count") do
+                assert_no_difference("Instructor.count") do
+                    @subject.create(@valid_params)
+                end
+            end
+        end
     end
 end

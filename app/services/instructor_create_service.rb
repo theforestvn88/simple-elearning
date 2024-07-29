@@ -1,7 +1,7 @@
 class InstructorCreateService
     Result = Struct.new(:success, :instructor, :random_password)
 
-    def call(email:, name:, partner_id:, rank: nil, send_email: true)
+    def create(email:, name:, partner_id:, rank: nil, send_email: true)
         random_password = SecureRandom.hex(10)
         instructor = Instructor.new(
             email: email, 

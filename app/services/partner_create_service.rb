@@ -1,29 +1,38 @@
 class PartnerCreateService
     Result = Struct.new(:success, :partner, :admin_random_password)
 
-    def call(partner_params)
+    def create(partner_params)
+        result = nil
         partner = Partner.new(partner_params)
-        
-        if partner.save
-            create_admin_result = ::InstructorCreateService.new.call(
-                email: partner_params[:email],
-                name: partner_params[:name],
-                partner_id: partner.id,
-                rank: Instructor.admin_rank,
-                send_email: false
-            )
 
-            if create_admin_result.success
-                ::PartnerMailer.with(partner: partner, admin_random_password: create_admin_result.random_password)
-                    .inform_new_partner
-                    .deliver_later
+        ActiveRecord::Base.transaction do
+            if partner.save
+                create_admin_result = ::InstructorCreateService.new.create(
+                    email: partner_params[:email],
+                    name: partner_params[:name],
+                    partner_id: partner.id,
+                    rank: Instructor.admin_rank,
+                    send_email: false
+                )
 
-                return Result.new(true, partner, create_admin_result.random_password)
+                if create_admin_result.success
+                    ::PartnerMailer.with(partner: partner, admin_random_password: create_admin_result.random_password)
+                        .inform_new_partner
+                        .deliver_later
+
+                    result = Result.new(true, partner, create_admin_result.random_password)
+                else
+                    partner.errors.add(:admin, create_admin_result.instructor.errors.full_messages.first)
+                    raise ActiveRecord::Rollback
+                end
             else
-                return create_admin_result
+                result = Result.new(false, partner, nil)
+                raise ActiveRecord::Rollback
             end
-        else
-            return Result.new(false, partner, nil)
+        ensure
+            result ||= Result.new(false, partner, nil)
         end
+
+        result
     end
 end
