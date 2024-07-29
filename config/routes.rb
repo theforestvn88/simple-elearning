@@ -22,6 +22,10 @@ Rails.application.routes.draw do
       get '/email_verify', to: 'email_verifications#verify'
   end
 
+  namespace :partners do
+    root to: "home#index"
+  end
+
   namespace :admin do
     resources :partners, only: %i(index show new create destroy)
     resources :instructors, only: %i(index show new create destroy)
