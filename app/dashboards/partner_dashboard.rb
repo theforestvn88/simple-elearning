@@ -11,6 +11,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     id: Field::Number,
     email: Field::String,
     name: Field::String.with_options(searchable: true),
+    slug: Field::String,
     instructors: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
@@ -25,6 +26,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     id
     email
     name
+    slug
     instructors
   ].freeze
 
@@ -34,6 +36,7 @@ class PartnerDashboard < Administrate::BaseDashboard
     id
     email
     name
+    slug
     instructors
     created_at
     updated_at
@@ -45,6 +48,7 @@ class PartnerDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     email
     name
+    slug
   ].freeze
 
   # COLLECTION_FILTERS

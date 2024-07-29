@@ -1,7 +1,7 @@
-<h1>Inform New Partner</h1>
+<h1>Inform Partner Page</h1>
 
 <p>Dear <%= @partner.name %>!</p>
-<p>We set up your partner page: xxx</p>
+<p>We set up your partner page: <%= partners_page_url(slug: @partner.slug) %></p>
 <p>Below is your admin account:</p>
 <hr />
 <p>Email: <%= @partner.email %><p>

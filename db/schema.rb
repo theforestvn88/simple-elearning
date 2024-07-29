@@ -73,9 +73,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_27_081343) do
   create_table "partners", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
+    t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name", "email"], name: "index_partner_name_email_uniqueness", unique: true
+    t.index ["name", "email", "slug"], name: "index_partner_name_email_slug_uniqueness", unique: true
   end
 
   create_table "users", force: :cascade do |t|

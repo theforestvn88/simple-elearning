@@ -3,6 +3,7 @@ module Partners
         layout "partners/application"
 
         def index
+            p params
         end
     end
 end

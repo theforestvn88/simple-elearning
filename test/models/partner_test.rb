@@ -4,6 +4,7 @@ class PartnerTest < ActiveSupport::TestCase
   context 'valications' do
     should validate_presence_of(:email).on(:create)
     should validate_presence_of(:name).on(:create)
+    should validate_presence_of(:slug).on(:create)
   end
 
   context 'associations' do

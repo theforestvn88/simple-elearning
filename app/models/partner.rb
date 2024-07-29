@@ -5,4 +5,5 @@ class Partner < ApplicationRecord
 
     validates :email, presence: true
     validates :name, presence: true
+    validates :slug, presence: true
 end

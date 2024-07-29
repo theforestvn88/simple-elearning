@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   end
 
   namespace :partners do
+    get "/:slug" => "home#index", as: :page
     root to: "home#index"
   end
 

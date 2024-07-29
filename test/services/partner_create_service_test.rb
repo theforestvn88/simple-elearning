@@ -3,21 +3,28 @@ require 'test_helper'
 class PartnerCreateServiceTest < ActiveSupport::TestCase
     setup do
         @subject = ::PartnerCreateService.new
+        @valid_params = {email: 'partner@example.com', name: 'partner', slug: 'partner-slug'}
     end
 
-    test 'require email and name' do
+    test 'require email and name and slug' do
         assert_no_difference("Partner.count") do
-            result = @subject.call(email: '', name: 'partner')
+            invalid_params = {email: '', name: 'partner', slug: 'partner-slug'}
+            result = @subject.call(invalid_params)
             assert !result.success
             
-            result = @subject.call(email: 'partner@example.com', name: '')
+            invalid_params = {email: 'partner@example.com', name: '', slug: 'partner-slug'}
+            result = @subject.call(invalid_params)
+            assert !result.success
+
+            invalid_params = {email: 'partner@example.com', name: 'partner', slug: ''}
+            result = @subject.call(invalid_params)
             assert !result.success
         end
     end
 
     test 'auto create administrator instructor for partner' do
         assert_difference("Partner.count") do
-            result = @subject.call(email: 'partner@example.com', name: 'partner')
+            result = @subject.call(@valid_params)
             assert result.success
             
             assert result.partner.present?
@@ -32,7 +39,7 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
         mock_partner_mailer.expect :deliver_later, nil, []
 
         ::PartnerMailer.stub :with, mock_partner_mailer do
-            @subject.call(email: 'partner@example.com', name: 'partner')
+            @subject.call(@valid_params)
         end
 
         mock_partner_mailer.verify

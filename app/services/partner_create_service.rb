@@ -1,16 +1,13 @@
 class PartnerCreateService
     Result = Struct.new(:success, :partner, :admin_random_password)
 
-    def call(email:, name:)
-        partner = Partner.new(
-            email: email, 
-            name: name
-        )
+    def call(partner_params)
+        partner = Partner.new(partner_params)
         
         if partner.save
             create_admin_result = ::InstructorCreateService.new.call(
-                email: email,
-                name: name,
+                email: partner_params[:email],
+                name: partner_params[:name],
                 partner_id: partner.id,
                 rank: Instructor.admin_rank,
                 send_email: false
