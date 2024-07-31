@@ -23,7 +23,7 @@ class TokenCacheStore < TokenStore
         end
 
         def user_tokens_list_key(user)
-            "u-#{user.id}-tokens"
+            "#{user.class.name}-#{user.id}-tokens"
         end
 
         def redis_save_to_user_tokens_list(user, token)
