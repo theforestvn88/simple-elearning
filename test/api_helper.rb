@@ -8,3 +8,9 @@ def log_out(token)
     delete api_auth_logout_url, headers: { "X-Auth-Token" => "Bearer #{token}" }
     assert_response :success
 end
+
+def instructor_sign_in(instructor)
+    post "/api/auth/instructor/#{instructor.partner.slug}/login", params: { email: instructor.email, password: instructor.password }, as: :json
+    assert_response :success
+    token = response.parsed_body['token']
+end

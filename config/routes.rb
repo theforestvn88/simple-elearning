@@ -10,11 +10,20 @@ Rails.application.routes.draw do
     end
 
     namespace :auth do
-      post '/signup', to: 'registrations#create'
-      post '/login', to: 'sessions#create'
-      delete '/logout', to: 'sessions#destroy'
-      post '/refresh_token', to: 'sessions#refresh'
-      put '/password/update', to: 'passwords#update'
+      scope '/user/*' do
+        post '/signup', to: 'registrations#create'
+        post '/login', to: 'sessions#create'
+        delete '/logout', to: 'sessions#destroy'
+        post '/refresh_token', to: 'sessions#refresh'
+        put '/password/update', to: 'passwords#update'
+      end
+
+      scope '/instructor/:identify' do
+        post '/login', to: 'instructor_sessions#create'
+        delete '/logout', to: 'instructor_sessions#destroy'
+        post '/refresh_token', to: 'instructor_sessions#refresh'
+        put '/password/update', to: 'passwords#update'
+      end
     end
   end
 

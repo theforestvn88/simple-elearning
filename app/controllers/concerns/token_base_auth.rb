@@ -10,7 +10,7 @@ module TokenBaseAuth
             @token = extract_token_from_header
             return if @token.nil?
 
-            @current_user = ::TokenBaseAuthService.new.authorized_user(@token)
+            @current_user = auth_service.authorized_user(@token)
         end
 
         def authenticate!
