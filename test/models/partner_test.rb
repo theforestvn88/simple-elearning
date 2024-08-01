@@ -9,6 +9,7 @@ class PartnerTest < ActiveSupport::TestCase
 
   context 'associations' do
     should have_many(:instructors).dependent(:destroy)
+    should have_many(:courses).dependent(:nullify)
     should have_one_attached(:logo)
   end
 end

@@ -18,6 +18,7 @@ class InstructorTest < ActiveSupport::TestCase
 
   context 'associations' do
     should belong_to(:partner)
+    should have_many(:courses).dependent(:nullify)
   end
 
   test 'default rank' do
