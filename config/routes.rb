@@ -4,7 +4,19 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:show, :update, :destroy]
-      resources :courses
+
+      namespace :instructor do
+        resources :courses
+      end
+
+      scope '/courses' do
+        get '/query', to: 'courses#query', as: :query_courses
+        get '/:id/show', to: 'courses#show', as: :course_introduction
+        # enroll
+        # unenroll
+        # bookmark
+        # ...
+      end
 
       post '/presigned_url', to: 'direct_upload#create'
     end

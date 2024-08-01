@@ -1,6 +1,8 @@
 module Api
     module Auth
         class InstructorSessionsController < SessionsController
+            include SubjectInstructor
+
             def create
                 super
                 
@@ -9,12 +11,6 @@ module Api
                     render json: { error: 'Invalid credentials' }, status: :forbidden
                 end
             end
-
-            private
-                
-                def subject_clazz
-                    Instructor
-                end
         end
     end
 end

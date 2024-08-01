@@ -3,7 +3,7 @@ FactoryBot.define do
     sequence(:email) { |n| "instructor#{n}@example.com" }
     password { "0123456789" }
     password_confirmation { "0123456789" }
-    name { "MyString" }
+    name { Faker::Internet.username }
     introduction { "MyText" }
     info { "" }
     rank { "Lecturer" }

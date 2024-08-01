@@ -1,6 +1,8 @@
 module Api
     module Auth
         class SessionsController < ::ApiController
+            include SubjectUser
+
             before_action :authenticate!, except: [:create]
 
             def create
@@ -19,16 +21,6 @@ module Api
                     render json: { error: 'Invalid credentials' }, status: :bad_request
                 end
             end
-
-            private
-
-                def auth_service
-                    @auth_service ||= ::TokenBaseAuthService.new(subject_clazz)
-                end
-
-                def subject_clazz
-                    User
-                end
         end
     end
 end
