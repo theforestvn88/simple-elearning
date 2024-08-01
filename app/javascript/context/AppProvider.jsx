@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth"
 
 const AppContext = createContext()
 
-const AppProvider = ({ children }) => {
+const AppProvider = ({ subject, identify, children }) => {
     const { 
         authInfo,
         saveUserInfo, 
@@ -16,10 +16,12 @@ const AppProvider = ({ children }) => {
         clearAuth,
         changePassword,
         RequireAuthorizedApi
-    } = useAuth()
+    } = useAuth(subject, identify)
     
     return (
-        <AppContext.Provider value={{ 
+        <AppContext.Provider value={{
+            subject: subject,
+            identify: identify, 
             auth: { 
                 info: authInfo, 
                 login, 

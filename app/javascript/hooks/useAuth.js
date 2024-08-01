@@ -3,9 +3,12 @@ import useApi from "./useApi"
 
 const AuthCacheKey = 'open-courses-auth'
 
-const useAuth = () => {
+const useAuth = (subject, identify) => {
+    const Domain = `${subject}/${identify}`
+    const DomainAuthCacheKey = `${AuthCacheKey}/${Domain}`
+
     const { BaseApi } = useApi()
-    const [authInfo, setAuthInfo] = useState(JSON.parse(localStorage.getItem(AuthCacheKey) || '{}'))
+    const [authInfo, setAuthInfo] = useState(JSON.parse(localStorage.getItem(DomainAuthCacheKey) || '{}'))
     
     const saveAuthInfo = (newAuthInfo) => {
       const mergeAuthInfo = {
@@ -15,8 +18,8 @@ const useAuth = () => {
         user: newAuthInfo.user || authInfo.user
       }
 
-      localStorage.setItem(AuthCacheKey, JSON.stringify(mergeAuthInfo))
-      setAuthInfo(JSON.parse(localStorage.getItem(AuthCacheKey)))
+      localStorage.setItem(DomainAuthCacheKey, JSON.stringify(mergeAuthInfo))
+      setAuthInfo(JSON.parse(localStorage.getItem(DomainAuthCacheKey)))
     }
 
     const saveUserInfo = (userInfo) => {
@@ -50,7 +53,7 @@ const useAuth = () => {
     }
 
     const clearAuth = useCallback(() => {
-      localStorage.removeItem(AuthCacheKey)
+      localStorage.removeItem(DomainAuthCacheKey)
       setAuthInfo({})
     }, [])
 
@@ -66,12 +69,12 @@ const useAuth = () => {
 
     const login = useCallback(async (loginParams) => {
       return handleAuthSuccess(
-        BaseApi('POST', '/api/auth/login', {}, loginParams)
+        BaseApi('POST', `/api/auth/${Domain}/login`, {}, loginParams)
       )
     }, [])
     
     const logout = useCallback(async () => {
-      return RequireAuthorizedApi('DELETE', '/api/auth/logout', {}, {})
+      return RequireAuthorizedApi('DELETE', `/api/auth/${Domain}/logout`, {}, {})
         .then((response) => {
           if (isSuccess(response.status)) {
             clearAuth()
@@ -84,7 +87,7 @@ const useAuth = () => {
 
     const signup = useCallback(async (signupParams) => {
       return handleAuthSuccess(
-        BaseApi('POST', '/api/auth/signup', {}, signupParams)
+        BaseApi('POST', `/api/auth/${Domain}/signup`, {}, signupParams)
       )
     }, [])
 
@@ -98,12 +101,12 @@ const useAuth = () => {
 
     const refreshToken = useCallback(async () => {
       return handleAuthSuccess(
-        RequireAuthorizedApi('POST', '/api/auth/refresh_token', {}, {})
+        RequireAuthorizedApi('POST', `/api/auth/${Domain}/refresh_token`, {}, {})
       )
     }, [authInfo])
     
     const changePassword = useCallback(async (params) => {
-      return RequireAuthorizedApi('PUT', '/api/auth/password/update', {}, params)
+      return RequireAuthorizedApi('PUT', `/api/auth/${Domain}/password/update`, {}, params)
         .then((response) => {
           if (response.ok) {
             clearAuth()

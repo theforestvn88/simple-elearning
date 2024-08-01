@@ -16,13 +16,13 @@ describe("useAuth Hook", () => {
         const fakeResponse = {token: "xxx", user: { id: 1, name: 'User1' }}
         fetchMockReturn(fakeResponse)
 
-        const { result } = renderHook(() => useAuth())
+        const { result } = renderHook(() => useAuth('subject', 'identify'))
         await act(async () => {
             await result.current.login(loginParams)
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
-            "/api/auth/login", 
+            "/api/auth/subject/identify/login", 
             {
                 "method": "POST",
                 "headers": {"Content-Type": "application/json"}, 
@@ -40,13 +40,13 @@ describe("useAuth Hook", () => {
         fetchMockReturn({})
         localStorageMockReturn({token: "xxx", user: { id: 1, name: 'User1' }})
 
-        const { result } = renderHook(() => useAuth())
+        const { result } = renderHook(() => useAuth('subject', 'identify'))
         await act(async () => {
             await result.current.logout()
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
-            "/api/auth/logout", 
+            "/api/auth/subject/identify/logout", 
             {
                 "method": "DELETE",
                 "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
@@ -61,7 +61,7 @@ describe("useAuth Hook", () => {
 
         fetchMockReturn(401, {message: 'unauthrorized'})
 
-        const { result } = renderHook(() => useAuth())
+        const { result } = renderHook(() => useAuth('subject', 'identify'))
         await act(async () => {
             await result.current.logout()
         })
@@ -80,13 +80,13 @@ describe("useAuth Hook", () => {
         const fakeResponse = {token: "yyy", token_expire_at: 'yy/yy/yy'}
         fetchMockReturn(fakeResponse)
 
-        const { result } = renderHook(() => useAuth())
+        const { result } = renderHook(() => useAuth('subject', 'identify'))
         await act(async () => {
             await result.current.refreshToken()
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
-            "/api/auth/refresh_token", 
+            "/api/auth/subject/identify/refresh_token", 
             {
                 "method": "POST",
                 "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"}, 
@@ -106,13 +106,13 @@ describe("useAuth Hook", () => {
         const fakeResponse = {token: "yyy", token_expire_at: 'yy/yy/yy', user: { id: 1, name: 'User1' }}
         fetchMockReturn(fakeResponse)
 
-        const { result } = renderHook(() => useAuth())
+        const { result } = renderHook(() => useAuth('subject', 'identify'))
         await act(async () => {
             await result.current.signup({email: "tester@example.com", password: "1111111111", password_confirmation: "1111111111", name: "tester"})
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
-            '/api/auth/signup', 
+            '/api/auth/subject/identify/signup', 
             {
                 "body": "{\"email\":\"tester@example.com\",\"password\":\"1111111111\",\"password_confirmation\":\"1111111111\",\"name\":\"tester\"}",
                 "headers": {"Content-Type": "application/json"}, 
@@ -131,13 +131,13 @@ describe("useAuth Hook", () => {
 
         fetchMockReturn({})
 
-        const { result } = renderHook(() => useAuth())
+        const { result } = renderHook(() => useAuth('subject', 'identify'))
         await act(async () => {
             await result.current.changePassword({password_challenge: "xxxxxx", password: "1111111111", password_confirmation: "1111111111"})
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
-            '/api/auth/password/update', 
+            '/api/auth/subject/identify/password/update', 
             {
                 "body": "{\"password_challenge\":\"xxxxxx\",\"password\":\"1111111111\",\"password_confirmation\":\"1111111111\"}",
                 "headers": {
