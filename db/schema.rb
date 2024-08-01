@@ -52,8 +52,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_27_081343) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "instructor_id"
-    t.index ["instructor_id"], name: "index_courses_on_instructor_id", unique: true
+    t.bigint "instructor_id", null: false
+    t.index ["instructor_id"], name: "index_courses_on_instructor_id"
   end
 
   create_table "instructors", force: :cascade do |t|
