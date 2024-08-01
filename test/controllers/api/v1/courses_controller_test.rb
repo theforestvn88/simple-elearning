@@ -2,13 +2,14 @@ require 'test_helper'
 
 class ApiV1CoursesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @instructor1 = create(:instructor)
-    @instructor2 = create(:instructor)
+    @partner = create(:partner)
+    @instructor1 = create(:instructor, partner: @partner)
+    @instructor2 = create(:instructor, partner: @partner)
 
     courses = [
-      @course1 = create(:course, instructor: @instructor1),
-      @course2 = create(:course, instructor: @instructor1),
-      @course3 = create(:course, instructor: @instructor2),
+      @course1 = create(:course, instructor: @instructor1, partner: @partner),
+      @course2 = create(:course, instructor: @instructor1, partner: @partner),
+      @course3 = create(:course, instructor: @instructor2, partner: @partner),
     ]
 
     @expected_response_courses = courses.map do |c| 

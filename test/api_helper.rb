@@ -9,6 +9,10 @@ def log_out(token)
     assert_response :success
 end
 
+def user_sign_in(user)
+    sign_in(user.email, user.password)
+end
+
 def instructor_sign_in(instructor)
     post "/api/auth/instructor/#{instructor.partner.slug}/login", params: { email: instructor.email, password: instructor.password }, as: :json
     assert_response :success

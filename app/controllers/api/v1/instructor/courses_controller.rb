@@ -6,32 +6,41 @@ module Api
                 before_action :set_course, only: %i[show update destroy]
 
                 def index
-                    @pagy, @courses = pagy(Course.all)
+                    @pagy, @courses = pagy(current_user.courses)
                     @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
                 end
 
-                def show; end
+                def show
+                    authorize @course
+                end
             
                 def create
                     @course = Course.new(course_params)
-                    @course.instructor = current_user
+                    @course.instructor_id = current_user.id
+                    @course.partner_id = current_user.partner_id
+
+                    authorize @course
 
                     if @course.save
-                        render :show, status: :created, location: api_v1_course_url(@course)
+                        render :show, status: :created, location: api_v1_instructor_course_url(@course)
                     else
                         render json: @course.errors, status: :unprocessable_entity
                     end
                 end
 
                 def update
+                    authorize @course
+
                     if @course.update(course_params)
-                        render :show, status: :ok, location: api_v1_course_url(@course)
+                        render :show, status: :ok, location: api_v1_instructor_course_url(@course)
                     else
                         render json: @course.errors, status: :unprocessable_entity
                     end
                 end
 
                 def destroy
+                    authorize @course
+
                     @course.destroy!
                 end
 
