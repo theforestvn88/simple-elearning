@@ -5,7 +5,7 @@ module Api
                 before_action :authenticate!
                 before_action :set_course, only: %i[show update destroy]
 
-                def index
+                def query
                     @pagy, @courses = pagy(current_user.courses)
                     @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
                 end
@@ -22,7 +22,7 @@ module Api
                     authorize @course
 
                     if @course.save
-                        render :show, status: :created, location: api_v1_instructor_course_url(@course)
+                        render :show, status: :created, location: api_v1_instructor_course_url(id: @course.id, identify: current_user.id)
                     else
                         render json: @course.errors, status: :unprocessable_entity
                     end

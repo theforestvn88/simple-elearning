@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import Breadcrumbs from './Breadcrumbs'
-import Nav from './Nav'
+import Breadcrumbs from '../Breadcrumbs'
+import Nav from '../Nav'
  
 const Courses = () => {
   return (

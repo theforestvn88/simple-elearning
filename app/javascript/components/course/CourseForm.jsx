@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import SingleFileUploader from "./SingleFileUploader"
-import { useAppContext } from '../context/AppProvider'
+import SingleFileUploader from "../SingleFileUploader"
+import { useAppContext } from '../../context/AppProvider'
 
 const CourseForm = ({ course, submitEndPoint, submitMethod, onSubmitSuccess, onSubmitError }) => {
   const { RequireAuthorizedApi } = useAppContext()

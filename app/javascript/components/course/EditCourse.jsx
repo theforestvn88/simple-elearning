@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CourseForm from './CourseForm'
-import { useAppContext } from '../context/AppProvider'
+import { useAppContext } from '../../context/AppProvider'
 
 const EditCourse = () => {
   const navigate = useNavigate()
   const params = useParams()
-  const { RequireAuthorizedApi } = useAppContext()
+  const { subject, identify, RequireAuthorizedApi } = useAppContext()
   const [course, setCourse] = useState({})
 
   useEffect(() => {
-    RequireAuthorizedApi('GET', `/api/v1/courses/${params.id}`, {}, {})
+    RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/courses/${params.id}`, {}, {})
       .then((response) => {
         if (response.ok) {
           return response.json()
@@ -34,7 +34,7 @@ const EditCourse = () => {
       <h1 className="font-weight-normal mb-5">Edit course</h1>
       <CourseForm
         course={course}
-        submitEndPoint={`/api/v1/courses/${course.id}`}
+        submitEndPoint={`/api/v1/${subject}/${identify}/courses/${course.id}`}
         submitMethod={'PUT'}
         onSubmitSuccess={onSubmitSuccess}
         onSubmitError={onSubmitError}

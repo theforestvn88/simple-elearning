@@ -3,7 +3,11 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import Auth from "../components/auth/Auth"
 import LogIn from "../components/auth/LogIn"
 import Partner from "../components/Partner.jsx"
-import PartnerCourses from "../components/PartnerCourses.jsx"
+import PartnerCourses from "../components/course/PartnerCourses.jsx"
+import CoursesList from "../components/course/CoursesList.jsx"
+import Course from "../components/course/Course.jsx"
+import NewCourse from "../components/course/NewCourse.jsx"
+import EditCourse from "../components/course/EditCourse.jsx"
 
 const PartnerRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -14,8 +18,7 @@ const PartnerRouter = createBrowserRouter(
             />
             <Route 
                 path='/partners/auth'
-                element={<Auth />}
-            >
+                element={<Auth />}>
                 <Route 
                     path='/partners/auth/login'
                     element={<LogIn />}
@@ -23,8 +26,23 @@ const PartnerRouter = createBrowserRouter(
             </Route>
             <Route 
                 path="/courses"
-                element={<PartnerCourses />}
-            >
+                element={<PartnerCourses />}>
+                <Route 
+                    index
+                    element={<CoursesList />}
+                />
+                <Route 
+                    path="/courses/:id"
+                    element={<Course />}
+                />
+                <Route 
+                    path="/courses/new"
+                    element={<NewCourse />}
+                />
+                <Route 
+                    path="/courses/:id/edit"
+                    element={<EditCourse />}
+                />
             </Route>
         </Route>
     )

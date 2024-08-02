@@ -1,11 +1,9 @@
 import React from 'react'
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
 import Home from '../components/Home'
-import Courses from '../components/Courses'
-import Course from '../components/Course'
-import NewCourse from '../components/NewCourse'
-import EditCourse from '../components/EditCourse'
-import CoursesList from '../components/CoursesList'
+import Courses from '../components/course/Courses'
+import Course from '../components/course/Course'
+import CoursesList from '../components/course/CoursesList'
 import Auth from '../components/auth/Auth'
 import LogIn from '../components/auth/LogIn'
 import SignUp from '../components/auth/SignUp'
@@ -83,14 +81,6 @@ const router = createBrowserRouter(
         <Route 
           path="/courses/:id"
           element={<Course />}
-        />
-        <Route 
-          path="/courses/new"
-          element={<NewCourse />}
-        />
-        <Route 
-          path="/courses/:id/edit"
-          element={<EditCourse />}
         />
       </Route>
     </Route>

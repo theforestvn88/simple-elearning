@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppProvider'
-import PartnerCourses from './PartnerCourses'
+import PartnerCourses from './course/PartnerCourses'
 
 const Partner = () => {
   const { identify, auth } = useAppContext()
@@ -15,7 +15,7 @@ const Partner = () => {
   return (!auth.info.token || auth.hasBeenExpiredToken()) ? (
     <Navigate to="/partners/auth/login" replace={true} />
   ) : (
-    <PartnerCourses />
+    <Navigate to="/courses" replace={true} />
   )
 }
 

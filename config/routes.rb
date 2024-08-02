@@ -6,10 +6,16 @@ Rails.application.routes.draw do
       resources :users, only: [:show, :update, :destroy]
 
       namespace :instructor do
-        resources :courses
+        scope '/:identify' do
+          resources :courses, except: [:index] do
+            collection do
+              get :query   
+            end
+          end
+        end
       end
 
-      scope '/courses' do
+      scope 'users/*/courses' do
         get '/query', to: 'courses#query', as: :query_courses
         get '/:id/show', to: 'courses#show', as: :course_introduction
         # enroll
