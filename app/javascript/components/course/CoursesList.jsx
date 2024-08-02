@@ -1,32 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import useApi from '../hooks/useApi'
-import CardListPlaceHolders from './CardListPlaceHolders'
-import Paginaton from './Pagination'
+import CardListPlaceHolders from '../CardListPlaceHolders'
+import Paginaton from '../Pagination'
+import useCoursesQuery from '../../hooks/useCoursesQuery'
+import UserAvatar from '../UserAvatar'
 
 const CoursesList = () => {
-  const { BaseApi } = useApi()
-  const [loading, setLoading] = useState(true)
-  const [coursesData, setCoursesData] = useState({ courses: [], pagination: null })
+  const { setQuery, loading, coursesData } = useCoursesQuery()
   const [currPage, setCurrPage] = useState(1)
 
   useEffect(() => {
-    setLoading(true)
-    const coursesUrl = `/api/v1/courses?page=${currPage}`
-    BaseApi('GET', coursesUrl)
-      .then((res) => {
-        setLoading(false)
-
-        if (res.ok) {
-          return res.json()
-        }
-
-        throw new Error('Something went wrong!')
-      })
-      .then((res) => {
-        setCoursesData(res)
-      })
-      .catch(() => {})
+    setQuery({page: currPage})
   }, [currPage])
 
   const coursesList = coursesData.courses.map((course, index) => (
@@ -37,6 +21,7 @@ const CoursesList = () => {
         <div className="card-header p-0 card-img-top img-fluid w-100"></div>
       )}
       <div className="card-body">
+        <UserAvatar user={course.partner} size={20} showName={true} />
         <h5 className="card-title">{course.name}</h5>
         <p className="card-text">{course.summary}</p>
         <Link to={`/courses/${course.id}`} className="btn btn-primary">View Detail</Link>
@@ -67,7 +52,7 @@ const CoursesList = () => {
 
           <br />
 
-          {coursesData.pagination && (
+          {coursesData.courses.length > 0 && coursesData.pagination && (
             <Paginaton 
               pages={coursesData.pagination.pages} 
               currentPage={currPage} 

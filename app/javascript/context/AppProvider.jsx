@@ -20,8 +20,8 @@ const AppProvider = ({ subject, identify, children }) => {
     
     return (
         <AppContext.Provider value={{
-            subject: subject,
-            identify: identify, 
+            subject,
+            identify, 
             auth: { 
                 info: authInfo, 
                 login, 

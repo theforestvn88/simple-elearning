@@ -1,7 +1,7 @@
 import React from "react"
 
 const DefaultAvatar = ({size}) => (
-    <svg fill="#000000" height={size} width={size} version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 53 53" xmlSpace="preserve" data-testid="default-user-avatar">
+    <svg fill="#000000" height={size} width={size} viewBox="0 0 53 53" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" xmlSpace="preserve" data-testid="default-user-avatar">
         <g>
             <path d="M23.5,25c0-3.859-3.14-7-7-7s-7,3.141-7,7s3.14,7,7,7S23.5,28.859,23.5,25z M16.5,30c-2.757,0-5-2.243-5-5s2.243-5,5-5   s5,2.243,5,5S19.257,30,16.5,30z"/>
             <path d="M36.5,18c-3.86,0-7,3.141-7,7s3.14,7,7,7s7-3.141,7-7S40.36,18,36.5,18z M36.5,30c-2.757,0-5-2.243-5-5s2.243-5,5-5   s5,2.243,5,5S39.257,30,36.5,30z"/>
