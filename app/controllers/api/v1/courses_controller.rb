@@ -4,7 +4,7 @@ module Api
       before_action :set_course, only: %i[show]
 
       def query
-        @pagy, @courses = pagy(Course.all)
+        @pagy, @courses = pagy(Course.includes_cover.includes_partner.all)
         @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
       end
 

@@ -7,3 +7,13 @@ if course.cover.attached?
                     .merge(url: url_for(course.cover))
                     .tap { |attrs| attrs['name'] = attrs.delete('filename') }
 end
+
+json.partner do
+    json.id course.partner.id
+    json.name course.partner.name
+    if course.partner.logo.attached?
+        json.avatar do
+            json.url url_for(course.partner.logo)
+        end
+    end
+end

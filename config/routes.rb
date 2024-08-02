@@ -7,16 +7,12 @@ Rails.application.routes.draw do
 
       namespace :instructor do
         scope '/:identify' do
-          resources :courses, except: [:index] do
-            collection do
-              get :query   
-            end
-          end
+          resources :courses
         end
       end
 
-      scope 'users/*/courses' do
-        get '/query', to: 'courses#query', as: :query_courses
+      scope '/user/*/courses' do
+        get '/', to: 'courses#query', as: :query_courses
         get '/:id/show', to: 'courses#show', as: :course_introduction
         # enroll
         # unenroll

@@ -22,26 +22,33 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                 "id" => c.id,
                 "name" => c.name,
                 "summary" => c.summary,
-                "last_update_time"=>"less than a minute"
+                "last_update_time"=>"less than a minute",
+                "partner" => {
+                    "id" => c.partner.id,
+                    "name" => c.partner.name,
+                }
             }
         end
+
+        @partner_courses_url = api_v1_instructor_courses_url(identify: @partner.id)
+        @instructor_course1_url = api_v1_instructor_course_url(id: @course1.id, identify: @partner.id)
     end
 
     test 'require signin as instructor' do
-        get api_v1_instructor_courses_url, headers: { }, as: :json
+        get @partner_courses_url, headers: { }, as: :json
         assert_response :unauthorized
 
         a_user = create(:user)
         token = user_sign_in(a_user)
 
-        get api_v1_instructor_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        get @partner_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         assert_response :unauthorized
     end
 
     test 'get courses by instructor' do
         token = instructor_sign_in(@instructor1)
 
-        get api_v1_instructor_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        get @partner_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         
         assert_response :success
         assert_equal response.parsed_body['courses'], @expected_response_courses[0..-2]
@@ -52,7 +59,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor1)
 
         assert_difference('Course.count') do
-          post api_v1_instructor_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'new course', summary: 'for test' } }, as: :json
+          post @partner_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'new course', summary: 'for test' } }, as: :json
         end
 
         assert_response :created
@@ -62,7 +69,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor3)
 
         assert_no_difference('Course.count') do
-            post api_v1_instructor_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'new course', summary: 'for test' } }, as: :json
+            post @partner_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'new course', summary: 'for test' } }, as: :json
         end
   
         assert_response :unauthorized
@@ -71,21 +78,21 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
     test 'only partner instructors could view full-detail course' do
         token = instructor_sign_in(@instructor3)
 
-        get api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         assert_response :success
     end
 
     test 'other partner instructors not allowed to view full-detail course' do
         token = instructor_sign_in(@other_instructor)
 
-        get api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         assert_response :unauthorized
     end
 
     test 'only partner instructors could update its course' do
         token = instructor_sign_in(@instructor3)
 
-        patch api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'updated' } }, as: :json
+        patch @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'updated' } }, as: :json
         assert_response :success
     end
 
@@ -94,7 +101,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
     test 'other partner instructors not allowed to update its course' do
         token = instructor_sign_in(@other_instructor)
 
-        patch api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'updated' } }, as: :json
+        patch @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'updated' } }, as: :json
         assert_response :unauthorized
     end
 
@@ -102,7 +109,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor1)
 
         assert_difference('Course.count', -1) do
-            delete api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         assert_response :no_content
@@ -112,7 +119,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor2)
 
         assert_no_difference('Course.count') do
-            delete api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         assert_response :unauthorized
@@ -122,7 +129,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@other_instructor)
 
         assert_no_difference('Course.count') do
-            delete api_v1_instructor_course_url(@course1), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         assert_response :unauthorized

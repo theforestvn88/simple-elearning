@@ -17,7 +17,11 @@ class ApiV1CoursesControllerTest < ActionDispatch::IntegrationTest
         "id" => c.id,
         "name" => c.name,
         "summary" => c.summary,
-        "last_update_time"=>"less than a minute"
+        "last_update_time"=>"less than a minute",
+        "partner" => {
+          "id" => c.partner.id,
+          "name" => c.partner.name,
+        }
       }
     end
   end
@@ -30,7 +34,7 @@ class ApiV1CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_equal response.parsed_body['pagination'], { "pages" => ["1"], "total" => 1 }
   end
 
-  test 'show course' do
+  test 'course introduction' do
     get api_v1_course_introduction_url(@course1), as: :json
     assert_response :success
   end
