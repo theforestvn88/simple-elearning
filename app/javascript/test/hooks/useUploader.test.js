@@ -19,6 +19,13 @@ const DirectUploadMockReturn = (blob) => DirectUploadSpy.mockImplementation(() =
     }
 })
 
+const apiCallSpy = jest.fn().mockImplementation(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) }))
+jest.spyOn(require('../../context/AppProvider'), 'useAppContext').mockReturnValue({
+    subject: "user",
+    identify: "*",
+    RequireAuthorizedApi: apiCallSpy
+})
+
 describe("useUploader", () => {
     it("direct upload", async () => {
         const fakeCache = {token: 'xxx', user: { id: 1, name: 'User1' }}

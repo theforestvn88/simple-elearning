@@ -1,5 +1,6 @@
 class ApiController < ActionController::API
     include TokenBaseAuth
+    include ::Api::Auth::SubjectUser
     include Pundit::Authorization
     include Pagy::Backend
 

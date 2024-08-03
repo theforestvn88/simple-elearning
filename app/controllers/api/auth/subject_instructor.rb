@@ -2,7 +2,7 @@ module Api
     module Auth
         module SubjectInstructor
             def subject_clazz
-                Instructor
+                ::Instructor
             end
         end
     end

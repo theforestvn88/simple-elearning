@@ -2,7 +2,7 @@ module Api
     module Auth
         module SubjectUser
             def subject_clazz
-                User
+                ::User
             end
         end
     end

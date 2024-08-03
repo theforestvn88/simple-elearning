@@ -8,19 +8,23 @@ Rails.application.routes.draw do
       namespace :instructor do
         scope '/:identify' do
           resources :courses
+          post '/presigned_url', to: 'direct_upload#create'
         end
       end
 
-      scope '/user/*/courses' do
-        get '/', to: 'courses#query', as: :query_courses
-        get '/:id/show', to: 'courses#show', as: :course_introduction
-        # enroll
-        # unenroll
-        # bookmark
-        # ...
+      scope '/user/*' do
+        scope '/courses' do
+          get '/', to: 'courses#query', as: :query_courses
+          get '/:id', to: 'courses#show', as: :course_introduction
+          # enroll
+          # unenroll
+          # bookmark
+          # ...
+        end
+
+        post '/presigned_url', to: 'direct_upload#create', as: :presigned
       end
 
-      post '/presigned_url', to: 'direct_upload#create'
     end
 
     namespace :auth do

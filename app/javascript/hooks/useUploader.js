@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { DirectUpload } from "@rails/activestorage"
+import { useAppContext } from "../context/AppProvider"
 
 class Uploader {
-    constructor(token, file, progressCallback, successCallback) {
+    constructor(uploadUrl, token, file, progressCallback, successCallback) {
         this.progressCallback = progressCallback
         this.successCallback = successCallback
 
         const headers = { 'X-Auth-Token': `Bearer ${token}` }
-        this.upload = new DirectUpload(file, '/api/v1/presigned_url', this, headers)
+        this.upload = new DirectUpload(file, uploadUrl, this, headers)
     }
 
     uploadFile() {
@@ -34,6 +35,7 @@ class Uploader {
 }
 
 const useUploader = (token, isUploadMultipleFile = false) => {
+    const {subject, identify} = useAppContext()
     const [selectedFile, setSelectedFile] = useState(null)
     const [progress, setProgress] = useState(0)
     const [blob, setBlob] = useState(null)
@@ -41,7 +43,7 @@ const useUploader = (token, isUploadMultipleFile = false) => {
     useEffect(() => {
         if (!selectedFile) return
         
-        const uploader = new Uploader(token, selectedFile, setProgress, setBlob)
+        const uploader = new Uploader(`/api/v1/${subject}/${identify}/presigned_url`, token, selectedFile, setProgress, setBlob)
         uploader.uploadFile()
 
         return () => {
