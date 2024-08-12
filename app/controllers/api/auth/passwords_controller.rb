@@ -5,7 +5,7 @@ module Api
 
             def update
                 if current_user.update(update_password_params)
-                    ::TokenBaseAuthService.new.clear_user_tokens(current_user)
+                    auth_service.clear_user_tokens(current_user)
                     head :ok
                 else
                     render json: { error: 'Invalid credentials' }, status: :bad_request

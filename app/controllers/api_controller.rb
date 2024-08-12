@@ -9,6 +9,6 @@ class ApiController < ActionController::API
     private
 
         def auth_service
-            @auth_service ||= ::TokenBaseAuthService.new(subject_clazz)
+            @auth_service ||= ::TokenBaseAuthService.new(subject_clazz, cache_store: cache_store)
         end
 end

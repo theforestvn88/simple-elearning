@@ -40,7 +40,7 @@ Rails.application.routes.draw do
         post '/login', to: 'instructor_sessions#create'
         delete '/logout', to: 'instructor_sessions#destroy'
         post '/refresh_token', to: 'instructor_sessions#refresh'
-        put '/password/update', to: 'passwords#update'
+        put '/password/update', to: 'instructor_passwords#update'
       end
     end
   end

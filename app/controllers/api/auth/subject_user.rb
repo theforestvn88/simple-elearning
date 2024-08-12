@@ -4,6 +4,10 @@ module Api
             def subject_clazz
                 ::User
             end
+
+            def cache_store
+                nil
+            end
         end
     end
 end

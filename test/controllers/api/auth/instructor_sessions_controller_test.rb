@@ -24,10 +24,18 @@ class ApiAuthInstructorSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'log out' do
-    token = instructor_sign_in(@instructor)
+    token1 = instructor_sign_in(@instructor)
+    sleep 0.1
+    token2 = instructor_sign_in(@instructor)
 
-    delete "/api/auth/instructor/#{@instructor.partner.slug}/logout", headers: { "X-Auth-Token" => "Bearer #{token}" }
+    delete "/api/auth/instructor/#{@instructor.partner.slug}/logout", headers: { "X-Auth-Token" => "Bearer #{token1}" }
     assert_response :success
+
+    post "/api/auth/instructor/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token1}" }, as: :json
+    assert_response :unauthorized
+
+    post "/api/auth/instructor/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token2}" }, as: :json
+    assert_response :unauthorized
   end
 
   test 'refresh token' do

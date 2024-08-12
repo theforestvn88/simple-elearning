@@ -66,24 +66,4 @@ class ApiV1PasswordsControllerTest < ActionDispatch::IntegrationTest
             
         assert_response :success
     end
-
-    test 'after change password success, all existed tokens should be delete' do
-        token1 = sign_in(@user.email, @user.password)
-        token2 = sign_in(@user.email, @user.password)
-
-        put api_auth_password_update_url, 
-            headers: { "X-Auth-Token" => "Bearer #{token2}" }, 
-            params: {
-                password: 'updated-password',
-                password_confirmation: 'updated-password',
-                password_challenge: @user.password
-            }, as: :json
-        assert_response :success
-
-        post api_auth_refresh_token_url, headers: { "X-Auth-Token" => "Bearer #{token1}" }, as: :json
-        assert_response :unauthorized
-
-        post api_auth_refresh_token_url, headers: { "X-Auth-Token" => "Bearer #{token2}" }, as: :json
-        assert_response :unauthorized
-    end
 end

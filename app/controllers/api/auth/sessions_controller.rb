@@ -12,7 +12,7 @@ module Api
             end
 
             def destroy
-                auth_service.logout(@token)
+                auth_service.logout(@current_user, @token)
                 render json: { message: 'Logged out Successfully' }
             end
 
