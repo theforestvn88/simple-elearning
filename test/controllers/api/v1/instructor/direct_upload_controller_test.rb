@@ -57,7 +57,7 @@ class ApiV1DirectUploadControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
-    test 'anynomous should be prevent' do
+    test 'anynomous user should be prevent' do
         avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
 
         post api_v1_instructor_presigned_url_path(identify: 'test', format: :json), 
