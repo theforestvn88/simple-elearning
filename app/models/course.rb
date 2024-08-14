@@ -1,6 +1,7 @@
 class Course < ApplicationRecord
     belongs_to :instructor
     belongs_to :partner
+    has_many :milestones
     
     has_one_attached :cover
     

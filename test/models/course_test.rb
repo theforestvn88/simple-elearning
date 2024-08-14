@@ -4,6 +4,7 @@ class CourseTest < ActiveSupport::TestCase
   context 'associations' do
     should belong_to(:instructor)
     should belong_to(:partner)
+    should have_many(:milestones)
     should have_one_attached(:cover) 
   end
 
