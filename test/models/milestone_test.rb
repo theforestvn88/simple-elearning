@@ -4,6 +4,7 @@ class MilestoneTest < ActiveSupport::TestCase
   context 'associations' do
     should belong_to(:course)
     should belong_to(:instructor)
+    should have_many(:lessons)
   end
 
   context 'validations' do

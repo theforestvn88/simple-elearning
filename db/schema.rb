@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_14_111311) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_14_115809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,6 +72,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_14_111311) do
     t.index ["partner_id"], name: "index_instructors_on_partner_id"
   end
 
+  create_table "lessons", force: :cascade do |t|
+    t.string "name"
+    t.integer "estimated_minutes"
+    t.bigint "milestone_id", null: false
+    t.bigint "course_id", null: false
+    t.bigint "instructor_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_lessons_on_course_id"
+    t.index ["instructor_id"], name: "index_lessons_on_instructor_id"
+    t.index ["milestone_id"], name: "index_lessons_on_milestone_id"
+  end
+
   create_table "milestones", force: :cascade do |t|
     t.string "name"
     t.integer "estimated_minutes"
@@ -111,6 +124,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_14_111311) do
   add_foreign_key "courses", "instructors"
   add_foreign_key "courses", "partners"
   add_foreign_key "instructors", "partners"
+  add_foreign_key "lessons", "courses"
+  add_foreign_key "lessons", "instructors"
+  add_foreign_key "lessons", "milestones"
   add_foreign_key "milestones", "courses"
   add_foreign_key "milestones", "instructors"
 end
