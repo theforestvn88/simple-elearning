@@ -11,6 +11,8 @@ module Api
                     @milestone.course = @course
                     @milestone.instructor = current_user
 
+                    authorize @milestone
+
                     if @milestone.save
                         render @milestone
                     else
@@ -19,6 +21,8 @@ module Api
                 end
 
                 def update
+                    authorize @milestone
+
                     if @milestone.update(milestone_params)
                         render @milestone
                     else
@@ -27,6 +31,8 @@ module Api
                 end
 
                 def destroy
+                    authorize @milestone
+
                     @milestone.destroy
                 end
 
