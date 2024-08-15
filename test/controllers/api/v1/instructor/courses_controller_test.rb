@@ -55,7 +55,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         assert_equal response.parsed_body['pagination'], { "pages" => ["1"], "total" => 1 }
     end
 
-      test 'only admin could create new course' do
+    test 'only admin could create new course' do
         token = instructor_sign_in(@instructor1)
 
         assert_difference('Course.count') do

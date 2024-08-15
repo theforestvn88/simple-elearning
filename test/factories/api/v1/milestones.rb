@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :milestone do
-    name { "MyString" }
+    sequence(:name) { |n| "milestone #{n}" }
     estimated_minutes { 1 }
     association :course
     association :instructor

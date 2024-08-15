@@ -7,7 +7,10 @@ Rails.application.routes.draw do
 
       namespace :instructor do
         scope '/:identify' do
-          resources :courses
+          resources :courses do
+            resources :milestones, only: [:create, :update, :destroy]
+          end
+          
           post '/presigned_url', to: 'direct_upload#create'
         end
       end
