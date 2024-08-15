@@ -2,7 +2,7 @@ module Admin
   class PartnersController < Admin::ApplicationController
     def create
       partner_params = params.require(:partner).permit(:email, :name, :slug)
-      result = ::PartnerCreateService.new.create(partner_params)
+      result = ::PartnerCreateService.new.call(partner_params)
 
       respond_to do |format|
         if result.success

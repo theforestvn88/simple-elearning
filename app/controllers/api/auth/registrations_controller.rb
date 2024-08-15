@@ -3,7 +3,7 @@ module Api
         class RegistrationsController < ::ApiController
             def create
                 if @session = ::TokenBaseAuthService.new.register(register_params)
-                    ::AccountVerificationService.new.send_account_verification_email_to_user(@session.user)
+                    UserMailer.with(user: @session.user).account_verification.deliver_later
                 else
                     render json: { error: 'Invalid credentials' }, status: :bad_request
                 end

@@ -8,25 +8,25 @@ class InstructorCreateServiceTest < ActiveSupport::TestCase
 
     test 'require email and name' do
         assert_no_difference("Instructor.count") do
-            result = @subject.create(email: '', name: 'instructor', partner_id: @partner.id)
+            result = @subject.call(email: '', name: 'instructor', partner_id: @partner.id)
             assert !result.success
             
-            result = @subject.create(email: 'instructor@example.com', name: '', partner_id: @partner.id)
+            result = @subject.call(email: 'instructor@example.com', name: '', partner_id: @partner.id)
             assert !result.success
         end
     end
 
     test 'require partner' do
-        result = @subject.create(email: 'instructor@example.com', name: 'instructor', partner_id: 0)
+        result = @subject.call(email: 'instructor@example.com', name: 'instructor', partner_id: 0)
         assert !result.success
 
-        result = @subject.create(email: 'instructor@example.com', name: 'instructor', partner_id: @partner.id)
+        result = @subject.call(email: 'instructor@example.com', name: 'instructor', partner_id: @partner.id)
         assert result.success
     end
 
     test 'auto generate password' do
         assert_difference("Instructor.count") do
-            result = @subject.create(email: 'instructor@example.com', name: 'instructor', partner_id: @partner.id)
+            result = @subject.call(email: 'instructor@example.com', name: 'instructor', partner_id: @partner.id)
             assert result.success
             assert result.random_password.length >= 10
             assert result.instructor.authenticate(result.random_password)
@@ -39,7 +39,7 @@ class InstructorCreateServiceTest < ActiveSupport::TestCase
         mock_instructor_mailer.expect :deliver_later, nil, []
 
         ::InstructorMailer.stub :with, mock_instructor_mailer do
-            @subject.create(email: 'instructor@example.com', name: 'instructor', partner_id: @partner.id)
+            @subject.call(email: 'instructor@example.com', name: 'instructor', partner_id: @partner.id)
         end
 
         mock_instructor_mailer.verify

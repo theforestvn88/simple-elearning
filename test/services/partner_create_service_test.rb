@@ -9,22 +9,22 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
     test 'require email and name and slug' do
         assert_no_difference("Partner.count") do
             invalid_params = {email: '', name: 'partner', slug: 'partner-slug'}
-            result = @subject.create(invalid_params)
+            result = @subject.call(invalid_params)
             assert !result.success
             
             invalid_params = {email: 'partner@example.com', name: '', slug: 'partner-slug'}
-            result = @subject.create(invalid_params)
+            result = @subject.call(invalid_params)
             assert !result.success
 
             invalid_params = {email: 'partner@example.com', name: 'partner', slug: ''}
-            result = @subject.create(invalid_params)
+            result = @subject.call(invalid_params)
             assert !result.success
         end
     end
 
     test 'auto create administrator instructor for partner' do
         assert_difference("Partner.count") do
-            result = @subject.create(@valid_params)
+            result = @subject.call(@valid_params)
             assert result.success
             
             assert result.partner.present?
@@ -39,7 +39,7 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
         mock_partner_mailer.expect :deliver_later, nil, []
 
         ::PartnerMailer.stub :with, mock_partner_mailer do
-            @subject.create(@valid_params)
+            @subject.call(@valid_params)
         end
 
         mock_partner_mailer.verify
@@ -47,7 +47,7 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
 
     test 'should not create partner without an admin account' do
         mock_instructor_creator = Minitest::Mock.new
-        mock_instructor_creator.expect :create, ::InstructorCreateService::Result.new(false, ::Instructor.new, nil), [], **{
+        mock_instructor_creator.expect :call, ::InstructorCreateService::Result.new(false, ::Instructor.new, nil), [], **{
             email: String, 
             name: String, 
             partner_id: Integer, 
@@ -56,10 +56,10 @@ class PartnerCreateServiceTest < ActiveSupport::TestCase
         }
     
 
-        ::InstructorCreateService.stub :new, mock_instructor_creator do
+        ::InstructorCreateService.stub :new, -> { mock_instructor_creator } do
             assert_no_difference("Partner.count") do
                 assert_no_difference("Instructor.count") do
-                    @subject.create(@valid_params)
+                    @subject.call(@valid_params)
                 end
             end
         end

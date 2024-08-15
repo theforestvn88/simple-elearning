@@ -1,13 +1,13 @@
 class PartnerCreateService
     Result = Struct.new(:success, :partner, :admin_random_password)
 
-    def create(partner_params)
+    def call(partner_params)
         result = nil
         partner = Partner.new(partner_params)
 
         ActiveRecord::Base.transaction do
             if partner.save
-                create_admin_result = ::InstructorCreateService.new.create(
+                create_admin_result = ::InstructorCreateService.new.call(
                     email: partner_params[:email],
                     name: partner_params[:name],
                     partner_id: partner.id,

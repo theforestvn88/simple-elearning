@@ -11,6 +11,18 @@ class ApiAuthRegistrationsControllerTest < ActionDispatch::IntegrationTest
         assert response.parsed_body['user'].present?
     end
 
+    test 'send verify email' do
+        mock_user_mailer = Minitest::Mock.new
+        mock_user_mailer.expect :account_verification, mock_user_mailer, []
+        mock_user_mailer.expect :deliver_later, nil, []
+        
+        ::UserMailer.stub :with, mock_user_mailer do
+            post api_auth_signup_url, params: { email: 'tester@example.com', password: '0123456789', password_confirmation: '0123456789', name: 'tester' }, as: :json
+        end
+
+        mock_user_mailer.verify
+    end
+
     test 'register failed when missing email' do
         assert_no_difference("User.count") do
             post api_auth_signup_url, params: { password: '0123456789', password_confirmation: '0123456789', name: 'tester' }, as: :json

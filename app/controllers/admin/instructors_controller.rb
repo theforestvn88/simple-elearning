@@ -2,7 +2,7 @@ module Admin
   class InstructorsController < Admin::ApplicationController
     def create
       instructor_params = params.require(:instructor).permit(:email, :name, :partner_id, :rank)
-      result = ::InstructorCreateService.new.create(
+      result = ::InstructorCreateService.new.call(
         email: instructor_params[:email], 
         name: instructor_params[:name], 
         partner_id: instructor_params[:partner_id],
