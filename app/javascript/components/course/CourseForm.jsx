@@ -36,7 +36,7 @@ const CourseForm = ({ course, submitEndPoint, submitMethod, onSubmitSuccess, onS
     .catch((error) => {
       onSubmitError(error)
     })
-}
+  }
 
   return (
     <form onSubmit={onSubmit} data-testid="submit-course-form">
@@ -93,7 +93,7 @@ const CourseForm = ({ course, submitEndPoint, submitMethod, onSubmitSuccess, onS
         />
       </div>
       <button type="submit" className="btn btn-dark mt-3">
-        Submit
+        Next
       </button>
     </form>
   )

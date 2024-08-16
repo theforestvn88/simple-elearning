@@ -2,7 +2,7 @@ import React from 'react'
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
 import Home from '../components/Home'
 import Courses from '../components/course/Courses'
-import Course from '../components/course/Course'
+import CourseIntro from '../components/course/CourseIntro'
 import CoursesList from '../components/course/CoursesList'
 import Auth from '../components/auth/Auth'
 import LogIn from '../components/auth/LogIn'
@@ -80,7 +80,7 @@ const router = createBrowserRouter(
         />
         <Route 
           path="/courses/:id"
-          element={<Course />}
+          element={<CourseIntro />}
         />
       </Route>
     </Route>

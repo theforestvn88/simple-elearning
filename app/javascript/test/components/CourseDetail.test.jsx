@@ -3,8 +3,9 @@ import { render, screen } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
 import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
 import { fakeCourses } from '../mocks/fakeCourses'
-import Course from '../../components/course/Course'
 import AppProvider from '../../context/AppProvider'
+import CourseDetail from '../../components/course/CourseDetail'
+import { localStorageMockReturn } from '../mocks/localStorageMock'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -13,8 +14,9 @@ jest.mock('react-router-dom', () => ({
 
 describe('Course', () => {
     beforeEach(() => {
-        fetchMockReturn(fakeCourses[0])
         jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
+        localStorageMockReturn({token: 'xxx'})
+        fetchMockReturn(fakeCourses[0])
     })
 
     afterEach(() => {
@@ -22,9 +24,15 @@ describe('Course', () => {
     })
 
     it('should show course info', async () => {
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Course /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
 
-        expect(fetchMock).toHaveBeenCalledWith('/api/v1/instructor/meta/courses/1')
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/api/v1/instructor/meta/courses/1', 
+            {
+                'body': null, 
+                'headers': {'Content-Type': 'application/json', 'X-Auth-Token': 'xxx'}, 
+                'method': 'GET'
+            })
 
         expect(screen.getByText(fakeCourses[0].name)).toBeInTheDocument()
     })

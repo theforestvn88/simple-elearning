@@ -5,9 +5,10 @@ import LogIn from "../components/auth/LogIn"
 import Partner from "../components/Partner.jsx"
 import PartnerCourses from "../components/course/PartnerCourses.jsx"
 import CoursesList from "../components/course/CoursesList.jsx"
-import Course from "../components/course/Course.jsx"
+import Course from "../components/course/CourseIntro.jsx"
 import NewCourse from "../components/course/NewCourse.jsx"
 import EditCourse from "../components/course/EditCourse.jsx"
+import CourseDetail from "../components/course/CourseDetail.jsx"
 
 const PartnerRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -33,7 +34,7 @@ const PartnerRouter = createBrowserRouter(
                 />
                 <Route 
                     path="/courses/:id"
-                    element={<Course />}
+                    element={<CourseDetail />}
                 />
                 <Route 
                     path="/courses/new"

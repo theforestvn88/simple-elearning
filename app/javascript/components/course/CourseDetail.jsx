@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useAppContext } from '../../context/AppProvider'
 
-const Course = () => {
+const CourseDetail = () => {
   const navigate = useNavigate()
   const params = useParams()
+  const {subject, identify, RequireAuthorizedApi} = useAppContext()
+
   const [course, setCourse] = useState({})
 
   useEffect(() => {
-    const courseUrl = `/api/v1/courses/${params.id}`
-    fetch(courseUrl)
+    const courseUrl = `/api/v1/${subject}/${identify}/courses/${params.id}`
+    RequireAuthorizedApi('GET', courseUrl, {}, {})
       .then((res) => {
         if (res.ok) {
           return res.json()
@@ -23,20 +26,12 @@ const Course = () => {
   const onDeleteCourse = (event) => {
     event.preventDefault()
 
-    const token = '' //document.querySelector('meta[name="csrf-token"]').textContent;
-    const deleteCourseUrl = `/api/v1/courses/${course.id}`
+    const deleteCourseUrl = `/api/v1/${subject}/${identify}/courses/${course.id}`
 
-    fetch(deleteCourseUrl, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-TOKEN': token,
-        'Content-Type': 'application/json',
-      },
-    })
+    RequireAuthorizedApi('DELETE', deleteCourseUrl, {}, {})
       .then((response) => {
         if (response.ok) {
           navigate('/courses')
-          // return;
         }
         throw new Error('Something went wrong!')
       })
@@ -66,4 +61,4 @@ const Course = () => {
   )
 }
 
-export default Course
+export default CourseDetail
