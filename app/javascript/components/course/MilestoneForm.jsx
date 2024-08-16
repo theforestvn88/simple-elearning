@@ -1,8 +1,8 @@
 import React from "react"
 import { useAppContext } from "../../context/AppProvider"
 
-const MilestoneForm = ({courseId, milestone, onSubmitSuccess, onSubmitError}) => {
-    const { subject, identify, RequireAuthorizedApi } = useAppContext()
+const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess, onSubmitError}) => {
+    const { RequireAuthorizedApi } = useAppContext()
 
     const milestoneData = new FormData()
 
@@ -13,7 +13,7 @@ const MilestoneForm = ({courseId, milestone, onSubmitSuccess, onSubmitError}) =>
     const onSubmit = async (event) => {
         event.preventDefault()
     
-        RequireAuthorizedApi('POST', `/api/v1/${subject}/${identify}/courses/${courseId}/milestones`, {
+        RequireAuthorizedApi(submitMethod, submitEndpoint, {
             'Content-Type': 'multipart/form-data'
         }, milestoneData)
         .then((response) => {

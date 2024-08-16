@@ -1,1 +1,1 @@
-json.extract! @milestone, :name
+json.extract! @milestone, :id, :name

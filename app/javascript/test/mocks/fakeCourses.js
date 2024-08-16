@@ -17,7 +17,17 @@ export const fakeCourses = [
                 byte_size: 0,
                 url: 'partner1-avatar-url'
             }
-        }
+        },
+        milestones: [
+            {
+                id: 1,
+                name: "milestone1"
+            },
+            {
+                id: 2,
+                name: "milestone2"
+            }
+        ]
     },
     {
         id: 2,
@@ -37,6 +47,7 @@ export const fakeCourses = [
                 byte_size: 0,
                 url: 'partner2-avatar-url'
             }
-        }
+        },
+        milestones: []
     }
 ]
