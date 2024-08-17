@@ -13,4 +13,35 @@ class LessonTest < ActiveSupport::TestCase
             .only_integer
             .is_greater_than_or_equal_to(1)
   end
+
+  setup do
+    @partner = create(:partner)
+    @instructor = create(:instructor, partner: @partner, rank: :administrator)
+    @course = create(:course, instructor: @instructor, partner: @partner)
+    @milestone = create(:milestone, instructor: @instructor, course: @course)
+  end
+
+  test 'update milestone lesson counter when create new lesson' do
+    lesson1 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    assert_equal @milestone.reload.lessons_count, 1
+    lesson2 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    assert_equal @milestone.reload.lessons_count, 2
+  end
+
+  test 'update milestone estimated_time when create new lesson' do
+    lesson1 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 56)
+    assert_equal @milestone.reload.estimated_minutes, 56
+    lesson2 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 100)
+    assert_equal @milestone.reload.estimated_minutes, 156
+  end
+
+  test 'update milestone estimated_time when update lesson estimated_time' do
+    lesson = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    assert_equal @milestone.reload.lessons_count, 1
+    assert_equal @milestone.reload.estimated_minutes, 60
+
+    lesson.update(estimated_minutes: 156)
+    assert_equal @milestone.reload.lessons_count, 1
+    assert_equal @milestone.reload.estimated_minutes, 156
+  end
 end
