@@ -1,5 +1,6 @@
 class Instructor < ApplicationRecord
     include AsAccount
+    include AsActor
 
     has_many :courses, dependent: :nullify
     belongs_to :partner

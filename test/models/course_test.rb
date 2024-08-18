@@ -6,6 +6,7 @@ class CourseTest < ActiveSupport::TestCase
     should belong_to(:partner)
     should have_many(:milestones)
     should have_many(:lessons)
+    should have_many(:activities)
     should have_one_attached(:cover) 
   end
 

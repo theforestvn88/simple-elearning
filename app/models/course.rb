@@ -1,4 +1,6 @@
 class Course < ApplicationRecord
+    include Trackable
+
     belongs_to :instructor
     belongs_to :partner
     has_many :milestones
