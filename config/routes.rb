@@ -7,8 +7,10 @@ Rails.application.routes.draw do
 
       namespace :instructor do
         scope '/:identify' do
-          resources :courses do
-            resources :milestones, only: [:create, :update, :destroy]
+          resources :courses, except: [:edit] do
+            resources :milestones, only: [:create, :update, :destroy] do
+              resources :lessons, only: [:create, :update, :destroy]
+            end
           end
           
           post '/presigned_url', to: 'direct_upload#create'
@@ -23,7 +25,13 @@ Rails.application.routes.draw do
           # unenroll
           # bookmark
           # ...
+
+          scope '/:course_id/:milestone_id/lessons' do
+            get '/', to: 'lessons#index', as: :lessons_list
+            get '/:id', to: 'lessons#show', as: :lesson_detail
+          end
         end
+
 
         post '/presigned_url', to: 'direct_upload#create', as: :presigned
       end
