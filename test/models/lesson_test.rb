@@ -44,4 +44,37 @@ class LessonTest < ActiveSupport::TestCase
     assert_equal @milestone.reload.lessons_count, 1
     assert_equal @milestone.reload.estimated_minutes, 156
   end
+
+  test 'created with default position' do
+    lesson1 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    assert_equal lesson1.position, 1
+
+    lesson2 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    assert_equal lesson2.position, 2
+  end
+
+  test 'destroy will reorder milestones positions' do
+    lesson1 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    lesson2 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    lesson3 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+
+    lesson2.reload.destroy
+
+    assert_equal lesson1.reload.position, 1
+    assert_equal lesson3.reload.position, 2
+  end
+
+  test 'update position will reorder milestones positions' do
+    lesson1 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    lesson2 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    lesson3 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    lesson4 = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+
+    lesson3.update(position: 2)
+
+    assert_equal lesson1.reload.position, 1
+    assert_equal lesson2.reload.position, 3
+    assert_equal lesson3.reload.position, 2
+    assert_equal lesson4.reload.position, 4
+  end
 end

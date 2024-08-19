@@ -89,6 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_18_084611) do
   create_table "lessons", force: :cascade do |t|
     t.string "name"
     t.integer "estimated_minutes", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.bigint "milestone_id", null: false
     t.bigint "course_id", null: false
     t.bigint "instructor_id", null: false
@@ -102,6 +103,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_18_084611) do
   create_table "milestones", force: :cascade do |t|
     t.string "name"
     t.integer "estimated_minutes", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.integer "lessons_count", default: 0, null: false
     t.bigint "course_id", null: false
     t.bigint "instructor_id", null: false

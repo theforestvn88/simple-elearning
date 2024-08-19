@@ -11,6 +11,9 @@ class Lesson < ApplicationRecord
   scope :search_by_milestone, lambda { |milestone_id| where(milestone_id: milestone_id) }
   scope :short_intro, lambda { select(:id, :name, :estimated_minutes) }
 
+  include PositionalOrdering
+  set_position_scope :milestone_id
+
   private
 
     def update_milestone_stats_and_counters
