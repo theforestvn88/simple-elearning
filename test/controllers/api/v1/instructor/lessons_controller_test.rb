@@ -13,7 +13,7 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
         @other_instructor = create(:instructor, partner: @other_partner, rank: :administrator)
     end
 
-    test 'create lesson' do
+    test 'only assigned-instructor could create lesson' do
         token = instructor_sign_in(@instructor)
 
         assert_difference('Lesson.count') do
@@ -36,7 +36,18 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
         }
     end
 
-    test 'update lesson' do
+    test 'other instructor not allowed to create lesson' do
+        token = instructor_sign_in(@other_instructor)
+
+        post api_v1_instructor_course_milestone_lessons_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id),
+            headers: { "X-Auth-Token" => "Bearer #{token}" }, 
+            params: { lesson: { name: 'new lesson', estimated_minutes: 60 } }, 
+            as: :json
+
+        assert_response :unauthorized
+    end
+
+    test 'only assigned-instructor could update lesson' do
         token = instructor_sign_in(@instructor)
 
         patch api_v1_instructor_course_milestone_lesson_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id, id: @lesson.id),
@@ -51,7 +62,18 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
         }
     end
 
-    test 'destroy lesson' do
+    test 'other instructor not allowed to update lesson' do
+        token = instructor_sign_in(@other_instructor)
+
+        patch api_v1_instructor_course_milestone_lesson_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id, id: @lesson.id),
+                headers: { "X-Auth-Token" => "Bearer #{token}" }, 
+                params: { lesson: { name: 'updated' } }, 
+                as: :json
+
+        assert_response :unauthorized
+    end
+
+    test 'only assigned-instructor could destroy lesson' do
         token = instructor_sign_in(@instructor)
 
         assert_difference('Lesson.count', -1) do
@@ -61,5 +83,15 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
         end
 
         assert_response :no_content
+    end
+
+    test 'other instructor not allowed to destroy milestone' do
+        token = instructor_sign_in(@other_instructor)
+
+        delete api_v1_instructor_course_milestone_lesson_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id, id: @lesson.id),
+            headers: { "X-Auth-Token" => "Bearer #{token}" }, 
+            as: :json
+
+        assert_response :unauthorized
     end
 end

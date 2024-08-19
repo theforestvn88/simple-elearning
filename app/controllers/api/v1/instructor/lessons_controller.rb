@@ -12,6 +12,8 @@ module Api
                     @lesson.course_id = @milestone.course_id
                     @lesson.instructor_id = current_user.id
 
+                    authorize @lesson
+
                     if @lesson.save
                         render partial: 'api/v1/lessons/lesson', locals: { lesson: @lesson }, status: :created
                     else
@@ -20,14 +22,16 @@ module Api
                 end
 
                 def update
+                    authorize @lesson
+
                     unless @lesson.update(lesson_params)
                         render json: @lesson.errors, status: :unprocessable_entity
-                        # render partial: 'api/v1/lessons/lesson', locals: { lesson: @lesson }, status: :ok
-                    # else
                     end
                 end
 
                 def destroy
+                    authorize @lesson
+
                     @lesson.destroy
                 end
 
@@ -35,13 +39,11 @@ module Api
 
                     def set_milestone
                         @milestone = Milestone.find(params[:milestone_id])
-                        # TODO: validate milestone
-                        # TODO: validate permission
+                        # TODO: validate milestone/course
                     end
 
                     def set_lesson
                         @lesson = Lesson.find(params[:id])
-                        # TODO: validate permission
                     end
 
                     def lesson_params

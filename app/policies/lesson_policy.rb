@@ -1,0 +1,2 @@
+class LessonPolicy < MilestonePolicy
+end
