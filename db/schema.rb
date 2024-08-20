@@ -64,6 +64,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_18_084611) do
     t.string "name"
     t.string "summary"
     t.text "description"
+    t.integer "estimated_minutes", default: 0, null: false
+    t.integer "lessons_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "instructor_id", null: false
