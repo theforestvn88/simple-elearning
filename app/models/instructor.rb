@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class Instructor < ApplicationRecord
     include AsAccount
     include AsActor
+    include AsAssignee
 
     has_many :courses, dependent: :nullify
     belongs_to :partner

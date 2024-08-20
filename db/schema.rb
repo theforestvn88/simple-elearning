@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_18_084611) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_20_122713) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_18_084611) do
     t.index ["actor_type", "actor_id"], name: "index_activities_on_actor"
     t.index ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type"
     t.index ["trackable_type", "trackable_id"], name: "index_activities_on_trackable"
+  end
+
+  create_table "assignments", force: :cascade do |t|
+    t.string "assignable_type"
+    t.bigint "assignable_id"
+    t.string "assignee_type"
+    t.bigint "assignee_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignable_id", "assignable_type"], name: "index_assignments_on_assignable_id_and_assignable_type"
+    t.index ["assignable_type", "assignable_id"], name: "index_assignments_on_assignable"
+    t.index ["assignee_id", "assignee_type"], name: "index_assignments_on_assignee_id_and_assignee_type"
+    t.index ["assignee_type", "assignee_id"], name: "index_assignments_on_assignee"
   end
 
   create_table "courses", force: :cascade do |t|

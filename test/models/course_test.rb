@@ -7,7 +7,8 @@ class CourseTest < ActiveSupport::TestCase
     should have_many(:milestones)
     should have_many(:lessons)
     should have_many(:activities)
-    should have_one_attached(:cover) 
+    should have_many(:assignments)
+    should have_one_attached(:cover)
   end
 
   context 'valications' do

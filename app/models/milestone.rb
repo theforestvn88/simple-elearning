@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 class Milestone < ApplicationRecord
+  include Assignable
+
   belongs_to :course
   belongs_to :instructor
   has_many :lessons

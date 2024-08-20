@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class Course < ApplicationRecord
     include Trackable
+    include Assignable
 
     belongs_to :instructor
     belongs_to :partner

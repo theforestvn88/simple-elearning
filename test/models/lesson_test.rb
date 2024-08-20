@@ -5,6 +5,7 @@ class LessonTest < ActiveSupport::TestCase
     should belong_to(:instructor)
     should belong_to(:course)
     should belong_to(:milestone)
+    should have_many(:assignments)
   end
 
   context 'validations' do
