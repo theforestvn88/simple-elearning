@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import MilestoneForm from './MilestoneForm'
 import { useAppContext } from '../../context/AppProvider'
+import { Link } from 'react-router-dom'
 
 const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     const {subject, identify, RequireAuthorizedApi} = useAppContext()
@@ -46,23 +47,39 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
                     onSubmitError={() => {}}
                 />
             ) : (
-                <div className="d-flex align-items-center justify-content-between">
-                    <div>{editMilestone.name}</div>
-                    <div className="d-flex align-items-center justify-content-end">
-                        <button
-                            type="button"
-                            className="btn btn-light"
-                            onClick={onEditMilestone}
-                        >
-                            Edit
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-danger"
-                            onClick={onDeleteMilestone}
-                        >
-                            Delete
-                        </button>
+                <div>
+                    <div className="d-flex align-items-center justify-content-between">
+                        <div>{editMilestone.name}</div>
+                        <div className="d-flex align-items-center justify-content-end">
+                            <button
+                                type="button"
+                                className="btn btn-light"
+                                onClick={onEditMilestone}
+                            >
+                                Edit
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={onDeleteMilestone}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        {milestone.lessons?.map((lesson) => (
+                            <div>
+                                <Link to={`/courses/${courseId}/milestones/${milestone.id}/lessons/${lesson.id}`} key={lesson.id}>
+                                    {lesson.name}
+                                </Link>
+                            </div>
+                        ))}
+                        <div>
+                            <Link to={`/courses/${courseId}/milestones/${milestone.id}/lessons/new`} className="btn btn-light">
+                                Add Lesson
+                            </Link>
+                        </div>
                     </div>
                 </div>
             )}

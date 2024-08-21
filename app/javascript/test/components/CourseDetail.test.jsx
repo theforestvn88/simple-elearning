@@ -1,5 +1,5 @@
 import React, { act } from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
 import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
 import { fakeCourses } from '../mocks/fakeCourses'
@@ -40,6 +40,12 @@ describe('Course', () => {
     it('show course milestones', async () => {
         fakeCourses[0].milestones.forEach((milestone) => {
             expect(screen.getByText(milestone.name)).toBeInTheDocument()
+        })
+    })
+
+    it('show course lessons', async () => {
+        fakeCourses[0].milestones[0].lessons.forEach((lesson) => {
+            expect(screen.getByText(lesson.name)).toBeInTheDocument()
         })
     })
 

@@ -9,6 +9,8 @@ import Course from "../components/course/CourseIntro.jsx"
 import NewCourse from "../components/course/NewCourse.jsx"
 import EditCourse from "../components/course/EditCourse.jsx"
 import CourseDetail from "../components/course/CourseDetail.jsx"
+import NewLesson from "../components/course/NewLesson.jsx"
+import Lesson from "../components/course/Lesson.jsx"
 
 const PartnerRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -43,6 +45,14 @@ const PartnerRouter = createBrowserRouter(
                 <Route 
                     path="/courses/:id/edit"
                     element={<EditCourse />}
+                />
+                <Route 
+                    path="/courses/:course_id/milestones/:milestone_id/lessons/new"
+                    element={<NewLesson />}
+                />
+                <Route 
+                    path="/courses/:course_id/milestones/:milestone_id/lessons/:id"
+                    element={<Lesson />}
                 />
             </Route>
         </Route>

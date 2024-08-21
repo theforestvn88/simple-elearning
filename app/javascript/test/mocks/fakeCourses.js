@@ -21,7 +21,15 @@ export const fakeCourses = [
         milestones: [
             {
                 id: 1,
-                name: "milestone1"
+                name: "milestone1",
+                estimated_minutes: 60,
+                lessons: [
+                    {
+                        id: 1,
+                        name: 'lesson 1',
+                        estimated_minutes: 60
+                    }
+                ]
             },
             {
                 id: 2,
