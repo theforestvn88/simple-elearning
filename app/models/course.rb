@@ -6,8 +6,8 @@ class Course < ApplicationRecord
 
     belongs_to :instructor
     belongs_to :partner
-    has_many :milestones
-    has_many :lessons
+    has_many :milestones, dependent: :destroy # TODO: soft delete
+    has_many :lessons, dependent: :destroy # TODO: soft delete
 
     has_one_attached :cover
     

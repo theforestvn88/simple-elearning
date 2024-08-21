@@ -16,6 +16,10 @@ class LessonPolicyTest < ActiveSupport::TestCase
         refute_permit_policy @user, :lesson, :create
     end
 
+    test 'user not allowed to view full-detail lesson policy' do
+        refute_permit_policy @user, @lesson, :show
+    end
+
     test 'user not allowed to update lesson policy' do
         refute_permit_policy @user, @lesson, :update
     end
@@ -28,6 +32,12 @@ class LessonPolicyTest < ActiveSupport::TestCase
         assert_permit_policy @admin, @lesson, :create
         assert_permit_policy @professor, @lesson, :create
         refute_permit_policy @other_instructor, @lesson, :create
+    end
+
+    test 'only assigned-instructor could view full-detail lesson policy' do
+        assert_permit_policy @admin, @lesson, :show
+        assert_permit_policy @professor, @lesson, :show
+        refute_permit_policy @other_instructor, @lesson, :show
     end
 
     test 'only assigned-instructor could update lesson policy' do

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
         scope '/:identify' do
           resources :courses, except: [:edit] do
             resources :milestones, only: [:create, :update, :destroy] do
-              resources :lessons, only: [:create, :update, :destroy]
+              resources :lessons, only: [:show, :create, :update, :destroy]
             end
           end
           

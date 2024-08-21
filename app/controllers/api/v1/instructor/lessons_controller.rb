@@ -6,6 +6,10 @@ module Api
                 before_action :set_milestone
                 before_action :set_lesson, except: [:create]
 
+                def show
+                    authorize @lesson
+                end
+
                 def create
                     @lesson = Lesson.new(lesson_params)
                     @lesson.milestone_id = @milestone.id
@@ -14,9 +18,7 @@ module Api
 
                     authorize @lesson
 
-                    if @lesson.save
-                        render partial: 'api/v1/lessons/lesson', locals: { lesson: @lesson }, status: :created
-                    else
+                    unless @lesson.save
                         render json: @lesson.errors, status: :unprocessable_entity
                     end
                 end

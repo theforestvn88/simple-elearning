@@ -13,6 +13,25 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
         @other_instructor = create(:instructor, partner: @other_partner, rank: :administrator)
     end
 
+    test 'only assigned-instructor could view lesson full-detail (instructor version)' do
+        token = instructor_sign_in(@instructor)
+
+        get api_v1_instructor_course_milestone_lesson_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id, id: @lesson.id),
+            headers: { 'X-Auth-Token' => "Bearer #{token}" }, as: :json
+        
+        assert_response :success
+        assert_equal response.parsed_body, {
+            'id' => @lesson.id,
+            'name' => @lesson.name,
+            'estimated_minutes' => @lesson.estimated_minutes,
+            'instructor' => {
+                'id' => @instructor.id,
+                'name' => @instructor.name,
+                'avatar' => rails_blob_path(@instructor.avatar, only_path: true)
+            }
+        }
+    end
+
     test 'only assigned-instructor could create lesson' do
         token = instructor_sign_in(@instructor)
 
@@ -25,14 +44,7 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
 
         assert_response :success
         assert_equal response.parsed_body, {
-            'id' => Lesson.last.id,
-            'name' => 'new lesson',
-            'estimated_minutes' => 60,
-            'instructor' => {
-                'id' => @instructor.id,
-                'name' => @instructor.name,
-                'avatar' => rails_blob_path(@instructor.avatar, only_path: true)
-            }
+            'id' => Lesson.last.id
         }
     end
 

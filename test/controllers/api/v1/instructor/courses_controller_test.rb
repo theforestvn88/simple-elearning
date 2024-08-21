@@ -17,15 +17,18 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
             @course3 = create(:course, instructor: @instructor2, partner: @partner),
         ]
 
-        @expected_response_courses = courses.map do |c|
+        @milestone1 = create(:milestone, instructor: @instructor1, course: @course1)
+        @lesson1 = create(:lesson, instructor: @instructor1, course: @course1, milestone: @milestone1, estimated_minutes: 60)
+
+        @expected_response_courses = courses.reverse.map do |c|
             {
-                "id" => c.id,
-                "name" => c.name,
-                "summary" => c.summary,
-                "last_update_time"=>"less than a minute",
-                "partner" => {
-                    "id" => c.partner.id,
-                    "name" => c.partner.name,
+                'id' => c.id,
+                'name' => c.name,
+                'summary' => c.summary,
+                'last_update_time' => 'less than a minute',
+                'partner' => {
+                    'id' => c.partner.id,
+                    'name' => c.partner.name,
                 }
             }
         end
@@ -51,7 +54,18 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         get @partner_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         
         assert_response :success
-        assert_equal response.parsed_body['courses'], @expected_response_courses[0..-2]
+        assert_equal response.parsed_body['courses'], @instructor1.courses.map { |c|
+            {
+                'id' => c.id,
+                'name' => c.name,
+                'summary' => c.summary,
+                'last_update_time' => 'less than a minute',
+                'partner' => {
+                    'id' => c.partner.id,
+                    'name' => c.partner.name,
+                }
+            }
+        }
         assert_equal response.parsed_body['pagination'], { "pages" => ["1"], "total" => 1 }
     end
 
@@ -75,11 +89,37 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
+    # TODO: only assigned-instructor
     test 'only partner instructors could view full-detail course' do
         token = instructor_sign_in(@instructor3)
 
         get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         assert_response :success
+        assert_equal response.parsed_body, {
+            'id' => @course1.id,
+            'name' => @course1.name,
+            'summary' => @course1.summary,
+            'last_update_time' => 'less than a minute',
+            'estimated_minutes' => @course1.estimated_minutes,
+            'lessons_count' => @course1.lessons_count,
+            'description' => @course1.description,
+            'partner' => {
+                'id' => @course1.partner.id,
+                'name' => @course1.partner.name,
+            },
+            'milestones' => [
+                {
+                    'id' => @milestone1.id, 
+                    'name' => @milestone1.name, 
+                    'lessons' => [
+                        {
+                            'id' => @lesson1.id,
+                            'name' => @lesson1.name
+                        }
+                    ]
+                }
+            ]
+        }
     end
 
     test 'other partner instructors not allowed to view full-detail course' do

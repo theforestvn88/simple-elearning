@@ -5,7 +5,7 @@ class Instructor < ApplicationRecord
     include AsActor
     include AsAssignee
 
-    has_many :courses, dependent: :nullify
+    has_many :courses, -> { order(updated_at: :desc) }, dependent: :nullify
     belongs_to :partner
 
     enum rank: { 
