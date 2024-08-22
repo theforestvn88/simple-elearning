@@ -1,17 +1,20 @@
-import React from "react"
+import React, { useEffect, useRef } from "react"
+import Trix from "trix"
 import { useAppContext } from "../../context/AppProvider"
 
 const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSubmitError }) => {
     const { RequireAuthorizedApi } = useAppContext()
+    const trixEditorRef = useRef()
     const lessonData = new FormData()
 
     const onChange = (event) => {
+        console.log(event)
         lessonData.set(`lesson[${event.target.name}]`, event.target.value)
     }
 
     const onSubmit = (event) => {
         event.preventDefault()
-
+console.log(lessonData)
         RequireAuthorizedApi(submitMethod, submitEndPoint, {
             'Content-Type': 'multipart/form-data'
         }, lessonData)
@@ -36,6 +39,18 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
             }
         })
     }
+
+    useEffect(() => {
+        if (trixEditorRef && trixEditorRef.current) {
+            trixEditorRef.current.addEventListener("trix-change", onChange)
+        }
+
+        return () => {
+            if (trixEditorRef && trixEditorRef.current) {
+                trixEditorRef.current.removeEventListener("trix-change", onChange)
+            }
+        }
+    })
 
     return (
         <form onSubmit={onSubmit} data-testid="submit-lesson-form">
@@ -62,6 +77,25 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
                     className="form-control"
                     required
                     onChange={onChange}
+                />
+
+                <label htmlFor="lessonName">Lesson content</label>
+                <input
+                    type="hidden"
+                    id="lessonContent"
+                    name="content"
+                    defaultValue={lesson?.content}
+                    placeholder=""
+                    className="form-control"
+                    required
+                    onChange={onChange}
+                />
+                <trix-editor
+                    id="trixEditorLessonContent"
+                    name="content"
+                    input="lessonContent"
+                    class="trix-content"
+                    ref={trixEditorRef}
                 />
             </div>
             <button type="submit" className="btn btn-dark mt-3">

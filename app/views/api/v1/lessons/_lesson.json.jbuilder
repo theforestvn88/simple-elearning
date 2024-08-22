@@ -1,4 +1,5 @@
 json.extract! lesson, :id, :name, :estimated_minutes
+json.content lesson.content.to_s
 
 if lesson.instructor
     json.instructor do

@@ -6,6 +6,7 @@ class LessonTest < ActiveSupport::TestCase
     should belong_to(:course)
     should belong_to(:milestone)
     should have_many(:assignments)
+    should have_rich_text(:content)
   end
 
   context 'validations' do

@@ -24,6 +24,7 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
             'id' => @lesson.id,
             'name' => @lesson.name,
             'estimated_minutes' => @lesson.estimated_minutes,
+            'content' => '',
             'instructor' => {
                 'id' => @instructor.id,
                 'name' => @instructor.name,

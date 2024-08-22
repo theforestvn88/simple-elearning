@@ -71,6 +71,7 @@ const Lesson = () => {
                         <div className="p-6">
                             <h1 className="display-4">{lesson.name}</h1>
                             <h6 className="display-4">estimated time: {lesson.estimated_minutes} minutes</h6>
+                            <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
                         </div>
                         <div className="d-flex align-items-center justify-content-between">
                             <div className="d-flex align-items-center justify-content-end">

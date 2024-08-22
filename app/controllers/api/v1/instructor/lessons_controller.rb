@@ -49,7 +49,7 @@ module Api
                     end
 
                     def lesson_params
-                        params.require(:lesson).permit(:name, :estimated_minutes)
+                        params.require(:lesson).permit(:name, :estimated_minutes, :content)
                     end
             end
         end
