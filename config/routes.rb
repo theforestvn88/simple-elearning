@@ -13,6 +13,8 @@ Rails.application.routes.draw do
             end
           end
           
+          resources :assignments, only: [:create, :destroy]
+
           post '/presigned_url', to: 'direct_upload#create'
         end
       end
