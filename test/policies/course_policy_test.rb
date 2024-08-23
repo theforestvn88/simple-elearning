@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class CoursePolicyTest < ActiveSupport::TestCase
@@ -8,6 +10,8 @@ class CoursePolicyTest < ActiveSupport::TestCase
         @other_instructor = create(:instructor)
         @course = create(:course, instructor: @admin, partner: @partner)
         @user = create(:user)
+
+        @course_assigment = create(:assignment, assignable: @course, assignee: @professor)
     end
     
     test 'user not allowed to view course detail policy' do
@@ -15,7 +19,7 @@ class CoursePolicyTest < ActiveSupport::TestCase
     end
 
     test 'user not allowed to create course policy' do
-        refute_permit_policy @user, :course, :create
+        refute_permit_policy @user, @course, :create
     end
 
     test 'user not allowed to update course policy' do
@@ -33,9 +37,10 @@ class CoursePolicyTest < ActiveSupport::TestCase
     end
 
     test 'only admin-instructor could create new courses policy' do
-        assert_permit_policy @admin, :course, :create
-        refute_permit_policy @professor, :course, :create
-        refute_permit_policy @other_instructor, :course, :create
+        new_course = Course.new(partner: @partner)
+        assert_permit_policy @admin, new_course, :create
+        refute_permit_policy @professor, new_course, :create
+        refute_permit_policy @other_instructor, new_course, :create
     end
 
     test 'only partner-instructor could update new courses policy' do

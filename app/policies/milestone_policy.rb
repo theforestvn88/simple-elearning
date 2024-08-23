@@ -1,14 +1,16 @@
-class MilestonePolicy < ApplicationPolicy
+# frozen_string_literal: true
+
+class MilestonePolicy < CoursePolicy
     def create?
-        can_modify_course?
+        course_level_assigned?
     end
 
     def update?
-        can_modify_course?
+        milestone_level_assigned?
     end
 
     def destroy?
-        can_modify_course?
+        course_level_assigned?
     end
 
     private
@@ -17,20 +19,11 @@ class MilestonePolicy < ApplicationPolicy
             @user&.partner_id == @record.course.partner_id
         end
 
-        def assigned_instructor?
-            @user.is_a?(::Instructor) &&
-            (
-                true ||# TODO: check assignment
-                administrator?
-            )
-
+        def course_level_assigned?
+            course_assigned_instructor?(@record.course) || partner_admin?
         end
 
-        def administrator?
-            @user.administrator?
-        end
-
-        def can_modify_course?
-            assigned_instructor? && belong_to_same_partner?
+        def milestone_level_assigned?
+            milestone_assigned_instructor?(@record) || course_level_assigned?
         end
 end

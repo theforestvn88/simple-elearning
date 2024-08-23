@@ -17,6 +17,8 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
             @course3 = create(:course, instructor: @instructor2, partner: @partner),
         ]
 
+        create(:assignment, assignable: @course1, assignee: @instructor3)
+        
         @milestone1 = create(:milestone, instructor: @instructor1, course: @course1)
         @lesson1 = create(:lesson, instructor: @instructor1, course: @course1, milestone: @milestone1, estimated_minutes: 60)
 
@@ -89,8 +91,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
-    # TODO: only assigned-instructor
-    test 'only partner instructors could view full-detail course' do
+    test 'only assigned instructors could view full-detail course' do
         token = instructor_sign_in(@instructor3)
 
         get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
@@ -129,14 +130,12 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
-    test 'only partner instructors could update its course' do
+    test 'only assigned instructors could update its course' do
         token = instructor_sign_in(@instructor3)
 
         patch @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { course: { name: 'updated' } }, as: :json
         assert_response :success
     end
-
-    # TODO: only assigned instructor could update course
 
     test 'other partner instructors not allowed to update its course' do
         token = instructor_sign_in(@other_instructor)

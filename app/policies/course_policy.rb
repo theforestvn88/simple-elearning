@@ -1,31 +1,28 @@
+# frozen_string_literal: true
+
 class CoursePolicy < ApplicationPolicy
+    include Helpers::InstructorUser
+    include Helpers::AssignedInstructor
+
     def create?
-        instructor? && administrator?
+        partner_admin?
     end
 
     def show?
-        instructor? && belong_to_same_partner?
+        assigned_instructor?
     end
 
     def update?
-        instructor? && belong_to_same_partner?
+        assigned_instructor?
     end
 
     def destroy?
-        instructor? && administrator? && belong_to_same_partner?
+        partner_admin?
     end
 
     private
 
-        def belong_to_same_partner?
-            @user&.partner_id == @record.partner_id
-        end
-
-        def instructor?
-            @user.is_a?(::Instructor)
-        end
-
-        def administrator?
-            @user.administrator?
+        def assigned_instructor?
+            course_assigned_instructor?(@record) || partner_admin?
         end
 end
