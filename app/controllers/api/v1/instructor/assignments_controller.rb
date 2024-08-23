@@ -11,18 +11,24 @@ module Api
                     assignee = assigment_params[:assignee_type].classify.constantize.find(assigment_params[:assignee_id])
                     assignment = Assignment.new(assignable: assignable, assignee: assignee)
                     
+                    authorize assignment
+                    
                     if assignment.save
                         head :created
                     else
                         render json: assignment.errors, status: :unprocessable_entity
                     end
+                rescue Pundit::NotAuthorizedError
+                    response_unauthorized
                 rescue => e
                     head :bad_request
                 end
 
                 def destroy
-                    assigment = Assignment.find(params[:id])
-                    assigment.destroy
+                    assignment = Assignment.find(params[:id])
+                    authorize assignment
+
+                    assignment.destroy
                 end
 
                 private
