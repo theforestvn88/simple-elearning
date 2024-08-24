@@ -5,16 +5,28 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
     setup do
         @partner = create(:partner)
         @instructor = create(:instructor_with_avatar, partner: @partner, rank: :administrator)
+        @instructor2 = create(:instructor, partner: @partner, rank: :professor)
+        @instructor3 = create(:instructor, partner: @partner, rank: :lecturer)
         @course = create(:course, instructor: @instructor, partner: @partner)
         @milestone = create(:milestone, instructor: @instructor, course: @course)
         @lesson = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+        create(:assignment, assignable: @lesson, assignee: @instructor3)
 
         @other_partner = create(:partner)
         @other_instructor = create(:instructor, partner: @other_partner, rank: :administrator)
     end
 
-    test 'only assigned-instructor could view lesson full-detail (instructor version)' do
-        token = instructor_sign_in(@instructor)
+    test 'only partner-instructor could view lesson full-detail (instructor version)' do
+        token = instructor_sign_in(@instructor2)
+
+        get api_v1_instructor_course_milestone_lesson_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id, id: @lesson.id),
+            headers: { 'X-Auth-Token' => "Bearer #{token}" }, as: :json
+        
+        assert_response :success
+    end
+
+    test 'full-detail should show assigned, permissions' do
+        token = instructor_sign_in(@instructor3)
 
         get api_v1_instructor_course_milestone_lesson_url(identify: 'xxx', course_id: @course.id, milestone_id: @milestone.id, id: @lesson.id),
             headers: { 'X-Auth-Token' => "Bearer #{token}" }, as: :json
@@ -29,7 +41,10 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
                 'id' => @instructor.id,
                 'name' => @instructor.name,
                 'avatar' => rails_blob_path(@instructor.avatar, only_path: true)
-            }
+            },
+            'assigned' => true,
+            'can_edit' => true,
+            'can_delete' => false,
         }
     end
 

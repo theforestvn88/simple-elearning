@@ -9,6 +9,7 @@ class LessonPolicyTest < ActiveSupport::TestCase
         @professor = create(:instructor, partner: @partner, rank: :professor)
         @assistant_professor = create(:instructor, partner: @partner, rank: :assistant_professor)
         @lecturer = create(:instructor, partner: @partner, rank: :lecturer)
+        @lecturer2 = create(:instructor, partner: @partner, rank: :lecturer)
         @other_instructor = create(:instructor)
         @user = create(:user)
         @course = create(:course, instructor: @admin, partner: @partner)
@@ -44,11 +45,12 @@ class LessonPolicyTest < ActiveSupport::TestCase
         refute_permit_policy @other_instructor, @lesson, :create
     end
 
-    test 'only assigned-instructor could view full-detail lesson policy' do
+    test 'only partner-instructor could view full-detail lesson policy' do
         assert_permit_policy @admin, @lesson, :show
         assert_permit_policy @professor, @lesson, :show
         assert_permit_policy @assistant_professor, @lesson, :show
         assert_permit_policy @lecturer, @lesson, :show
+        assert_permit_policy @lecturer2, @lesson, :show
         refute_permit_policy @other_instructor, @lesson, :show
     end
 

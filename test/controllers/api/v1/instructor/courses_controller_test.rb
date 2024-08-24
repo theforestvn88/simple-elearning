@@ -7,6 +7,8 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         @instructor1 = create(:instructor, partner: @partner, rank: :administrator)
         @instructor2 = create(:instructor, partner: @partner, rank: :professor)
         @instructor3 = create(:instructor, partner: @partner, rank: :professor)
+        @instructor4 = create(:instructor, partner: @partner, rank: :assistant_professor)
+        @instructor5 = create(:instructor, partner: @partner, rank: :lecturer)
         
         @other_partner = create(:partner)
         @other_instructor = create(:instructor, partner: @other_partner, rank: :administrator)
@@ -20,7 +22,9 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         create(:assignment, assignable: @course1, assignee: @instructor3)
         
         @milestone1 = create(:milestone, instructor: @instructor1, course: @course1)
+        create(:assignment, assignable: @milestone1, assignee: @instructor4)
         @lesson1 = create(:lesson, instructor: @instructor1, course: @course1, milestone: @milestone1, estimated_minutes: 60)
+        create(:assignment, assignable: @lesson1, assignee: @instructor5)
 
         @expected_response_courses = courses.reverse.map do |c|
             {
@@ -91,7 +95,21 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
-    test 'only assigned instructors could view full-detail course' do
+    test 'only partner instructors could view full-detail course' do
+        token = instructor_sign_in(@instructor2)
+
+        get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        assert_response :success
+    end
+
+    test 'other partner instructors not allowed to view full-detail course' do
+        token = instructor_sign_in(@other_instructor)
+
+        get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        assert_response :unauthorized
+    end
+
+    test 'full-detail course should show milstones list, lessons list for each milestone, assignments and permissions' do
         token = instructor_sign_in(@instructor3)
 
         get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
@@ -108,26 +126,100 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                 'id' => @course1.partner.id,
                 'name' => @course1.partner.name,
             },
+            'assigned' => true,
+            'can_edit' => true,
+            'can_delete' => false,
             'milestones' => [
                 {
                     'id' => @milestone1.id, 
-                    'name' => @milestone1.name, 
+                    'name' => @milestone1.name,
+                    'can_edit' => true,
+                    'can_delete' => true,
                     'lessons' => [
                         {
                             'id' => @lesson1.id,
-                            'name' => @lesson1.name
+                            'name' => @lesson1.name,
+                            'can_edit' => true,
+                            'can_delete' => true,
                         }
                     ]
                 }
             ]
         }
-    end
 
-    test 'other partner instructors not allowed to view full-detail course' do
-        token = instructor_sign_in(@other_instructor)
+        token = instructor_sign_in(@instructor4)
 
         get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
-        assert_response :unauthorized
+        assert_response :success
+        assert_equal response.parsed_body, {
+            'id' => @course1.id,
+            'name' => @course1.name,
+            'summary' => @course1.summary,
+            'last_update_time' => 'less than a minute',
+            'partner' => {
+                'id' => @course1.partner.id,
+                'name' => @course1.partner.name,
+            },
+            'estimated_minutes' => @course1.estimated_minutes,
+            'lessons_count' => @course1.lessons_count,
+            'description' => @course1.description,
+            'can_edit' => false,
+            'can_delete' => false,
+            'milestones' => [
+                {
+                    'id' => @milestone1.id, 
+                    'name' => @milestone1.name,
+                    'assigned' => true,
+                    'can_edit' => true,
+                    'can_delete' => false,
+                    'lessons' => [
+                        {
+                            'id' => @lesson1.id,
+                            'name' => @lesson1.name,
+                            'can_edit' => true,
+                            'can_delete' => true,
+                        }
+                    ]
+                }
+            ]
+        }
+
+        token = instructor_sign_in(@instructor5)
+
+        get @instructor_course1_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        assert_response :success
+        assert_equal response.parsed_body, {
+            'id' => @course1.id,
+            'name' => @course1.name,
+            'summary' => @course1.summary,
+            'last_update_time' => 'less than a minute',
+            'estimated_minutes' => @course1.estimated_minutes,
+            'lessons_count' => @course1.lessons_count,
+            'description' => @course1.description,
+            'partner' => {
+                'id' => @course1.partner.id,
+                'name' => @course1.partner.name,
+            },
+            'can_edit' => false,
+            'can_delete' => false,
+            'milestones' => [
+                {
+                    'id' => @milestone1.id, 
+                    'name' => @milestone1.name,
+                    'can_edit' => false,
+                    'can_delete' => false,
+                    'lessons' => [
+                        {
+                            'id' => @lesson1.id,
+                            'name' => @lesson1.name,
+                            'assigned' => true,
+                            'can_edit' => true,
+                            'can_delete' => false,
+                        }
+                    ]
+                }
+            ]
+        }
     end
 
     test 'only assigned instructors could update its course' do

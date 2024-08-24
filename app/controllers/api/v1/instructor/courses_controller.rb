@@ -18,7 +18,7 @@ module Api
                     @course = Course.new(course_params)
                     @course.instructor_id = current_user.id
                     @course.partner_id = current_user.partner_id
-
+                    
                     authorize @course
 
                     if @course.save
@@ -46,13 +46,17 @@ module Api
 
                 private
 
-                def set_course
-                    @course = Course.find(params[:id]) 
-                end
+                    def set_course
+                        @course = Course.find(params[:id]) 
+                    end
 
-                def course_params
-                    params.require(:course).permit(:name, :summary, :description, :cover)
-                end
+                    def course_params
+                        params.require(:course).permit(:name, :summary, :description, :cover)
+                    end
+
+                    def policy
+                        @policy ||= Pundit.policy(current_user, @course)
+                    end
             end
         end
     end

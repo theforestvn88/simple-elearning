@@ -51,6 +51,10 @@ module Api
                     def lesson_params
                         params.require(:lesson).permit(:name, :estimated_minutes, :content)
                     end
+
+                    def policy
+                        @policy ||= Pundit.policy(current_user, @lesson)
+                    end
             end
         end
     end

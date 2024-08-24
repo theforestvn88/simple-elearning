@@ -2,31 +2,18 @@
 
 class LessonPolicy < MilestonePolicy
     def show?
-        lesson_level_assigned?
+        partner_instructor?
     end
 
     def create?
-        milestone_level_assigned?
+        milestone_level_permission?(@record.milestone)
     end
 
     def update?
-        lesson_level_assigned?
+        lesson_level_permission?(@record)
     end
 
     def destroy?
-        milestone_level_assigned?
+        milestone_level_permission?(@record.milestone)
     end
-
-    private
-
-        def milestone_level_assigned?
-            milestone_assigned_instructor?(@record.milestone) ||
-            course_assigned_instructor?(@record.course) ||
-            partner_admin?
-        end
-
-        def lesson_level_assigned?
-            lesson_assigned_instructor?(@record) ||
-            milestone_level_assigned?
-        end
 end

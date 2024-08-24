@@ -16,8 +16,12 @@ module Helpers
             @user.administrator?
         end
 
+        def partner_instructor?
+            instructor? && belong_to_same_partner?
+        end
+
         def partner_admin?
-            instructor? && administrator? && belong_to_same_partner?
+            partner_instructor? && administrator?
         end
     end
 end

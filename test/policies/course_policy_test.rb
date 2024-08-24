@@ -7,6 +7,7 @@ class CoursePolicyTest < ActiveSupport::TestCase
         @partner = create(:partner)
         @admin = create(:instructor, partner: @partner, rank: :administrator)
         @professor = create(:instructor, partner: @partner, rank: :professor)
+        @lecturer = create(:instructor, partner: @partner, rank: :lecturer)
         @other_instructor = create(:instructor)
         @course = create(:course, instructor: @admin, partner: @partner)
         @user = create(:user)
@@ -33,6 +34,7 @@ class CoursePolicyTest < ActiveSupport::TestCase
     test 'only partner-instructors could view course detail policy' do
         assert_permit_policy @admin, @course, :show
         assert_permit_policy @professor, @course, :show
+        assert_permit_policy @lecturer, @course, :show
         refute_permit_policy @other_instructor, @course, :show
     end
 

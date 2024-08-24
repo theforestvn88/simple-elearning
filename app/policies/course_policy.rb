@@ -9,20 +9,14 @@ class CoursePolicy < ApplicationPolicy
     end
 
     def show?
-        assigned_instructor?
+        partner_instructor?
     end
 
     def update?
-        assigned_instructor?
+        course_level_permission?(@record)
     end
 
     def destroy?
         partner_admin?
     end
-
-    private
-
-        def assigned_instructor?
-            course_assigned_instructor?(@record) || partner_admin?
-        end
 end
