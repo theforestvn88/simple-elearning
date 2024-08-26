@@ -14,6 +14,7 @@ module Api
                     authorize assignment
                     
                     if assignment.save
+                        ::AssignmentMailer.with(assignment: assignment).inform_new_assignment.deliver_later
                         head :created
                     else
                         render json: assignment.errors, status: :unprocessable_entity
@@ -29,6 +30,7 @@ module Api
                     authorize assignment
 
                     assignment.destroy
+                    ::AssignmentMailer.with(assignment: assignment).inform_cancel_assignment.deliver_later
                 end
 
                 private

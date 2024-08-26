@@ -139,6 +139,29 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
+    test 'send email inform new assigment' do
+        mock_assignment_mailer = Minitest::Mock.new
+        mock_assignment_mailer.expect :inform_new_assignment, mock_assignment_mailer, []
+        mock_assignment_mailer.expect :deliver_later, nil, []
+        
+        ::AssignmentMailer.stub :with, mock_assignment_mailer do
+            token = instructor_sign_in(@admin)
+            post api_v1_instructor_assignments_url(identify: @partner.id), 
+                headers: { "X-Auth-Token" => "Bearer #{token}" }, 
+                params: { 
+                    assignment: { 
+                        assignable_type: 'Course', 
+                        assignable_id: @course.id, 
+                        assignee_type: 'Instructor', 
+                        assignee_id: @professor.id 
+                    } 
+                }, 
+            as: :json
+        end
+
+        mock_assignment_mailer.verify
+    end
+
     test 'verify assigment policy when destroy an assignment' do
         assignment = Assignment.create(assignable: @course, assignee: @professor)
 
@@ -174,5 +197,19 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         end
 
         assert_response :unauthorized
+    end
+
+    test 'send email inform cancel assigment' do
+        mock_assignment_mailer = Minitest::Mock.new
+        mock_assignment_mailer.expect :inform_cancel_assignment, mock_assignment_mailer, []
+        mock_assignment_mailer.expect :deliver_later, nil, []
+        
+        ::AssignmentMailer.stub :with, mock_assignment_mailer do
+            assignment = Assignment.create(assignable: @course, assignee: @professor)
+            token = instructor_sign_in(@admin)
+            delete api_v1_instructor_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        end
+
+        mock_assignment_mailer.verify
     end
 end
