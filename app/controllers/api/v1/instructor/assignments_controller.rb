@@ -6,6 +6,11 @@ module Api
             class AssignmentsController < ::InstructorApiController
                 before_action :authenticate!
 
+                def index
+                    @pagy, @assignments = pagy(current_user.assignments.includes_assignables(:course, :milestone, :lesson).recently_updated)
+                    @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
+                end
+
                 def create
                     assignable = assigment_params[:assignable_type].classify.constantize.find(assigment_params[:assignable_id])
                     assignee = assigment_params[:assignee_type].classify.constantize.find(assigment_params[:assignee_id])

@@ -212,4 +212,43 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
 
         mock_assignment_mailer.verify
     end
+
+    test 'get instructor assignments' do
+        assignments = []
+        assignments << create(:assignment, assignable: @course, assignee: @professor)
+        assignments << create(:assignment, assignable: @milestone, assignee: @professor)
+        assignments << create(:assignment, assignable: @lesson, assignee: @professor)
+
+        another_assignment = create(:assignment, assignable: @lesson, assignee: @lecturer)
+
+        token = instructor_sign_in(@professor)
+        get api_v1_instructor_assignments_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+
+        assert_response :success
+        assert_equal response.parsed_body['assignments'], assignments.sort_by(&:updated_at).reverse.map { |assignment|
+            {
+                'id' => assignment.id,
+                'assignable_type' => assignment.assignable_type,
+                'assignable_id' => assignment.assignable_id,
+                'assignable_name' => assignment.assignable.name,
+                'created_time' => 'less than a minute',
+                'updated_time' => 'less than a minute',
+            }
+        }
+
+        token = instructor_sign_in(@lecturer)
+        get api_v1_instructor_assignments_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+
+        assert_response :success
+        assert_equal response.parsed_body['assignments'], [
+            {
+                'id' => another_assignment.id,
+                'assignable_type' => another_assignment.assignable_type,
+                'assignable_id' => another_assignment.assignable_id,
+                'assignable_name' => another_assignment.assignable.name,
+                'created_time' => 'less than a minute',
+                'updated_time' => 'less than a minute',
+            }
+        ]
+    end
 end
