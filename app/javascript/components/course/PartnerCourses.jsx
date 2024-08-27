@@ -7,8 +7,6 @@ const PartnerCourses = () => {
   return (
     <>
       <div className="container py-5">
-        <Nav />
-        <Breadcrumbs />
         <Outlet />
       </div>
     </>

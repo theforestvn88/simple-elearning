@@ -1,10 +1,17 @@
-import React, { useRef } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useMemo, useRef } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAppContext } from "../../context/AppProvider"
 import Nav from "../Nav"
 
 const LogIn = () => {
     const navigate = useNavigate()
+    const location = useLocation()
+    const BasePath = useMemo(() => {
+        const parts = location.pathname.split("/")
+        const authIndex = parts.findIndex(part => part == "auth")
+        return parts.slice(0, authIndex).join("/")
+    }, [location.pathname])
+
     const { auth } = useAppContext()
 
     const emailRef = useRef(null)
@@ -16,7 +23,8 @@ const LogIn = () => {
         const loginParams = { email: emailRef.current.value, password: passwordRef.current.value }
         auth.login(loginParams).then((response) => {
             if (response.token) {
-                navigate('/courses')
+                console.log(BasePath)
+                navigate(BasePath)
             }
         })
         .catch((error) => console.log(error))

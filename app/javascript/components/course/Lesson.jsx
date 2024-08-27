@@ -44,7 +44,6 @@ const Lesson = () => {
 
         RequireAuthorizedApi('DELETE', deleteLessonUrl, {}, {})
             .then((response) => {
-                console.log(response)
                 if (response.ok) {
                     navigate(`/courses/${params.course_id}`)
                 }

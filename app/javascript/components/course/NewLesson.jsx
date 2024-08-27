@@ -9,7 +9,7 @@ const NewLesson = () => {
     const { subject, identify } = useAppContext()
 
     const onSubmitSuccess = (responseLesson) => {
-        navigate(`/courses/${params.course_id}/milestones/${params.milestone_id}/lessons/${responseLesson.id}`)
+        navigate(`milestones/${params.milestone_id}/lessons/${responseLesson.id}`)
     }
 
     const onSubmitError = (error) => {

@@ -10,7 +10,7 @@ const NewCourse = () => {
 
   const onSubmitSuccess = (responseCourse) => {
     setCourse(responseCourse)
-    navigate(`/courses/${responseCourse.id}`)
+    navigate(`../${responseCourse.id}`)
   }
 
   const onSubmitError = (error) => {

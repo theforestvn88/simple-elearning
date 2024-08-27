@@ -24,7 +24,7 @@ const CoursesList = () => {
         <UserAvatar user={course.partner} size={20} showName={true} />
         <h5 className="card-title">{course.name}</h5>
         <p className="card-text">{course.summary}</p>
-        <Link to={`/courses/${course.id}`} className="btn btn-primary">View Detail</Link>
+        <Link to={`${course.id}`} className="btn btn-primary">View Detail</Link>
       </div>
     </div>
   ))
@@ -42,7 +42,7 @@ const CoursesList = () => {
       ) : (
         <>
           <div className="text-end mb-3">
-            <Link to="/courses/new" className="btn custom-button">
+            <Link to="new" className="btn custom-button">
               Create New Course
             </Link>
           </div>

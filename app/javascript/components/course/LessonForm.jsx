@@ -14,7 +14,7 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
 
     const onSubmit = (event) => {
         event.preventDefault()
-console.log(lessonData)
+
         RequireAuthorizedApi(submitMethod, submitEndPoint, {
             'Content-Type': 'multipart/form-data'
         }, lessonData)

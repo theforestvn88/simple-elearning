@@ -62,54 +62,59 @@ const CourseDetail = () => {
         })
     }
 
-  return (
-    <>
-        <div className="p-6">
-            <h1 className="display-4">{course.name}</h1>
+    const CourseHeader = () => (
+        <div>
+            <div className="p-6">
+                <h1 className="display-4">{course.name}</h1>
+            </div>
+            <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center justify-content-end">
+                    <Link to={`edit`} className="btn btn-light">
+                        Edit
+                    </Link>
+
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={onDeleteCourse}>
+                        Delete
+                    </button>
+                </div>
+            </div>
         </div>
-        <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center justify-content-end">
-                <Link to={`/courses/${course.id}/edit`} className="btn btn-light">
-                    Edit
-                </Link>
+    )
+
+    return (
+        <>
+            <CourseHeader />
+
+            {course.milestones?.map((milestone) => (
+                <Milestone
+                    key={milestone.id}
+                    courseId={course.id}
+                    milestone={milestone}
+                    onDeleteSuccess={onDeleteMilestoneSuccess}
+                />
+            ))}
+
+            {showMilestoneForm ? (
+                <MilestoneForm 
+                    milestone={{}} 
+                    submitMethod={'POST'}
+                    submitEndpoint={`/api/v1/${subject}/${identify}/courses/${course.id}/milestones`}
+                    onSubmitSuccess={onAddNewMilestoneSuccess} 
+                    onSubmitError={() => {}}
+                />
+            ) : (
                 <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={onDeleteCourse}
-                >
-                    Delete
+                    onClick={addNewMileStone}>
+                    Add Milestone
                 </button>
-            </div>
-        </div>
-
-        {course.milestones?.map((milestone) => (
-            <Milestone
-                key={milestone.id}
-                courseId={course.id}
-                milestone={milestone}
-                onDeleteSuccess={onDeleteMilestoneSuccess}
-            />
-        ))}
-
-        {showMilestoneForm ? (
-            <MilestoneForm 
-                milestone={{}} 
-                submitMethod={'POST'}
-                submitEndpoint={`/api/v1/${subject}/${identify}/courses/${course.id}/milestones`}
-                onSubmitSuccess={onAddNewMilestoneSuccess} 
-                onSubmitError={() => {}}
-            />
-        ) : (
-            <button
-                type="button"
-                className="btn btn-danger"
-                onClick={addNewMileStone}
-            >
-                Add Milestone
-            </button>
-        )}
-    </>
-  )
+            )}
+        </>
+    )
 }
 
 export default CourseDetail

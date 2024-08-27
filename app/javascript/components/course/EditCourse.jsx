@@ -22,7 +22,7 @@ const EditCourse = () => {
   }, [params.id])
 
   const onSubmitSuccess = (responseCourse) => {
-    navigate(`/courses/${responseCourse.id}`)
+    navigate(-1)
   }
 
   const onSubmitError = (error) => {

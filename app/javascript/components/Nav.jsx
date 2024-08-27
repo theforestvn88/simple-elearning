@@ -3,14 +3,14 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppProvider"
 import UserAvatar from "./UserAvatar"
 
-const Nav = ({ showAuth = true }) => {
+const Nav = ({ basePath, showAuth = true }) => {
     const navigate = useNavigate()
     const { auth } = useAppContext()
 
     const logOut = async () => {
         auth.logout()
             .then(res => {
-                navigate('/courses')         
+                navigate(basePath)
             })
             .catch((error) => console.log(error))
     }
