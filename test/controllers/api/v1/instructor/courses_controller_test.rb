@@ -12,8 +12,9 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         
         @other_partner = create(:partner)
         @other_instructor = create(:instructor, partner: @other_partner, rank: :administrator)
+        create(:course, instructor: @other_instructor, partner: @other_partner)
 
-        courses = [
+        @courses = [
             @course1 = create(:course, instructor: @instructor1, partner: @partner),
             @course2 = create(:course, instructor: @instructor1, partner: @partner),
             @course3 = create(:course, instructor: @instructor2, partner: @partner),
@@ -25,19 +26,6 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         create(:assignment, assignable: @milestone1, assignee: @instructor4)
         @lesson1 = create(:lesson, instructor: @instructor1, course: @course1, milestone: @milestone1, estimated_minutes: 60)
         create(:assignment, assignable: @lesson1, assignee: @instructor5)
-
-        @expected_response_courses = courses.reverse.map do |c|
-            {
-                'id' => c.id,
-                'name' => c.name,
-                'summary' => c.summary,
-                'last_update_time' => 'less than a minute',
-                'partner' => {
-                    'id' => c.partner.id,
-                    'name' => c.partner.name,
-                }
-            }
-        end
 
         @partner_courses_url = api_v1_instructor_courses_url(identify: @partner.id)
         @instructor_course1_url = api_v1_instructor_course_url(id: @course1.id, identify: @partner.id)
@@ -54,13 +42,13 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         assert_response :unauthorized
     end
 
-    test 'get courses by instructor' do
+    test 'get partner courses' do
         token = instructor_sign_in(@instructor1)
 
         get @partner_courses_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         
         assert_response :success
-        assert_equal response.parsed_body['courses'], @instructor1.courses.map { |c|
+        assert_equal response.parsed_body['courses'], @courses.sort_by(&:updated_at).reverse.map { |c|
             {
                 'id' => c.id,
                 'name' => c.name,

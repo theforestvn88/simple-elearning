@@ -6,7 +6,7 @@ module Api
                 before_action :set_course, only: %i[show update destroy]
 
                 def index
-                    @pagy, @courses = pagy(current_user.courses.includes_cover.includes_partner)
+                    @pagy, @courses = pagy(current_user.partner_courses.recently_updated.includes_cover.includes_partner)
                     @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
                 end
 

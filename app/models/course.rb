@@ -13,6 +13,7 @@ class Course < ApplicationRecord
     
     validates :name, :summary, presence: true, on: :create
 
+    scope :recently_updated, -> { order(updated_at: :desc) }
     scope :includes_cover, lambda { includes({ cover_attachment: [:blob] }) }
     scope :includes_partner, lambda { includes({partner: { logo_attachment: [:blob] }}) }
 end
