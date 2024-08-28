@@ -29,7 +29,7 @@ const Partner = () => {
     <>
       <div className="container py-5">
         <Nav basePath={BasePath} />
-        <Breadcrumbs />
+        <Breadcrumbs homePath={BasePath} />
         <div className="row flex-nowrap border border-1">
           <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
               <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">

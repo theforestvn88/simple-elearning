@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const Mapper = {}
 
-const Breadcrumbs = () => {
+const Breadcrumbs = ({homePath}) => {
     const location = useLocation()
 
     const crumbItems = useMemo(() => {
@@ -26,7 +26,7 @@ const Breadcrumbs = () => {
 
     return (
       <div className="breadcrumbs">
-        <Link to="/">Home</Link>
+        <Link to={homePath}>Home</Link>
         {crumbItems}
       </div>
     )

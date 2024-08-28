@@ -6,10 +6,10 @@ import Nav from "../Nav"
 const SignUp = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const BasePath = useMemo(() => {
+    const BaseIndex = useMemo(() => {
         const parts = location.pathname.split("/")
         const authIndex = parts.findIndex(part => part == "auth")
-        return parts.slice(0, authIndex).join("/")
+        return authIndex - parts.length
     }, [location.pathname])
 
     const { auth } = useAppContext()
@@ -31,7 +31,7 @@ const SignUp = () => {
 
         auth.signup(signupParams).then((response) => {
             if (response.token) {
-                navigate(BasePath)
+                navigate(BaseIndex)
             }
         })
         .catch((error) => console.log(error))

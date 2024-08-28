@@ -1,7 +1,6 @@
 import React from 'react'
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
 import Home from '../components/Home'
-import Courses from '../components/course/Courses'
 import CourseIntro from '../components/course/CourseIntro'
 import CoursesList from '../components/course/CoursesList'
 import Auth from '../components/auth/Auth'
@@ -19,70 +18,62 @@ import SessionSetting from '../components/account/SessionSetting'
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route 
-        path="/"
-        element={<Home />} 
-      />
-      <Route 
-        path='/auth'
-        element={<Auth />}
-      >
         <Route 
-          path='/auth/login'
-          element={<LogIn />}
-        />
-        <Route 
-          path='/auth/signup'
-          element={<SignUp />}
-        />
-      </Route>
-      <Route 
-        path='/account'
-        element={<Account />}
-      >
-        <Route
-          path='/account/:id/profile'
-          element={<Profile />}
-        />
-        <Route
-          path='/account/:id/settings'
-          element={<Settings />}
-        >
-          <Route
-            index
-            element={<PreferencesSetting />}
-          />
-          <Route
-            path='/account/:id/settings/auth'
-            element={<AuthenticationSetting />}
-          />
-          <Route
-            path='/account/:id/settings/session'
-            element={<SessionSetting />}
-          />
-          <Route
-            path='/account/:id/settings/notification'
-            element={<NotificationSetting />}
-          />
-          <Route
-            path='/account/:id/settings/billing'
-            element={<BillingSetting />}
-          />
+          path='/auth'
+          element={<Auth />}>
+            <Route 
+              path='/auth/login'
+              element={<LogIn />}
+            />
+            <Route 
+              path='/auth/signup'
+              element={<SignUp />}
+            />
         </Route>
-      </Route>
-      <Route 
-        path="/courses"
-        element={<Courses />}
-      >
         <Route 
-          index
-          element={<CoursesList />}
-        />
-        <Route 
-          path="/courses/:id"
-          element={<CourseIntro />}
-        />
-      </Route>
+          path="/"
+          element={<Home />}>
+            <Route 
+              path="/courses"
+              element={<CoursesList />}
+            />
+            <Route 
+              path="/courses/:id"
+              element={<CourseIntro />}
+            />
+            <Route 
+              path='/account'
+              element={<Account />}>
+              <Route
+                path='/account/:id/profile'
+                element={<Profile />}
+              />
+              <Route
+                path='/account/:id/settings'
+                element={<Settings />}>
+                <Route
+                  index
+                  element={<PreferencesSetting />}
+                />
+                <Route
+                  path='/account/:id/settings/auth'
+                  element={<AuthenticationSetting />}
+                />
+                <Route
+                  path='/account/:id/settings/session'
+                  element={<SessionSetting />}
+                />
+                <Route
+                  path='/account/:id/settings/notification'
+                  element={<NotificationSetting />}
+                />
+                <Route
+                  path='/account/:id/settings/billing'
+                  element={<BillingSetting />}
+                />
+              </Route>
+            </Route>
+        </Route>
     </Route>
   )
 )

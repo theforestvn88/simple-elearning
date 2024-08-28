@@ -4,10 +4,18 @@ import CardListPlaceHolders from '../CardListPlaceHolders'
 import Paginaton from '../Pagination'
 import useCoursesQuery from '../../hooks/useCoursesQuery'
 import UserAvatar from '../UserAvatar'
+import { useAppContext } from '../../context/AppProvider'
 
 const CoursesList = () => {
+  const { auth } = useAppContext()
   const { setQuery, loading, coursesData } = useCoursesQuery()
   const [currPage, setCurrPage] = useState(1)
+
+  useEffect(() => {
+    if (auth.willExpiredToken()) {
+      auth.refreshToken()
+    }
+  }, [])
 
   useEffect(() => {
     setQuery({page: currPage})
