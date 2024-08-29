@@ -50,9 +50,10 @@ describe('LogIn', () => {
     })
 
     it('logout user with expired token', async () => {
+        const fakeBasePath = '/courses'
         mockAuth({token: 'xxx'})
 
-        await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider><Nav basePath={fakeBasePath} /></AppProvider></MemoryRouter>))
 
         logoutSpy.mockImplementation(() => Promise.resolve({ ok: false, status: 401, json: () => Promise.resolve({}) }))
         await act( async () => {
@@ -62,6 +63,6 @@ describe('LogIn', () => {
         await flushPromises()
         
         // should navigate to home page
-        expect(navigateSpy).toHaveBeenCalledWith('/courses')
+        expect(navigateSpy).toHaveBeenCalledWith(fakeBasePath)
     })
 })

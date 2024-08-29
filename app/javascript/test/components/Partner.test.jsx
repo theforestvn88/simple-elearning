@@ -25,7 +25,7 @@ describe('Partner', () => {
 
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Partner /></AppProvider></MemoryRouter>))
 
-        expect(screen.getByText('/partners/auth/login')).toBeInTheDocument()
+        expect(screen.getByText('auth/login')).toBeInTheDocument()
     })
 
     it('when token expired then should navigate to login page', async () => {
@@ -36,7 +36,7 @@ describe('Partner', () => {
 
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Partner /></AppProvider></MemoryRouter>))
 
-        expect(screen.getByText('/partners/auth/login')).toBeInTheDocument()
+        expect(screen.getByText('auth/login')).toBeInTheDocument()
     })
 
     it('slient refresh will-expired-token', async () => {

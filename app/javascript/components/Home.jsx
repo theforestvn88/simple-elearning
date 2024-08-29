@@ -10,6 +10,7 @@ const Home = () => {
   
   useEffect(() => {
     if (auth.hasBeenExpiredToken()) {
+      console.log("EXPIRE ....")
       navigate("/auth/login")
     } else {
       navigate("courses")
