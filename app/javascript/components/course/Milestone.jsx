@@ -40,19 +40,21 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
         <div className="d-flex align-items-center justify-content-between">
             <div>{editMilestone.name}</div>
             <div className="d-flex align-items-center justify-content-end">
-                <button
+                {milestone.can_edit && <button
                     type="button"
                     className="btn btn-light"
-                    onClick={onEditMilestone}>
+                    onClick={onEditMilestone}
+                    data-testid="edit-milestone">
                     Edit
-                </button>
+                </button>}
 
-                <button
+                {milestone.can_delete && <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={onDeleteMilestone}>
+                    onClick={onDeleteMilestone}
+                    data-testid="delete-milestone">
                     Delete
-                </button>
+                </button>}
             </div>
         </div>
     )
@@ -67,9 +69,9 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
                 </div>
             ))}
             <div>
-                <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light">
+            {milestone.can_edit && <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light" data-testid="add-new-lesson">
                     Add Lesson
-                </Link>
+            </Link>}
             </div>
         </div>
     )

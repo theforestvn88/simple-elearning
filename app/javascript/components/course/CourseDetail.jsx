@@ -69,16 +69,17 @@ const CourseDetail = () => {
             </div>
             <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center justify-content-end">
-                    <Link to={`edit`} className="btn btn-light">
+                    {course.can_edit && <Link to={`edit`} className="btn btn-light" data-testid="edit-course">
                         Edit
-                    </Link>
+                    </Link>}
 
-                    <button
+                    {course.can_delete && <button
                         type="button"
                         className="btn btn-danger"
-                        onClick={onDeleteCourse}>
+                        onClick={onDeleteCourse}
+                        data-testid="delete-course">
                         Delete
-                    </button>
+                    </button>}
                 </div>
             </div>
         </div>
@@ -106,10 +107,12 @@ const CourseDetail = () => {
                     onSubmitError={() => {}}
                 />
             ) : (
+                course.can_edit && 
                 <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={addNewMileStone}>
+                    onClick={addNewMileStone}
+                    data-testid="add-new-milestone">
                     Add Milestone
                 </button>
             )}

@@ -18,16 +18,23 @@ export const fakeCourses = [
                 url: 'partner1-avatar-url'
             }
         },
+        assigned: true,
+        can_edit: true,
+        can_delete: true,
         milestones: [
             {
                 id: 1,
                 name: "milestone1",
                 estimated_minutes: 60,
+                can_edit: true,
+                can_delete: true,
                 lessons: [
                     {
                         id: 1,
                         name: 'lesson 1',
-                        estimated_minutes: 60
+                        estimated_minutes: 60,
+                        can_edit: true,
+                        can_delete: true,
                     }
                 ]
             },
@@ -57,5 +64,45 @@ export const fakeCourses = [
             }
         },
         milestones: []
-    }
+    },
+    {
+        id: 3,
+        name: 'course 3',
+        summary: 'this is course 3',
+        description: 'this is course 3 description',
+        cover: {
+            name: 'course-3-cover',
+            byte_size: 0,
+            url: 'course-3-cover-url'
+        },
+        partner: {
+            id: 3,
+            name: 'partner3',
+            avatar: {
+                name: 'partner3-avatar',
+                byte_size: 0,
+                url: 'partner3-avatar-url'
+            }
+        },
+        can_edit: false,
+        can_delete: false,
+        milestones: [
+            {
+                id: 3,
+                name: "milestone1",
+                estimated_minutes: 60,
+                can_edit: true,
+                can_delete: false,
+                lessons: [
+                    {
+                        id: 30,
+                        name: 'lesson 1',
+                        estimated_minutes: 60,
+                        can_edit: true,
+                        can_delete: true,
+                    }
+                ]
+            }
+        ]
+    },
 ]

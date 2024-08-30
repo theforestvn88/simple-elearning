@@ -74,20 +74,21 @@ const Lesson = () => {
                         </div>
                         <div className="d-flex align-items-center justify-content-between">
                             <div className="d-flex align-items-center justify-content-end">
-                                <button
+                                {lesson.can_edit && <button
                                     type="button"
                                     className="btn btn-light"
                                     onClick={onEditLesson}
-                                >
+                                    data-testid="edit-lesson">
                                     Edit
-                                </button>
-                                <button
+                                </button>}
+                                
+                                {lesson.can_delete && <button
                                     type="button"
                                     className="btn btn-danger"
                                     onClick={onDeleteLesson}
-                                >
+                                    data-testid="delete-lesson">
                                     Delete
-                                </button>
+                                </button>}
                             </div>
                         </div>
                     </div>

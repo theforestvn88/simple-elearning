@@ -17,7 +17,13 @@ describe('Lesson', () => {
     beforeEach(async () => {
         jest.spyOn(react_router, "useParams").mockReturnValue({ course_id: 1, milestone_id: 1, id: 1 })
         localStorageMockReturn({token: 'xxx'})
-        fetchMockReturn({name: 'lesson 1', estimated_minutes: 60})
+        fetchMockReturn({
+            id: 1,
+            name: 'lesson 1', 
+            estimated_minutes: 60,
+            can_edit: true,
+            can_delete: true,
+        })
 
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
     })
@@ -40,7 +46,7 @@ describe('Lesson', () => {
 
     it ('edit lesson', async () => {
         await act(async () => {
-            fireEvent.click(screen.getAllByRole('button', {name: 'Edit'})[0])
+            fireEvent.click(screen.getAllByTestId('edit-lesson')[0])
         })
 
         expect(screen.getByTestId('submit-lesson-form')).toBeInTheDocument()
@@ -51,7 +57,7 @@ describe('Lesson', () => {
         fetchMock.mockRestore()
         fetchMockReturn({})
         await act(async () => {
-            fireEvent.click(screen.getAllByRole('button', {name: 'Delete'})[0])
+            fireEvent.click(screen.getAllByTestId('delete-lesson')[0])
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
@@ -75,4 +81,33 @@ describe('EditLessonForm', () => {
         '/api/v1/instructor/meta/courses/1/milestones/1/lessons/1', 
         'PUT'
     )
+})
+
+describe('Lesson Permission', () => {
+    const aLesson = {
+        id: 1,
+        name: 'lesson 1',
+        estimated_minutes: 60,
+        can_edit: false,
+        can_delete: false,
+    }
+    beforeEach(async () => {
+        jest.spyOn(react_router, "useParams").mockReturnValue({ course_id: 1, milestone_id: 1, id: 1 })
+        localStorageMockReturn({token: 'xxx'})
+        fetchMockReturn(aLesson)
+    })
+
+    afterEach(() => {
+        jest.restoreAllMocks()
+    })
+
+    it('should not show Edit button when user is not allowed to edit lesson', async () => {
+        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
+        expect(screen.queryByTestId('edit-lesson')).not.toBeInTheDocument()
+    })
+
+    it('should not show Delete button when user is not allowed to delete lesson', async () => {
+        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
+        expect(screen.queryByTestId('delete-lesson')).not.toBeInTheDocument()
+    })
 })
