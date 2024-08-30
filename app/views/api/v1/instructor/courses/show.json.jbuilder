@@ -1,4 +1,4 @@
-json.partial! 'api/v1/courses/course', course: @course
+json.partial! 'api/v1/instructor/courses/course', course: @course
 json.extract! @course, :estimated_minutes, :lessons_count, :description
 json.assigned true if policy.course_assigned_instructor?(@course)
 json.can_edit policy.course_level_permission?(@course)

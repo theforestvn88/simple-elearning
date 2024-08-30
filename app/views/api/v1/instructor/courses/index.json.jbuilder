@@ -1,5 +1,5 @@
 json.courses do
-    json.array! @courses, partial: 'api/v1/courses/course', as: :course
+    json.array! @courses, partial: 'api/v1/instructor/courses/course', as: :course
 end
 
 json.pagination do

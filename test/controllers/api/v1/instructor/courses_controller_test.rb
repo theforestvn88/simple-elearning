@@ -53,11 +53,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                 'id' => c.id,
                 'name' => c.name,
                 'summary' => c.summary,
-                'last_update_time' => 'less than a minute',
-                'partner' => {
-                    'id' => c.partner.id,
-                    'name' => c.partner.name,
-                }
+                'last_update_time' => 'less than a minute'
             }
         }
         assert_equal response.parsed_body['pagination'], { "pages" => ["1"], "total" => 1 }
@@ -110,10 +106,6 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
             'estimated_minutes' => @course1.estimated_minutes,
             'lessons_count' => @course1.lessons_count,
             'description' => @course1.description,
-            'partner' => {
-                'id' => @course1.partner.id,
-                'name' => @course1.partner.name,
-            },
             'assigned' => true,
             'can_edit' => true,
             'can_delete' => false,
@@ -144,10 +136,6 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
             'name' => @course1.name,
             'summary' => @course1.summary,
             'last_update_time' => 'less than a minute',
-            'partner' => {
-                'id' => @course1.partner.id,
-                'name' => @course1.partner.name,
-            },
             'estimated_minutes' => @course1.estimated_minutes,
             'lessons_count' => @course1.lessons_count,
             'description' => @course1.description,
@@ -184,10 +172,6 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
             'estimated_minutes' => @course1.estimated_minutes,
             'lessons_count' => @course1.lessons_count,
             'description' => @course1.description,
-            'partner' => {
-                'id' => @course1.partner.id,
-                'name' => @course1.partner.name,
-            },
             'can_edit' => false,
             'can_delete' => false,
             'milestones' => [
