@@ -6,8 +6,9 @@ module Api
             def create
                 super
                 
-                partner_admin = @session.user
-                unless partner_admin.partner.slug == params[:identify]
+                return unless @session
+
+                unless (instructor = @session.user) && instructor.partner.slug == params[:identify]
                     render json: { error: 'Invalid credentials' }, status: :forbidden
                 end
             end
