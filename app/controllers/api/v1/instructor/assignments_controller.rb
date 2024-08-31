@@ -4,6 +4,7 @@ module Api
     module V1
         module Instructor
             class AssignmentsController < ::InstructorApiController
+                helper AssignmentHelper
                 before_action :authenticate!
 
                 def index

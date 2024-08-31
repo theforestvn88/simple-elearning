@@ -4,6 +4,8 @@ require 'test_helper'
 require 'api_helper'
 
 class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
+    include AssignmentHelper
+
     setup do
         @partner = create(:partner)
         @admin = create(:instructor, partner: @partner, rank: :administrator)
@@ -231,8 +233,9 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
                 'assignable_type' => assignment.assignable_type,
                 'assignable_id' => assignment.assignable_id,
                 'assignable_name' => assignment.assignable.name,
+                'assignable_path' => assignment_path(assignment.assignable),
                 'created_time' => 'less than a minute',
-                'updated_time' => 'less than a minute',
+                'updated_time' => 'less than a minute'
             }
         }
 
@@ -246,8 +249,9 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
                 'assignable_type' => another_assignment.assignable_type,
                 'assignable_id' => another_assignment.assignable_id,
                 'assignable_name' => another_assignment.assignable.name,
+                'assignable_path' => assignment_path(another_assignment.assignable),
                 'created_time' => 'less than a minute',
-                'updated_time' => 'less than a minute',
+                'updated_time' => 'less than a minute'
             }
         ]
     end
