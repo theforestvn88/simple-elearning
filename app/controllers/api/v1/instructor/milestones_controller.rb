@@ -49,6 +49,10 @@ module Api
                     def milestone_params
                         params.require(:milestone).permit(:name)
                     end
+
+                    def policy
+                        @policy ||= Pundit.policy(current_user, @milestone)
+                    end
             end
         end
     end
