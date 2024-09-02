@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CardListPlaceHolders from '../CardListPlaceHolders'
 import Paginaton from '../Pagination'
-import useCoursesQuery from '../../hooks/useCoursesQuery'
 import UserAvatar from '../UserAvatar'
 import { useAppContext } from '../../context/AppProvider'
+import useApiQuery from '../../hooks/useApiQuery'
 
 const CoursesList = () => {
   const { auth } = useAppContext()
-  const { setQuery, loading, coursesData } = useCoursesQuery()
+  const { setQuery, responseData } = useApiQuery('/courses')
   const [currPage, setCurrPage] = useState(1)
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const CoursesList = () => {
     setQuery({page: currPage})
   }, [currPage])
 
-  const coursesList = coursesData.courses.map((course, index) => (
+  const coursesList = responseData.data.courses?.map((course, index) => (
     <div key={index} className="card px-0 my-1 mx-2 border-secondary" style={{width: '18rem'}}>
       {course.cover ? (
         <img className="card-header p-0 card-img-top img-fluid w-100" src={course.cover.url} />
@@ -45,7 +45,7 @@ const CoursesList = () => {
 
   return (
     <>
-      {loading ? (
+      {responseData.loading ? (
         <CardListPlaceHolders rowSize={3} colSize={4} />
       ) : (
         <>
@@ -55,17 +55,17 @@ const CoursesList = () => {
             </Link>
           </div>
           <div className="container-fluid d-flex justify-content-start flex-wrap">
-            {coursesData.courses.length > 0 ? coursesList : emptyList}
+            {(responseData.data.courses && responseData.data.courses.length > 0) ? coursesList : emptyList}
           </div>
 
           <br />
 
-          {coursesData.courses.length > 0 && coursesData.pagination && (
+          {responseData.data.pagination && (
             <Paginaton 
-              pages={coursesData.pagination.pages} 
+              pages={responseData.data.pagination.pages} 
               currentPage={currPage} 
               selectedPage={setCurrPage} 
-              totalPage={coursesData.pagination.total} />
+              totalPage={responseData.data.pagination.total} />
           )}
         </>
       )}

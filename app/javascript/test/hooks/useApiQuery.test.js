@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react"
-import useCoursesQuery from "../../hooks/useCoursesQuery"
+import useApiQuery from "../../hooks/useApiQuery"
 
 const apiCallSpy = jest.fn().mockImplementation(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) }))
 jest.spyOn(require('../../context/AppProvider'), 'useAppContext').mockReturnValue({
@@ -8,14 +8,14 @@ jest.spyOn(require('../../context/AppProvider'), 'useAppContext').mockReturnValu
     RequireAuthorizedApi: apiCallSpy
 })
 
-describe("useCoursesQuery Hook", () => {
+describe("useApiQuery Hook", () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
     })
 
     it("call query courses api whenever query updated", async () => {
-        const { result } = renderHook(() => useCoursesQuery())
+        const { result } = renderHook(() => useApiQuery('/courses'))
 
         await act(async () => {
             result.current.setQuery({page: 1})
