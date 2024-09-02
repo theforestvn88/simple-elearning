@@ -15,29 +15,27 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
     const onSubmit = (event) => {
         event.preventDefault()
 
-        RequireAuthorizedApi(submitMethod, submitEndPoint, {
-            'Content-Type': 'multipart/form-data'
-        }, lessonData)
-        .then((response) => {
-          if (response.ok) {
-              return response.json()
-          } else if (response.status == 401) {
-              navigate('/auth/login')
-              return
-          }
-    
-          throw new Error('Something went wrong!')
-        })
-        .then((responseLesson) => {
-            if (onSubmitSuccess) {
-                onSubmitSuccess(responseLesson)
+        RequireAuthorizedApi(submitMethod, submitEndPoint, lessonData)
+            .then((response) => {
+            if (response.ok) {
+                return response.json()
+            } else if (response.status == 401) {
+                navigate('/auth/login')
+                return
             }
-        })
-        .catch((error) => {
-            if (onSubmitError) {
-                onSubmitError(error)
-            }
-        })
+        
+            throw new Error('Something went wrong!')
+            })
+            .then((responseLesson) => {
+                if (onSubmitSuccess) {
+                    onSubmitSuccess(responseLesson)
+                }
+            })
+            .catch((error) => {
+                if (onSubmitError) {
+                    onSubmitError(error)
+                }
+            })
     }
 
     useEffect(() => {

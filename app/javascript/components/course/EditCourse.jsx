@@ -10,7 +10,7 @@ const EditCourse = () => {
   const [course, setCourse] = useState({})
 
   useEffect(() => {
-    RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/courses/${params.id}`, {}, {})
+    RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/courses/${params.id}`)
       .then((response) => {
         if (response.ok) {
           return response.json()

@@ -10,7 +10,7 @@ import UserAvatar from "../UserAvatar"
 
 const Profile = () => {
     const navigate = useNavigate()
-    const { BaseApi } = useApi()
+    const { QueryApi } = useApi()
     const { auth, clearAuth, RequireAuthorizedApi } = useAppContext()
     const params = useParams()
 
@@ -33,27 +33,27 @@ const Profile = () => {
     const deleteAccount = () => {
         setOnDeleteAccount(true)
 
-        RequireAuthorizedApi('DELETE', `/api/v1/users/${profile.id}`, {}, {})
-        .then((response) => {
-            if (response.ok) {
-                setOnDeleteAccount(false)
-                clearAuth()
-                navigate('/')
-            } else if (response.status == 401) {
-                navigate('/auth/login')
-                return
-            }
+        RequireAuthorizedApi('DELETE', `/api/v1/users/${profile.id}`)
+            .then((response) => {
+                if (response.ok) {
+                    setOnDeleteAccount(false)
+                    clearAuth()
+                    navigate('/')
+                } else if (response.status == 401) {
+                    navigate('/auth/login')
+                    return
+                }
 
-            throw new Error('Something went wrong!')
-        })
-        .catch((error) => {
-            console.log(error)
-            setOnDeleteAccount(false)
-        })
+                throw new Error('Something went wrong!')
+            })
+            .catch((error) => {
+                console.log(error)
+                setOnDeleteAccount(false)
+            })
     }
 
     useEffect(() => {
-        BaseApi('GET', `/api/v1/users/${params.id}`, {'X-Auth-Token': auth.info.token}, {})
+        QueryApi(`/api/v1/users/${params.id}`, {}, {'X-Auth-Token': auth.info.token})
             .then((response) => {
                 if (response.ok) {
                     return response.json()

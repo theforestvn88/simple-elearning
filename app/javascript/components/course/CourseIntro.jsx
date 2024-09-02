@@ -6,13 +6,13 @@ import useApi from '../../hooks/useApi'
 const CourseIntro = () => {
   const params = useParams()
   const {subject, identify} = useAppContext()
-  const { BaseApi } = useApi()
+  const { QueryApi } = useApi()
 
   const [course, setCourse] = useState({})
 
   useEffect(() => {
     const courseUrl = `/api/v1/${subject}/${identify}/courses/${params.id}`
-    BaseApi('GET', courseUrl, {}, {})
+    QueryApi(courseUrl)
       .then((res) => {
         if (res.ok) {
           return res.json()

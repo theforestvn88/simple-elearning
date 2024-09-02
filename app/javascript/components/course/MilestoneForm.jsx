@@ -13,25 +13,23 @@ const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess
     const onSubmit = async (event) => {
         event.preventDefault()
     
-        RequireAuthorizedApi(submitMethod, submitEndpoint, {
-            'Content-Type': 'multipart/form-data'
-        }, milestoneData)
-        .then((response) => {
-          if (response.ok) {
-              return response.json()
-          } else if (response.status == 401) {
-              navigate('/auth/login')
-              return
-          }
-    
-          throw new Error('Something went wrong!')
-        })
-        .then((responseMilestone) => {
-          onSubmitSuccess(responseMilestone)
-        })
-        .catch((error) => {
-          onSubmitError(error)
-        })
+        RequireAuthorizedApi(submitMethod, submitEndpoint, milestoneData)
+          .then((response) => {
+            if (response.ok) {
+                return response.json()
+            } else if (response.status == 401) {
+                navigate('/auth/login')
+                return
+            }
+      
+            throw new Error('Something went wrong!')
+          })
+          .then((responseMilestone) => {
+            onSubmitSuccess(responseMilestone)
+          })
+          .catch((error) => {
+            onSubmitError(error)
+          })
     }
 
     return (

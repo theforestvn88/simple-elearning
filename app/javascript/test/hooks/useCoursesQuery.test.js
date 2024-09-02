@@ -24,7 +24,6 @@ describe("useCoursesQuery Hook", () => {
         expect(apiCallSpy).toHaveBeenCalledWith(
             "GET",
             "/api/v1/user/*/courses", 
-            {},
             {"page":1}
         )
     })

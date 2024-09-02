@@ -11,7 +11,7 @@ const useCoursesQuery = () => {
         if (query === null) return
 
         setLoading(true)
-        RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/courses`, {}, query)
+        RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/courses`, query)
             .then((response) => {
                 if (response.ok) {
                     return response.json()

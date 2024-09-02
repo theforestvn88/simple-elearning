@@ -14,7 +14,7 @@ const CourseDetail = () => {
 
     useEffect(() => {
         const courseUrl = `/api/v1/${subject}/${identify}/courses/${params.id}`
-        RequireAuthorizedApi('GET', courseUrl, {}, {})
+        RequireAuthorizedApi('GET', courseUrl)
             .then((res) => {
                 if (res.ok) {
                     return res.json()
@@ -31,7 +31,7 @@ const CourseDetail = () => {
 
         const deleteCourseUrl = `/api/v1/${subject}/${identify}/courses/${course.id}`
 
-        RequireAuthorizedApi('DELETE', deleteCourseUrl, {}, {})
+        RequireAuthorizedApi('DELETE', deleteCourseUrl)
             .then((response) => {
                 if (response.ok) {
                     navigate('/courses')

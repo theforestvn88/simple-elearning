@@ -1,46 +1,48 @@
 import React, { useCallback } from "react"
-
-const convertParams = (contentType, params) => {
-    switch(contentType) {
-        case 'application/json':
-            return JSON.stringify(params)
-        case 'multipart/form-data':
-        default:
-            return params
-    }
-}
+import useRequest from "./useRequest"
 
 const useApi = () => {
-    const Base = ''
+    const { CallRequest } = useRequest()
 
-    const DefaultHeader = {
-        'Content-Type': 'application/json',
-    }
-    
-    const BaseApi = useCallback(async (method, path, headers = {}, params = {}) => {
-        const urlParams = method === 'GET' ? (new URLSearchParams(params)).toString() : ''
-        const apiUrl = Base + path + (!!urlParams ? '?' + urlParams : '')
+    const QueryApi = useCallback(async (path, params = {}, headers = {}) => {
+        const urlParams = (new URLSearchParams(params)).toString()
+        const apiUrl = path + (!!urlParams ? ('?' + urlParams) : '')
         const apiHeaders = {
-            ...DefaultHeader,
+            'Content-Type': 'application/json',
             ...headers
         }
 
-        const apiBoby = method !== 'GET' ? convertParams(apiHeaders['Content-Type'], params) : null
-        
-        // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
-        // Multipart form allow transfer of binary data, therefore server needs a way to know where one field's data ends and where the next one starts.
-        // That's where boundary comes in. It defines a delimiter between fields we are sending in our request (similar to & for GET requests). 
-        // You can define it yourself, but it is much easier to let browser do it for you.
-        if (apiHeaders['Content-Type'] === 'multipart/form-data') {
-            delete apiHeaders['Content-Type']
-        }
-
-        return fetch(apiUrl, {
-            method: method,
+        return CallRequest(apiUrl, {
+            method: 'GET',
             headers: apiHeaders,
-            body: apiBoby,
+            body: null,
         })
     }, [])
+
+    const SubmitApi = useCallback(async (method, path, params, headers = {}) => {
+        let apiBody
+        if (params instanceof FormData) {
+            apiBody = params
+            // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
+            // Multipart form allow transfer of binary data, therefore server needs a way to know where one field's data ends and where the next one starts.
+            // That's where boundary comes in. It defines a delimiter between fields we are sending in our request (similar to & for GET requests). 
+            // You can define it yourself, but it is much easier to let browser do it for you.
+            if (headers['Content-Type'] === 'multipart/form-data') {
+                delete headers['Content-Type']
+            }
+        } else {
+            headers['Content-Type'] = 'application/json'
+            apiBody = JSON.stringify(params)
+        }
+
+
+
+        return CallRequest(path, {
+            method: method,
+            headers: headers,
+            body: apiBody,
+        })
+    })
 
     // TODO:
     // ThrottleApi
@@ -48,7 +50,8 @@ const useApi = () => {
     //
 
     return {
-        BaseApi
+        QueryApi,
+        SubmitApi
     }
 }
 

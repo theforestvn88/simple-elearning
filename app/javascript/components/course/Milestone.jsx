@@ -24,7 +24,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     const onDeleteMilestone = (event) => {
         event.preventDefault()
 
-        RequireAuthorizedApi('DELETE', ApiEndPoint, {}, {})
+        RequireAuthorizedApi('DELETE', ApiEndPoint)
             .then((response) => {
                 if (response.ok) {
                     if (onDeleteSuccess) {

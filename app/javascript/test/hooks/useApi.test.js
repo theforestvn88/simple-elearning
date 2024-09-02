@@ -6,7 +6,7 @@ describe("useApi Hook", () => {
     it("get", () => {
         const { result } = renderHook(() => useApi())
         act(() => {
-            result.current.BaseApi("GET", "/api/v1/courses", {}, {page: 1})
+            result.current.QueryApi("/api/v1/courses", {page: 1})
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
@@ -18,7 +18,7 @@ describe("useApi Hook", () => {
     it("post", () => {
         const { result } = renderHook(() => useApi())
         act(() => {
-            result.current.BaseApi("POST", "/api/v1/post-something", {"X-Auth-Token": "fake-token"}, {x: 1, y: 2})
+            result.current.SubmitApi("POST", "/api/v1/post-something", {x: 1, y: 2}, {"X-Auth-Token": "fake-token"})
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
@@ -34,7 +34,7 @@ describe("useApi Hook", () => {
         formData.set('y', 2)
 
         act(() => {
-            result.current.BaseApi("PUT", "/api/v1/upload", {"Content-Type": "multipart/form-data", "X-Auth-Token": "fake-token"}, formData)
+            result.current.SubmitApi("PUT", "/api/v1/upload", formData, {"Content-Type": "multipart/form-data", "X-Auth-Token": "fake-token"})
         })
 
         expect(fetchMock).toHaveBeenCalledWith(

@@ -12,7 +12,7 @@ const Lesson = () => {
 
     useEffect(() => {
         const lessonUrl = `/api/v1/${subject}/${identify}/courses/${params.course_id}/milestones/${params.milestone_id}/lessons/${params.id}`
-        RequireAuthorizedApi('GET', lessonUrl, {}, {})
+        RequireAuthorizedApi('GET', lessonUrl)
             .then((res) => {
                 if (res.ok) {
                     return res.json()
@@ -42,7 +42,7 @@ const Lesson = () => {
 
         const deleteLessonUrl = `/api/v1/${subject}/${identify}/courses/${params.course_id}/milestones/${params.milestone_id}/lessons/${params.id}`
 
-        RequireAuthorizedApi('DELETE', deleteLessonUrl, {}, {})
+        RequireAuthorizedApi('DELETE', deleteLessonUrl)
             .then((response) => {
                 if (response.ok) {
                     navigate(`/courses/${params.course_id}`)

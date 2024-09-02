@@ -9,7 +9,7 @@ const Assignments = () => {
     const [currPage, setCurrPage] = useState(1)
 
     useEffect(() => {
-        RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/assignments`, {}, {page: currPage})
+        RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/assignments`, {page: currPage})
             .then((response) => {
                 if (response.ok) {
                     return response.json()

@@ -43,24 +43,23 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
 
     const updateSubmit = async (event) => {
         event.preventDefault()
-        RequireAuthorizedApi('PUT', `/api/v1/users/${profile.id}`, {
-            'Content-Type': 'multipart/form-data'
-        }, updateProfile)
-        .then((response) => {
-            if (response.ok) {
-                return response.json()
-            } else if (response.status == 401) {
-                navigate('/auth/login')
-                return
-            }
 
-            throw new Error('Something went wrong!')
-        })
-        .then((updateProfile) => {
-            onSubmitSuccess(updateProfile)
-        })
-        .catch((error) => {
-        })
+        RequireAuthorizedApi('PUT', `/api/v1/users/${profile.id}`, updateProfile)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json()
+                } else if (response.status == 401) {
+                    navigate('/auth/login')
+                    return
+                }
+
+                throw new Error('Something went wrong!')
+            })
+            .then((updateProfile) => {
+                onSubmitSuccess(updateProfile)
+            })
+            .catch((error) => {
+            })
     }
 
     return (

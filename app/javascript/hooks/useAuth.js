@@ -7,7 +7,7 @@ const useAuth = (subject, identify) => {
     const Domain = `${subject}/${identify}`
     const DomainAuthCacheKey = `${AuthCacheKey}/${Domain}`
 
-    const { BaseApi } = useApi()
+    const { QueryApi, SubmitApi } = useApi()
     const [authInfo, setAuthInfo] = useState(JSON.parse(localStorage.getItem(DomainAuthCacheKey) || '{}'))
     
     const saveAuthInfo = (newAuthInfo) => {
@@ -57,8 +57,10 @@ const useAuth = (subject, identify) => {
       setAuthInfo({})
     }, [])
 
-    const RequireAuthorizedApi = useCallback(async (method, path, headers, params) => {
-      return BaseApi(method, path, { ...headers, 'X-Auth-Token': authInfo.token }, params)
+    const RequireAuthorizedApi = useCallback(async (method, path, params = {}, headers = {}) => {
+      const authHeaders = { ...headers, 'X-Auth-Token': authInfo.token }
+
+      return (method === 'GET' ? QueryApi(path, params, authHeaders) : SubmitApi(method, path, params, authHeaders))
         .then((response) => {
           if (response.status == 401) { // handle unauthorized
             clearAuth()
@@ -69,12 +71,12 @@ const useAuth = (subject, identify) => {
 
     const login = useCallback(async (loginParams) => {
       return handleAuthSuccess(
-        BaseApi('POST', `/api/auth/${Domain}/login`, {}, loginParams)
+        SubmitApi('POST', `/api/auth/${Domain}/login`, loginParams)
       )
     }, [])
     
     const logout = useCallback(async () => {
-      return RequireAuthorizedApi('DELETE', `/api/auth/${Domain}/logout`, {}, {})
+      return RequireAuthorizedApi('DELETE', `/api/auth/${Domain}/logout`)
         .then((response) => {
           if (isSuccess(response.status)) {
             clearAuth()
@@ -87,7 +89,7 @@ const useAuth = (subject, identify) => {
 
     const signup = useCallback(async (signupParams) => {
       return handleAuthSuccess(
-        BaseApi('POST', `/api/auth/${Domain}/signup`, {}, signupParams)
+        SubmitApi('POST', `/api/auth/${Domain}/signup`, signupParams)
       )
     }, [])
 
@@ -101,12 +103,12 @@ const useAuth = (subject, identify) => {
 
     const refreshToken = useCallback(async () => {
       return handleAuthSuccess(
-        RequireAuthorizedApi('POST', `/api/auth/${Domain}/refresh_token`, {}, {})
+        RequireAuthorizedApi('POST', `/api/auth/${Domain}/refresh_token`)
       )
     }, [authInfo])
     
     const changePassword = useCallback(async (params) => {
-      return RequireAuthorizedApi('PUT', `/api/auth/${Domain}/password/update`, {}, params)
+      return RequireAuthorizedApi('PUT', `/api/auth/${Domain}/password/update`, params)
         .then((response) => {
           if (response.ok) {
             clearAuth()

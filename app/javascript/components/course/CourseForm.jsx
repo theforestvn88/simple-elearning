@@ -17,25 +17,23 @@ const CourseForm = ({ course, submitEndPoint, submitMethod, onSubmitSuccess, onS
   const onSubmit = async (event) => {
     event.preventDefault()
 
-    RequireAuthorizedApi(submitMethod, submitEndPoint, {
-        'Content-Type': 'multipart/form-data'
-    }, courseData)
-    .then((response) => {
-      if (response.ok) {
-          return response.json()
-      } else if (response.status == 401) {
-          navigate('/auth/login')
-          return
-      }
+    RequireAuthorizedApi(submitMethod, submitEndPoint, courseData)
+      .then((response) => {
+        if (response.ok) {
+            return response.json()
+        } else if (response.status == 401) {
+            navigate('/auth/login')
+            return
+        }
 
-      throw new Error('Something went wrong!')
-    })
-    .then((responseCourse) => {
-      onSubmitSuccess(responseCourse)
-    })
-    .catch((error) => {
-      onSubmitError(error)
-    })
+        throw new Error('Something went wrong!')
+      })
+      .then((responseCourse) => {
+        onSubmitSuccess(responseCourse)
+      })
+      .catch((error) => {
+        onSubmitError(error)
+      })
   }
 
   return (
