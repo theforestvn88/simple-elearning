@@ -12,7 +12,7 @@ const useApiQuery = (path, requiredAuthorized = true, apiVersion = 1) => {
     useEffect(() => {
         if (query === null) return
 
-        setResponseData({data: {}, loading: true, error: null})
+        setResponseData({...responseData, loading: true})
 
         const apiUrl = `/api/v${apiVersion}/${subject}/${identify}${path}`
         const queryRequest = requiredAuthorized ? RequireAuthorizedApi('GET', apiUrl, query) : QueryApi(apiUrl, query)

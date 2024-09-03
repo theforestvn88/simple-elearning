@@ -1,35 +1,22 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { useAppContext } from "../context/AppProvider"
 import Paginaton from "./Pagination"
+import useApiQuery from "../hooks/useApiQuery"
 
 const Assignments = () => {
-    const { subject, identify, RequireAuthorizedApi } = useAppContext()
-    const [assignmentsData, setAssignmentsData] = useState({ assignments: [], pagination: null })
+    const { setQuery, responseData } = useApiQuery('/assignments')
     const [currPage, setCurrPage] = useState(1)
 
     useEffect(() => {
-        RequireAuthorizedApi('GET', `/api/v1/${subject}/${identify}/assignments`, {page: currPage})
-            .then((response) => {
-                if (response.ok) {
-                    return response.json()
-                }
-
-                throw new Error('Something went wrong!')
-            })
-            .then((responseAssignmentsData) => {
-                setAssignmentsData(responseAssignmentsData)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+        setQuery({page: currPage})
     }, [currPage])
 
     const AssignmentLink = ({assignment}) => (
         <tr key={assignment.id}>
             <td>
+                <span>You're assigned to</span>
                 <Link to={`../${assignment.assignable_path}`}>
-                    You're assigned to [{`${assignment.assignable_type}.${assignment.assignable_id}] ${assignment.assignable_name}`}
+                    [{`${assignment.assignable_type}.${assignment.assignable_id}] ${assignment.assignable_name}`}
                 </Link>
             </td>
             <td>{assignment.created_time}</td>
@@ -38,26 +25,32 @@ const Assignments = () => {
     
     return (
         <>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Assignment</th>
-                        <th>Time</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    {assignmentsData.assignments.map((assignment) => <AssignmentLink assignment={assignment} />)}
-                </tbody>
-            </table>
+            {responseData.loading ? (
+                <div>Loading ...</div>
+            ) : (
+                <>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Assignment</th>
+                            <th>Time</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {responseData.data.assignments && responseData.data.assignments.map((assignment) => <AssignmentLink assignment={assignment} />)}
+                    </tbody>
+                </table>
 
-            <br />
+                <br />
 
-            {assignmentsData.pagination && 
-                <Paginaton
-                    pages={assignmentsData.pagination.pages} 
-                    currentPage={currPage} 
-                    selectedPage={setCurrPage} 
-                    totalPage={assignmentsData.pagination.total} />}
+                {responseData.pagination && 
+                    <Paginaton
+                        pages={responseData.pagination.pages} 
+                        currentPage={currPage} 
+                        selectedPage={setCurrPage} 
+                        totalPage={responseData.pagination.total} />}
+                </>
+            )}
         </>
     )
 }
