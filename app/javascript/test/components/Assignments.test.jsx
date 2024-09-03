@@ -4,6 +4,7 @@ import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
 import Assignments from '../../components/Assignments'
 import { MemoryRouter } from 'react-router-dom'
 import AppProvider from '../../context/AppProvider'
+import { PaginationTests } from '../common/PaginationTests'
 
 describe('Assignments', () => {
     const fakeAssignments = [
@@ -27,7 +28,6 @@ describe('Assignments', () => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
     })
-
     
     it('show assignments list', async () => {
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>))
@@ -42,4 +42,6 @@ describe('Assignments', () => {
             expect(screen.getByText(assignment.created_time)).toBeInTheDocument()
         })
     })
+
+    PaginationTests(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>, '/assignments')
 })

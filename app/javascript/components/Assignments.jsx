@@ -29,26 +29,25 @@ const Assignments = () => {
                 <div>Loading ...</div>
             ) : (
                 <>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Assignment</th>
-                            <th>Time</th> 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {responseData.data.assignments && responseData.data.assignments.map((assignment) => <AssignmentLink assignment={assignment} />)}
-                    </tbody>
-                </table>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Assignment</th>
+                                <th>Time</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {responseData.data.assignments && responseData.data.assignments.map((assignment) => <AssignmentLink assignment={assignment} />)}
+                        </tbody>
+                    </table>
 
-                <br />
+                    <br />
 
-                {responseData.pagination && 
-                    <Paginaton
-                        pages={responseData.pagination.pages} 
-                        currentPage={currPage} 
-                        selectedPage={setCurrPage} 
-                        totalPage={responseData.pagination.total} />}
+                    {responseData.data.pagination && 
+                        <Paginaton
+                            pagination={responseData.data.pagination}  
+                            currentPage={currPage} 
+                            selectedPage={setCurrPage} />}
                 </>
             )}
         </>

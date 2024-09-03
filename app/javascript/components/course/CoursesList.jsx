@@ -62,10 +62,9 @@ const CoursesList = () => {
 
           {responseData.data.pagination && (
             <Paginaton 
-              pages={responseData.data.pagination.pages} 
+              pagination={responseData.data.pagination} 
               currentPage={currPage} 
-              selectedPage={setCurrPage} 
-              totalPage={responseData.data.pagination.total} />
+              selectedPage={setCurrPage} />
           )}
         </>
       )}
