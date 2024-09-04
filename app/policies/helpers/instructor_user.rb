@@ -5,15 +5,15 @@ module Helpers
         extend ActiveSupport::Concern
 
         def belong_to_same_partner?
-            @user&.partner_id == @record.partner_id
+            @user && @user.partner_id == @record.partner_id
         end
 
         def instructor?
-            @user.is_a?(::Instructor)
+            @user && @user.is_a?(::Instructor)
         end
 
         def administrator?
-            @user.administrator?
+            @user && @user.administrator?
         end
 
         def partner_instructor?

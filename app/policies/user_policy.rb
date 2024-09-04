@@ -16,6 +16,6 @@ class UserPolicy < ApplicationPolicy
     private
 
         def is_same_user?
-            @user&.id == @record.id
+            @user && (@user.id == @record.id)
         end
 end

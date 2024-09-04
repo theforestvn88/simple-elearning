@@ -5,7 +5,7 @@ FactoryBot.define do
     password_confirmation { "0123456789" }
     name { Faker::Internet.username }
     introduction { "MyText" }
-    info { "" }
+    info { {} }
     rank { "Lecturer" }
     association :partner
   end
@@ -16,7 +16,7 @@ FactoryBot.define do
     password_confirmation { "0123456789" }
     name { Faker::Internet.username }
     introduction { "MyText" }
-    info { "" }
+    info { {} }
     rank { "Lecturer" }
     association :partner
 

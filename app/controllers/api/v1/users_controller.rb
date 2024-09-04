@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
     module V1
         class UsersController < ::ApiController
@@ -29,7 +31,7 @@ module Api
             private
 
                 def set_user
-                    @user = User.find(params[:id])
+                    @user = ::User.find(params[:id])
                 end
 
                 def user_params

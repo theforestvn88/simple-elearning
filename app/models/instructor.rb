@@ -24,4 +24,16 @@ class Instructor < ApplicationRecord
     def self.admin_rank
         self.ranks[:administrator]
     end
+
+    def title
+        info['title']
+    end
+
+    def location
+        info['location']
+    end
+
+    def social_links
+        info['social_links']
+    end
 end
