@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:show, :update, :destroy]
-      resources :instructors, only: [:show, :update, :destroy]
+      resources :instructors, only: [:create, :show, :update, :destroy]
 
       namespace :instructor do
         scope '/:identify' do
@@ -34,7 +34,6 @@ Rails.application.routes.draw do
             get '/:id', to: 'lessons#show', as: :lesson_detail
           end
         end
-
 
         post '/presigned_url', to: 'direct_upload#create', as: :presigned
       end

@@ -8,20 +8,20 @@ module Helpers
             @user && @user.partner_id == @record.partner_id
         end
 
-        def instructor?
-            @user && @user.is_a?(::Instructor)
+        def instructor?(x = @user)
+            x && x.is_a?(::Instructor)
         end
 
-        def administrator?
-            @user && @user.administrator?
+        def administrator?(x = @user)
+            x && x.administrator?
         end
 
-        def partner_instructor?
-            instructor? && belong_to_same_partner?
+        def partner_instructor?(x = @user)
+            instructor?(x) && belong_to_same_partner?
         end
 
-        def partner_admin?
-            partner_instructor? && administrator?
+        def partner_admin?(x = @user)
+            partner_instructor?(x) && administrator?(x)
         end
     end
 end

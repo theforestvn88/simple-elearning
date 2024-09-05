@@ -40,6 +40,51 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
         }
     end
 
+    test 'verify instructor policy when create an instructor' do
+        policy_mock = Minitest::Mock.new
+        policy_mock.expect :create?, false, []
+
+        InstructorPolicy.stub :new, policy_mock do
+            post api_v1_instructors_url, headers: { "X-Auth-Token" => "Bearer #{@token}" }, params: { 
+                instructor: { 
+                    name: 'name',
+                    rank: 'professor',
+                } 
+            }, as: :json
+        end
+
+        policy_mock.verify
+    end
+    
+    test 'create instructor' do
+        instructor_params = {
+            email: 'instructor1@example.com', 
+            name: 'name',
+            rank: 'professor'
+        }
+
+        mock_instructor_creator_service = Minitest::Mock.new
+        mock_instructor_creator_service.expect :call, 
+            ::InstructorCreateService::Result.new(true, ::Instructor.new(instructor_params.merge(id: 1000, partner_id: @admin.partner_id)), 'random_password'), 
+            **instructor_params.merge(partner_id: @admin.partner_id)
+
+        token = instructor_sign_in(@admin)
+
+        ::InstructorCreateService.stub :new, -> { mock_instructor_creator_service } do
+            post api_v1_instructors_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: { 
+                instructor: instructor_params
+            }, as: :json
+
+            assert_response :success
+            assert_equal response.parsed_body['name'], instructor_params[:name]
+            assert_equal response.parsed_body['rank'], instructor_params[:rank]
+            assert_equal response.parsed_body['can_edit'], true
+            assert_equal response.parsed_body['can_delete'], true
+        end
+
+        mock_instructor_creator_service.verify
+    end
+
     test 'verify instructor policy when update an instructor' do
         policy_mock = Minitest::Mock.new
         policy_mock.expect :update?, false, []

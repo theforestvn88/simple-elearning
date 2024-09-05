@@ -26,14 +26,14 @@ class Instructor < ApplicationRecord
     end
 
     def title
-        info['title']
+        info&.dig('title')
     end
 
     def location
-        info['location']
+        info&.dig('location')
     end
 
     def social_links
-        info['social_links']
+        info&.dig('social_links')
     end
 end
