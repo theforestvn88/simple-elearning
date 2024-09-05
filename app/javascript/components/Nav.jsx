@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppProvider"
 import UserAvatar from "./UserAvatar"
 
-const Nav = ({ basePath, showAuth = true }) => {
+const Nav = ({ title, basePath, showAuth = true, showUser = true }) => {
     const navigate = useNavigate()
     const { auth } = useAppContext()
 
@@ -17,15 +17,15 @@ const Nav = ({ basePath, showAuth = true }) => {
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light p-5 mb-5">
-            <Link to={basePath} className="navbar-brand">Open Courses</Link>
-            {showAuth && <>
+            <Link to={basePath} className="navbar-brand partner-title">{ title || 'Open Courses'}</Link>
+            {showUser && <>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
                 <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                         { !auth.info.token ? (
-                                <ul className="navbar-nav">
+                                showAuth && <ul className="navbar-nav">
                                     <li className="nav-item">
                                         <Link to="/auth/login" className="nav-link">Log In</Link>
                                     </li>
@@ -40,8 +40,8 @@ const Nav = ({ basePath, showAuth = true }) => {
                                     </a>
                 
                                     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <Link to={`/account/${auth.info.user?.id}/profile`} className="dropdown-item">Profile</Link>
-                                        <Link to={`/account/${auth.info.user?.id}/settings`} className="dropdown-item">Settings</Link>
+                                        <Link to={`${basePath}/account/${auth.info.user?.id}/profile`} className="dropdown-item">Profile</Link>
+                                        <Link to={`${basePath}/account/${auth.info.user?.id}/settings`} className="dropdown-item">Settings</Link>
                                         <button onClick={logOut} className="btn btn-dark dropdown-item">
                                             Log Out
                                         </button>

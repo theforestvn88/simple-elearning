@@ -4,6 +4,10 @@
 @import 'dropzone/dist/basic.css';
 @import 'dropzone/dist/dropzone.css';
 
+.partner-title {
+    text-transform: capitalize;
+}
+
 .breadcrumbs {
     margin-bottom: 20px;
     font-size: 16px;

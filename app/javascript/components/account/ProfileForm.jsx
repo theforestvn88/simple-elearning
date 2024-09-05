@@ -5,21 +5,21 @@ import SingleFileUploader from "../SingleFileUploader"
 
 const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const navigate = useNavigate()
-    const { RequireAuthorizedApi } = useAppContext()
+    const { subject, RequireAuthorizedApi } = useAppContext()
 
     const [profile, setProfile] = useState({...userProfile})
 
     const updateProfile = new FormData()
     const onChangeInfo = (event) => {
-        updateProfile.set(`user[${event.target.name}]`, event.target.value)
+        updateProfile.set(`${subject}[${event.target.name}]`, event.target.value)
     }
     
     const updateAvatar = (image) => {
-        updateProfile.set('user[avatar]', image)
+        updateProfile.set(`${subject}[avatar]`, image)
     }
 
     const updateSocialLinks = (social_links) => {
-        updateProfile.set('user[social_links]', social_links)
+        updateProfile.set(`${subject}[social_links]`, social_links)
 
         setProfile({
             ...profile,
@@ -44,7 +44,7 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const updateSubmit = async (event) => {
         event.preventDefault()
 
-        RequireAuthorizedApi('PUT', `/api/v1/users/${profile.id}`, updateProfile)
+        RequireAuthorizedApi('PUT', `/api/v1/${subject}s/${profile.id}`, updateProfile)
             .then((response) => {
                 if (response.ok) {
                     return response.json()

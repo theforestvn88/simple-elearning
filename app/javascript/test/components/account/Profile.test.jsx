@@ -29,7 +29,7 @@ describe('Profile', () => {
         localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1', avatar: { url: 'avatar-url' } }})
         fetchMockReturn(fakeUser1)
 
-        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='user' identify='*'><Profile /></AppProvider></MemoryRouter>))
 
         expect(fetchMock).toHaveBeenCalledWith(
             '/api/v1/users/1', 
@@ -58,7 +58,7 @@ describe('Profile', () => {
         localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
         fetchMockReturn({...fakeUser1, can_edit: true})
 
-        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='user' identify='*'><Profile /></AppProvider></MemoryRouter>))
 
         mockUseUploader()
         await act( async () => {
@@ -108,7 +108,7 @@ describe('Profile', () => {
         localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
         fetchMockReturn({...fakeUser1, can_edit: true})
 
-        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='user' identify='*'><Profile /></AppProvider></MemoryRouter>))
 
         await act( async () => {
             fireEvent.click(screen.getByRole('button', { name: 'Edit Profile'}))
@@ -131,7 +131,7 @@ describe('Profile', () => {
         localStorageMockReturn({token: 'xxx', user: { id: 1, name: 'User1' }})
         fetchMockReturn({...fakeUser1, can_delete: true})
 
-        await act( async () => render(<MemoryRouter><AppProvider><Profile /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='user' identify='*'><Profile /></AppProvider></MemoryRouter>))
 
         fetchMock.mockRestore()
 

@@ -10,7 +10,6 @@ const Home = () => {
   
   useEffect(() => {
     if (auth.hasBeenExpiredToken()) {
-      console.log("EXPIRE ....")
       navigate("/auth/login")
     } else {
       navigate("courses")
@@ -38,8 +37,8 @@ const Home = () => {
       <Intro />
     ) : (
       <div className="container py-5">
-        <Nav basePath='/courses' />
-        <Breadcrumbs homePath='/courses' />
+        <Nav basePath='' />
+        <Breadcrumbs homePath='' />
         <Outlet />
       </div>
     ))

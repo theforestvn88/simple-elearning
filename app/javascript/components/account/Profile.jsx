@@ -11,15 +11,13 @@ import UserAvatar from "../UserAvatar"
 const Profile = () => {
     const navigate = useNavigate()
     const { QueryApi } = useApi()
-    const { auth, clearAuth, RequireAuthorizedApi } = useAppContext()
+    const { subject, auth, clearAuth, RequireAuthorizedApi } = useAppContext()
     const params = useParams()
 
     const [editMode, setEditMode] = useState(false)
 
     const [profile, setProfile] = useState({
-        social_links: [],
-        skills: [],
-        certificates: []
+        social_links: []
     })
 
     const [onDeleteAccount, setOnDeleteAccount] = useState(false)
@@ -33,7 +31,7 @@ const Profile = () => {
     const deleteAccount = () => {
         setOnDeleteAccount(true)
 
-        RequireAuthorizedApi('DELETE', `/api/v1/users/${profile.id}`)
+        RequireAuthorizedApi('DELETE', `/api/v1/${subject}s/${profile.id}`)
             .then((response) => {
                 if (response.ok) {
                     setOnDeleteAccount(false)
@@ -53,7 +51,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        QueryApi(`/api/v1/users/${params.id}`, {}, {'X-Auth-Token': auth.info.token})
+        QueryApi(`/api/v1/${subject}s/${params.id}`, {}, {'X-Auth-Token': auth.info.token})
             .then((response) => {
                 if (response.ok) {
                     return response.json()
@@ -85,6 +83,7 @@ const Profile = () => {
                                         <UserAvatar user={profile} size={150} showName={false} />
                                         <div className="mt-3">
                                             <h4>{profile.name}</h4>
+                                            {profile.rank && <p className="text-secondary mb-1">{profile.rank}</p>}
                                             <p className="text-secondary mb-1">{profile.title}</p>
                                             <p className="text-muted font-size-sm">{profile.location}</p>
                                         </div>
@@ -94,7 +93,7 @@ const Profile = () => {
 
                             <div className="card mt-3">
                                 <ul className="list-group list-group-flush">
-                                    {profile.social_links.map((social) => (
+                                    {profile.social_links && profile.social_links.map((social) => (
                                         <li key={social.id} className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                             <h6 className="mb-0">{social.name}</h6>
                                             <a href={social.link} className="text-secondary">{social.link}</a>
@@ -110,11 +109,11 @@ const Profile = () => {
                                 <p>{profile.introduction}</p>
                             </div>
 
-                            <div className="row gutters-sm">
+                            {profile.skills && <div className="row gutters-sm">
                                 <div className="card h-100">
                                     <div className="card-body">
                                         <h6 className="d-flex align-items-center mb-3">Skills</h6>
-                                        {(profile.skills).map((skill) => (
+                                        {profile.skills.map((skill) => (
                                             <div key={skill.name}>
                                                 <small>{skill.name}</small>
                                                 <div className="progress mb-3" style={{height: '5px'}}>
@@ -124,12 +123,12 @@ const Profile = () => {
                                         ))}
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row gutters-sm mt-3">
+                            </div>}
+                            {profile.certificates && <div className="row gutters-sm mt-3">
                                 <div className="card h-100">
                                     <div className="card-body">
                                         <h6 className="d-flex align-items-center mb-3">Certificates</h6>
-                                        {(profile.certificates).map((cert) => (
+                                        {profile.certificates.map((cert) => (
                                             <div key={cert.name}>
                                                 <small>{cert.name}</small>
                                                 <div className="progress mb-3" style={{height: '5px'}}>
@@ -139,7 +138,7 @@ const Profile = () => {
                                         ))}
                                     </div>
                                 </div>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                     

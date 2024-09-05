@@ -24,6 +24,7 @@ describe('LogIn', () => {
 
         await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
 
+        expect(screen.getByRole('link', { name: 'Open Courses', to: '/' })).toBeInTheDocument()
         expect(screen.getByRole('link', { name: 'Log In', to: '/auth/login' })).toBeInTheDocument()
         expect(screen.getByRole('link', { name: 'Sign Up', to: '/auth/signup' })).toBeInTheDocument()
     })
@@ -31,10 +32,21 @@ describe('LogIn', () => {
     it('authorized user', async () => {
         mockAuth({token: 'xxx', user: { name: 'User A' }})
 
-        await act( async () => render(<MemoryRouter><AppProvider><Nav /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='user' identify='*'><Nav /></AppProvider></MemoryRouter>))
 
+        expect(screen.getByRole('link', { name: 'Open Courses', to: '/' })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: 'Log Out'})).toBeInTheDocument()
         expect(screen.getByText('User A')).toBeInTheDocument()
+    })
+
+    it('with title and base path', async () => {
+        mockAuth({token: 'xxx', user: { name: 'Instructor 1' }})
+
+        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='red-devil'><Nav title='red devil' basePath='/partners/red-devil' /></AppProvider></MemoryRouter>))
+
+        expect(screen.getByRole('link', { name: 'red devil', to: '/partners/red-devil'})).toHaveClass('partner-title')
+        expect(screen.getByRole('button', { name: 'Log Out'})).toBeInTheDocument()
+        expect(screen.getByText('Instructor 1')).toBeInTheDocument()
     })
     
     it('logout user with valid token', async () => {
