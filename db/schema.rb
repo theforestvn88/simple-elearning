@@ -144,7 +144,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_22_080112) do
     t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name", "email", "slug"], name: "index_partner_name_email_slug_uniqueness", unique: true
+    t.index ["email"], name: "index_partners_on_email", unique: true
+    t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
 
   create_table "users", force: :cascade do |t|

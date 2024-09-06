@@ -12,4 +12,11 @@ class PartnerTest < ActiveSupport::TestCase
     should have_many(:courses).dependent(:nullify)
     should have_one_attached(:logo)
   end
+
+  test 'unique slug' do
+    assert_raises ActiveRecord::RecordNotUnique do
+      Partner.create(email: 'email1@example.com', name: 'partner1', slug: 'same-slug')
+      Partner.create(email: 'email2@example.com', name: 'partner2', slug: 'same-slug')
+    end
+  end
 end
