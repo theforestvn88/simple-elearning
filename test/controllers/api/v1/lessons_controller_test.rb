@@ -37,7 +37,7 @@ class ApiV1LessonsControllerTest < ActionDispatch::IntegrationTest
             "instructor" => {
                 "id" => @instructor.id,
                 "name" => @instructor.name,
-                "avatar" => rails_blob_path(@instructor.avatar, only_path: true)
+                "avatar" => { "url" => rails_blob_path(@instructor.avatar, only_path: true) }
             }
         }
     end
