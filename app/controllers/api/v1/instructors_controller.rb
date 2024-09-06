@@ -3,9 +3,13 @@
 module Api
     module V1
         class InstructorsController < ::InstructorApiController
-            before_action :authenticate!, except: [:show]
-            before_action :try_authenticate, only: [:show]
-            before_action :set_instructor, except: [:create]
+            before_action :authenticate!, except: [:index, :show]
+            before_action :try_authenticate, only: [:index, :show]
+            before_action :set_instructor, except: [:index, :create]
+
+            def index
+                @instructors = ::Instructor.where(**search_params)
+            end
 
             def show
                 authorize @instructor
@@ -67,6 +71,10 @@ module Api
                     permited_params = params.require(:instructor).permit(*permited_list)
                     info = (@instructor&.info || {}).merge(permited_params.extract!(:title, :location, :social_links))
                     permited_params.merge({info: info})
+                end
+
+                def search_params
+                    params.permit(:partner_id)
                 end
         end
     end

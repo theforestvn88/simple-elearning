@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:show, :update, :destroy]
-      resources :instructors, only: [:create, :show, :update, :destroy]
+      resources :instructors, only: [:index, :create, :show, :update, :destroy]
 
       namespace :instructor do
         scope '/:identify' do

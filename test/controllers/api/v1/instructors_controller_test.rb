@@ -4,10 +4,30 @@ require 'api_helper'
 class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
     setup do
         @partner = create(:partner)
-        @admin = create(:instructor, partner: @partner, rank: :administrator)
-        @instructor = create(:instructor, partner: @partner, rank: :professor)
-        # @other = create(:instructor, partner: @partner, rank: :professor)
+        @other_partner = create(:partner)
+        @admin = create(:instructor_with_avatar, partner: @partner, rank: :administrator)
+        @instructor = create(:instructor_with_avatar, partner: @partner, rank: :professor)
+        @instructor2 = create(:instructor_with_avatar, partner: @partner, rank: :lecturer)
+        @instructor3 = create(:instructor_with_avatar, partner: @partner, rank: :assistant_professor)
+        @other = create(:instructor, partner: @other_partner, rank: :professor)
         @token = instructor_sign_in(@instructor)
+    end
+
+    test 'query partner instructors list' do
+        token = instructor_sign_in(@admin)
+        get api_v1_instructors_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: {partner_id: @partner.id}, as: :json
+
+        assert_response :success
+        assert_equal response.parsed_body, [@admin, @instructor, @instructor2, @instructor3].map { |ins| 
+            {
+                "id" => ins.id,
+                "name" => ins.name,
+                "rank" => ins.rank,
+                "avatar" => {
+                    "url" => rails_blob_path(ins.avatar, only_path: true)
+                }
+            }
+        }
     end
 
     test 'verify instructor policy when show an instructor' do
@@ -36,6 +56,10 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             "location" => @instructor.location, 
             "rank" => "professor",
             "social_links"=> @instructor.social_links,
+            "avatar" => {
+                "byte_size"=> 4066, 
+                "url" => rails_blob_path(@instructor.avatar, only_path: true), 
+                "name" => "test_img.png"},
             "can_edit"=>true
         }
     end
@@ -120,6 +144,10 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             "introduction" => "new introduction",
             "rank" => "professor",
             "social_links" => [{"id"=>0, "name"=>"Google", "link"=>"https://google.com"}],
+            "avatar" => {
+                "byte_size"=> 4066, 
+                "url" => rails_blob_path(@instructor.avatar, only_path: true), 
+                "name" => "test_img.png"},
             "can_edit"=>true
         }
     end
