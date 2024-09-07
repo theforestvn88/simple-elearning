@@ -30,4 +30,12 @@ class InstructorTest < ActiveSupport::TestCase
   test 'admin rank' do
     assert_equal 'President', Instructor.admin_rank
   end
+
+  test 'rank name' do
+    assert_equal 'Lecturer', Instructor.new(rank: :lecturer).rank_name
+    assert_equal 'Assistant Professor', Instructor.new(rank: :assistant_professor).rank_name
+    assert_equal 'Associate Professor', Instructor.new(rank: :associate_professor).rank_name
+    assert_equal 'Professor', Instructor.new(rank: :professor).rank_name
+    assert_equal 'President', Instructor.new(rank: :administrator).rank_name
+  end
 end

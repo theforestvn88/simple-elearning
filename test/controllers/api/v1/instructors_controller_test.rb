@@ -22,7 +22,7 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             {
                 "id" => ins.id,
                 "name" => ins.name,
-                "rank" => ins.rank,
+                "rank" => ins.rank_name,
                 "avatar" => {
                     "url" => rails_blob_path(ins.avatar, only_path: true)
                 }
@@ -54,7 +54,7 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             "title" => @instructor.title, 
             "introduction" => @instructor.introduction, 
             "location" => @instructor.location, 
-            "rank" => "professor",
+            "rank" => @instructor.rank_name,
             "social_links"=> @instructor.social_links,
             "avatar" => {
                 "byte_size"=> 4066, 
@@ -86,10 +86,11 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             name: 'name',
             rank: 'professor'
         }
+        instructor = ::Instructor.new(instructor_params.merge(id: 1000, partner_id: @admin.partner_id))
 
         mock_instructor_creator_service = Minitest::Mock.new
         mock_instructor_creator_service.expect :call, 
-            ::InstructorCreateService::Result.new(true, ::Instructor.new(instructor_params.merge(id: 1000, partner_id: @admin.partner_id)), 'random_password'), 
+            ::InstructorCreateService::Result.new(true, instructor, 'random_password'), 
             **instructor_params.merge(partner_id: @admin.partner_id)
 
         token = instructor_sign_in(@admin)
@@ -100,8 +101,8 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             }, as: :json
 
             assert_response :success
-            assert_equal response.parsed_body['name'], instructor_params[:name]
-            assert_equal response.parsed_body['rank'], instructor_params[:rank]
+            assert_equal response.parsed_body['name'], instructor.name
+            assert_equal response.parsed_body['rank'], instructor.rank_name
             assert_equal response.parsed_body['can_edit'], true
             assert_equal response.parsed_body['can_delete'], true
         end
@@ -142,8 +143,8 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
             "title" => "new title",
             "location" => "new location",
             "introduction" => "new introduction",
-            "rank" => "professor",
             "social_links" => [{"id"=>0, "name"=>"Google", "link"=>"https://google.com"}],
+            "rank" => "Professor",
             "avatar" => {
                 "byte_size"=> 4066, 
                 "url" => rails_blob_path(@instructor.avatar, only_path: true), 

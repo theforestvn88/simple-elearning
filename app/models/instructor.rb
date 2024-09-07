@@ -36,4 +36,8 @@ class Instructor < ApplicationRecord
     def social_links
         info&.dig('social_links')
     end
+
+    def rank_name
+        ::Instructor.ranks[self.rank]
+    end
 end
