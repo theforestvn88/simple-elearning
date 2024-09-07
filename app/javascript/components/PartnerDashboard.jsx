@@ -5,7 +5,7 @@ const PartnerDashBoard = () => {
     const location = useLocation()
     const currentTab = useMemo(() => {
       const parts = location.pathname.split("/")
-      return parts[parts.length-1]
+      return parts[3]
     }, [location.pathname])
 
     return (<>
@@ -25,6 +25,13 @@ const PartnerDashBoard = () => {
                         to={`courses`}
                         className={currentTab=='courses' ? '' : 'text-decoration-none'}>
                         Courses
+                      </Link>
+                  </li>
+                  <li className="nav-item">
+                      <Link 
+                        to={`instructors`}
+                        className={currentTab=='instructors' ? '' : 'text-decoration-none'}>
+                        Instructors
                       </Link>
                   </li>
                 </ul>

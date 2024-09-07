@@ -139,7 +139,7 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
                         <div className="card-body">
                             <label>Social Links</label>
 
-                            {profile.social_links.map((social) => (
+                            {profile.social_links?.map((social) => (
                                 <div key={social.id} className="row align-items-center">
                                     <div className="col-auto my-1">
                                         <input

@@ -8,7 +8,8 @@ module Api
             before_action :set_instructor, except: [:index, :create]
 
             def index
-                @instructors = ::Instructor.where(**search_params)
+                partner = Partner.find_by(slug: params[:partner_slug])
+                @instructors = ::Instructor.where(**search_params.merge(partner_id: partner.id))
             end
 
             def show
@@ -74,7 +75,7 @@ module Api
                 end
 
                 def search_params
-                    params.permit(:partner_id)
+                    params.permit(:rank)
                 end
         end
     end

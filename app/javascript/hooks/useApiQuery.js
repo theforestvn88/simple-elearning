@@ -14,7 +14,8 @@ const useApiQuery = (path, requiredAuthorized = true, apiVersion = 1) => {
 
         setResponseData({...responseData, loading: true})
 
-        const apiUrl = `/api/v${apiVersion}/${subject}/${identify}${path}`
+        const apiPath = path.startsWith('/') ? `${subject}/${identify}${path}` : path
+        const apiUrl = `/api/v${apiVersion}/${apiPath}`
         const queryRequest = requiredAuthorized ? RequireAuthorizedApi('GET', apiUrl, query) : QueryApi(apiUrl, query)
         queryRequest
             .then((response) => {

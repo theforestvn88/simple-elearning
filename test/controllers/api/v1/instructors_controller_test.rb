@@ -15,7 +15,7 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
 
     test 'query partner instructors list' do
         token = instructor_sign_in(@admin)
-        get api_v1_instructors_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: {partner_id: @partner.id}, as: :json
+        get api_v1_instructors_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: {partner_slug: @partner.slug}, as: :json
 
         assert_response :success
         assert_equal response.parsed_body, [@admin, @instructor, @instructor2, @instructor3].map { |ins| 

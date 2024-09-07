@@ -35,8 +35,6 @@ const useApi = () => {
             apiBody = JSON.stringify(params)
         }
 
-
-
         return CallRequest(path, {
             method: method,
             headers: headers,

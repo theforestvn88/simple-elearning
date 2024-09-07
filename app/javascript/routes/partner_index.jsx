@@ -20,6 +20,8 @@ import SessionSetting from "../components/account/SessionSetting.jsx"
 import NotificationSetting from "../components/account/NotificationSetting.jsx"
 import BillingSetting from "../components/account/BillingSetting.jsx"
 import PartnerDashBoard from "../components/PartnerDashboard.jsx"
+import Instructors from "../components/instructor/Instructors.jsx"
+import NewInstructor from "../components/instructor/NewInstructor.jsx"
 
 const PartnerRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -32,6 +34,18 @@ const PartnerRouter = createBrowserRouter(
                 <Route
                     path="/partners/:slug/assignments"
                     element={<Assignments />} 
+                />
+                <Route
+                    path="/partners/:slug/instructors"
+                    element={<Instructors />} 
+                />
+                <Route
+                    path="/partners/:slug/instructors/new"
+                    element={<NewInstructor />} 
+                />
+                <Route
+                    path="/partners/:slug/instructors/:id"
+                    element={<Profile />} 
                 />
                 <Route 
                     path="/partners/:slug/courses"
