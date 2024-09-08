@@ -15,6 +15,7 @@ class ApiAuthInstructorSessionsControllerTest < ActionDispatch::IntegrationTest
     assert response.parsed_body['user'].present?
     assert_equal response.parsed_body['user']['id'], @instructor.id
     assert_equal response.parsed_body['user']['name'], @instructor.name
+    assert_equal response.parsed_body['user']['rank'], @instructor.rank
   end
 
   test 'instructor login to other partner page' do

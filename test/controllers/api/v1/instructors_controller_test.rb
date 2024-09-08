@@ -18,7 +18,7 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
         get api_v1_instructors_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, params: {partner_slug: @partner.slug}, as: :json
 
         assert_response :success
-        assert_equal response.parsed_body, [@admin, @instructor, @instructor2, @instructor3].map { |ins| 
+        assert_equal response.parsed_body, [@admin, @instructor, @instructor3, @instructor2].map { |ins| 
             {
                 "id" => ins.id,
                 "name" => ins.name,
@@ -42,7 +42,6 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
 
         policy_mock.verify
     end
-
     
     test 'show instructor profile' do
         get api_v1_instructor_url(@instructor), headers: { "X-Auth-Token" => "Bearer #{@token}" }, as: :json

@@ -9,6 +9,9 @@ class ApiAuthRegistrationsControllerTest < ActionDispatch::IntegrationTest
         assert response.parsed_body['token'].present?
         assert response.parsed_body['token_expire_at'].present?
         assert response.parsed_body['user'].present?
+        assert_equal response.parsed_body['user']['id'], User.last.id
+        assert_equal response.parsed_body['user']['name'], 'tester'
+        assert_equal response.parsed_body['user']['rank'], 'user'
     end
 
     test 'send verify email' do

@@ -17,12 +17,20 @@ class Instructor < ApplicationRecord
         administrator: 'President'
     }
 
+    scope :by_partner, -> (partner_id) { where(partner_id: partner_id) }
+    scope :search_by, -> (search_params) { search_params.empty? ? self : where(**search_params) }
+    scope :order_by_rank, -> { order(rank: :desc) }
+
     def self.default_rank
         self.ranks.values.first
     end
 
     def self.admin_rank
         self.ranks[:administrator]
+    end
+
+    def rank_name
+        ::Instructor.ranks[self.rank]
     end
 
     def title
@@ -35,9 +43,5 @@ class Instructor < ApplicationRecord
 
     def social_links
         info&.dig('social_links')
-    end
-
-    def rank_name
-        ::Instructor.ranks[self.rank]
     end
 end

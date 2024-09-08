@@ -9,7 +9,7 @@ module Api
 
             def index
                 partner = Partner.find_by(slug: params[:partner_slug])
-                @instructors = ::Instructor.where(**search_params.merge(partner_id: partner.id))
+                @instructors = ::Instructor.by_partner(partner.id).search_by(search_params).order_by_rank
             end
 
             def show

@@ -38,4 +38,16 @@ class InstructorTest < ActiveSupport::TestCase
     assert_equal 'Professor', Instructor.new(rank: :professor).rank_name
     assert_equal 'President', Instructor.new(rank: :administrator).rank_name
   end
+
+  test 'order by rank' do
+    partner = create(:partner)
+    instructor1 = create(:instructor, partner: partner, rank: :lecturer)
+    instructor2 = create(:instructor, partner: partner, rank: :assistant_professor)
+    instructor3 = create(:instructor, partner: partner, rank: :associate_professor)
+    instructor5 = create(:instructor, partner: partner, rank: :administrator)
+    instructor4 = create(:instructor, partner: partner, rank: :professor)
+
+
+    assert_equal ::Instructor.order_by_rank.all, [instructor5, instructor4, instructor3, instructor2, instructor1]
+  end
 end

@@ -14,6 +14,7 @@ class ApiAuthSessionsControllerTest < ActionDispatch::IntegrationTest
     assert response.parsed_body['user'].present?
     assert_equal response.parsed_body['user']['id'], @user.id
     assert_equal response.parsed_body['user']['name'], @user.name
+    assert_equal response.parsed_body['user']['rank'], @user.rank
     assert_equal response.parsed_body['user']['avatar']['url'], rails_blob_path(@user.avatar, only_path: true)
   end
 
