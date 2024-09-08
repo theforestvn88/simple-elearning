@@ -29,6 +29,7 @@ const useAuth = (subject, identify) => {
             ...authInfo.user,
             id: userInfo.id || authInfo.user?.id,
             name: userInfo.name || authInfo.user?.name,
+            rank: userInfo.rank || authInfo.user?.rank,
             avatar: {
               url: userInfo.avatar?.url || authInfo.user?.avatar?.url
             }

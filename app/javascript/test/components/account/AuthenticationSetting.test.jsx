@@ -3,7 +3,7 @@ import { fireEvent, render, screen, act } from '@testing-library/react'
 import react_router, { MemoryRouter } from 'react-router-dom'
 import AppProvider from '../../../context/AppProvider'
 import AuthenticationSetting from '../../../components/account/AuthenticationSetting'
-import { changePasswordSpy } from '../../mocks/useAuthMock'
+import { changePasswordSpy } from '../../mocks/useAppContextMock'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),

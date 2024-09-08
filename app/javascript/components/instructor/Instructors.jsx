@@ -5,9 +5,11 @@ import CardListPlaceHolders from "../CardListPlaceHolders"
 import EmptyList from "../EmptyList"
 import { Link } from "react-router-dom"
 import Paginaton from "../Pagination"
+import usePermission from "../../hooks/usePermission"
 
 const Instructors = () => {
     const { identify } = useAppContext()
+    const { canCreateInstructor } = usePermission()
     const { setQuery, responseData } = useApiQuery('instructors')
 
     useEffect(() => {
@@ -35,9 +37,9 @@ const Instructors = () => {
         ) : (
             <>
                 <div className="text-end mb-3">
-                    <Link to="new" className="btn link-underline-opacity-100-hover">
+                    {canCreateInstructor() && <Link to="new" className="btn link-underline-opacity-100-hover">
                         Add New Instructor
-                    </Link>
+                    </Link>}
                 </div>
 
                 <div className="container-fluid d-flex justify-content-start flex-wrap">

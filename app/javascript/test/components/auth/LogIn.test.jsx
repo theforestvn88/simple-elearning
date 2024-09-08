@@ -3,7 +3,7 @@ import { fireEvent, render, screen, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AppProvider from '../../../context/AppProvider'
 import LogIn from '../../../components/auth/LogIn'
-import { loginSpy } from '../../mocks/useAuthMock'
+import { loginSpy } from '../../mocks/useAppContextMock'
 
 describe('LogIn', () => {
     afterEach(() => {

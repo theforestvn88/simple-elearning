@@ -4,7 +4,7 @@ import react_router, { MemoryRouter } from 'react-router-dom'
 import AppProvider from '../../context/AppProvider'
 import Nav from '../../components/Nav'
 import flushPromises from '../helper/flushPromises'
-import { mockAuth, logoutSpy } from '../mocks/useAuthMock'
+import { mockAuth, logoutSpy } from '../mocks/useAppContextMock'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
