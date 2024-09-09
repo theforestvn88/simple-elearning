@@ -21,6 +21,28 @@ class ApiV1InstructorsControllerTest < ActionDispatch::IntegrationTest
         assert_equal response.parsed_body, [@admin, @instructor, @instructor3, @instructor2].map { |ins| 
             {
                 "id" => ins.id,
+                "email" => ins.email,
+                "name" => ins.name,
+                "rank" => ins.rank_name,
+                "avatar" => {
+                    "url" => rails_blob_path(ins.avatar, only_path: true)
+                }
+            }
+        }
+    end
+
+    test 'query instructors by email or name' do
+        token = instructor_sign_in(@admin)
+        get api_v1_instructors_url, 
+            headers: { "X-Auth-Token" => "Bearer #{token}" }, 
+            params: {partner_slug: @partner.slug, by_email_or_name: @instructor.email, limit: 2},
+            as: :json
+
+        assert_response :success
+        assert_equal response.parsed_body, [@instructor].map { |ins| 
+            {
+                "id" => ins.id,
+                "email" => ins.email,
                 "name" => ins.name,
                 "rank" => ins.rank_name,
                 "avatar" => {

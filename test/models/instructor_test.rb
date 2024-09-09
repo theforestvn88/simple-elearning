@@ -50,4 +50,14 @@ class InstructorTest < ActiveSupport::TestCase
 
     assert_equal ::Instructor.order_by_rank.all, [instructor5, instructor4, instructor3, instructor2, instructor1]
   end
+
+  test 'search by email or name' do
+    partner = create(:partner)
+    instructor1 = create(:instructor, partner: partner, rank: :professor, email: 'q1@example.com', name: 'xyz')
+    instructor2 = create(:instructor, partner: partner, rank: :lecturer, email: 'Q2@example.com', name: 'abc')
+    instructor3 = create(:instructor, partner: partner, rank: :lecturer, email: 'e3@example.com', name: 'ZZZ')
+
+    assert_equal ::Instructor.search_by({by_email_or_name: 'z'}), [instructor1, instructor3]
+    assert_equal ::Instructor.search_by({by_email_or_name: 'Q'}), [instructor1, instructor2]
+  end
 end

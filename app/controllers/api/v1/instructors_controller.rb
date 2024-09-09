@@ -10,6 +10,7 @@ module Api
             def index
                 partner = Partner.find_by(slug: params[:partner_slug])
                 @instructors = ::Instructor.by_partner(partner.id).search_by(search_params).order_by_rank
+                @instructors = @instructors.limit(params[:limit]) if params.has_key?(:limit)
             end
 
             def show
@@ -75,7 +76,7 @@ module Api
                 end
 
                 def search_params
-                    params.permit(:rank)
+                    params.permit(:by_email_or_name, :by_rank)
                 end
         end
     end

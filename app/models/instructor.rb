@@ -18,9 +18,18 @@ class Instructor < ApplicationRecord
     }
 
     scope :by_partner, -> (partner_id) { where(partner_id: partner_id) }
-    scope :search_by, -> (search_params) { search_params.empty? ? self : where(**search_params) }
-    scope :order_by_rank, -> { order(rank: :desc) }
+    scope :search_by, -> (search_params) {
+        query = self
 
+        if by_email_or_name = search_params[:by_email_or_name]
+            key = '%' + by_email_or_name.downcase + '%'
+            query = query.where("LOWER(email) LIKE ? OR LOWER(name) LIKE ?", key, key)
+        end
+
+        query
+    }
+    scope :order_by_rank, -> { order(rank: :desc) }
+    
     def self.default_rank
         self.ranks.values.first
     end
