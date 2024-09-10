@@ -22,22 +22,24 @@ Rails.application.routes.draw do
 
       scope '/user/*' do
         scope '/courses' do
-          get '/', to: 'courses#query', as: :query_courses
-          get '/:id', to: 'courses#show', as: :course_introduction
           # enroll
           # unenroll
           # bookmark
           # ...
-
-          scope '/:course_id/:milestone_id/lessons' do
-            get '/', to: 'lessons#index', as: :lessons_list
-            get '/:id', to: 'lessons#show', as: :lesson_detail
-          end
         end
 
         post '/presigned_url', to: 'direct_upload#create', as: :presigned
       end
 
+      scope '/courses' do
+        get '/', to: 'courses#query', as: :query_courses
+        get '/:id', to: 'courses#show', as: :course_introduction
+
+        scope '/:course_id/:milestone_id/lessons' do
+          get '/', to: 'lessons#index', as: :lessons_list
+          get '/:id', to: 'lessons#show', as: :lesson_detail
+        end
+      end
     end
 
     namespace :auth do

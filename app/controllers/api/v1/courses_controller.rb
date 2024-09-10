@@ -3,12 +3,17 @@ module Api
     class CoursesController < ApiController
       before_action :set_course, only: %i[show]
 
+      # /course(s)
       def query
         @pagy, @courses = pagy(Course.includes_cover.includes_partner.all)
         @pagination = pagy_metadata(@pagy).extract!(:series, :pages)
       end
 
       def show; end
+
+      # user/*/course(s) require authen
+      # enroll
+      # ...
 
       private
 
