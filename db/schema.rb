@@ -77,9 +77,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_22_080112) do
     t.bigint "assignee_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["assignable_id", "assignable_type"], name: "index_assignments_on_assignable_id_and_assignable_type"
+    t.index ["assignable_id", "assignable_type", "assignee_id", "assignee_type"], name: "assignments_uniqueness", unique: true
     t.index ["assignable_type", "assignable_id"], name: "index_assignments_on_assignable"
-    t.index ["assignee_id", "assignee_type"], name: "index_assignments_on_assignee_id_and_assignee_type"
     t.index ["assignee_type", "assignee_id"], name: "index_assignments_on_assignee"
   end
 

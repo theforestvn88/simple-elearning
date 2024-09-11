@@ -5,9 +5,9 @@ class CreateAssignments < ActiveRecord::Migration[7.1]
       t.references :assignee, polymorphic: true
 
       t.timestamps
+      
+      t.index %i[assignable_id assignable_type assignee_id assignee_type], name: :assignments_uniqueness, unique: true
     end
 
-    add_index :assignments, %i[assignable_id assignable_type]
-    add_index :assignments, %i[assignee_id assignee_type]
   end
 end

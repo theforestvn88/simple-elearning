@@ -17,4 +17,11 @@ class AssignmentTest < ActiveSupport::TestCase
     assert_equal @course.assignments, [assignment]
     assert_equal @instructor.assignments, [assignment]
   end
+
+  test 'uniqueness' do
+    Assignment.create(assignable: @course, assignee: @instructor)
+    assert_raise ActiveRecord::RecordNotUnique do
+      Assignment.create(assignable: @course, assignee: @instructor)
+    end
+  end
 end
