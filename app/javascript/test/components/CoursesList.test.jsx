@@ -1,5 +1,5 @@
 import React, { act } from 'react'
-import { fireEvent, render, screen, cleanup } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
 import { fakeCourses } from '../mocks/fakeCourses'
@@ -24,7 +24,7 @@ describe('CoursesList', () => {
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CoursesList /></AppProvider></MemoryRouter>))
 
         expect(fetchMock).toHaveBeenCalledWith(
-            '/api/v1/instructor/meta/courses?page=1', 
+            "/api/v1/courses?page=1", 
             {"body": null, "headers": {"Content-Type": "application/json"}, "method": "GET"}
         )
 
@@ -34,7 +34,11 @@ describe('CoursesList', () => {
         })
     })
 
-    PaginationTests(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CoursesList /></AppProvider></MemoryRouter>, '/courses')
+    PaginationTests(
+        <MemoryRouter><AppProvider subject='instructor' identify='meta'><CoursesList /></AppProvider></MemoryRouter>, 
+        'courses',
+        false // NO required authorized
+    )
 
     it('slient refresh will-expired-token', async () => {
         localStorageMockReturn({token: 'xxx', token_expire_at: (new Date(Date.now() + 1000*60*60)).toUTCString()})

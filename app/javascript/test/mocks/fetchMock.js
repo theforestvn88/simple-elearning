@@ -17,3 +17,7 @@ export const getSubmitBodyFromFetchMock = (fm) => {
     return Array.from(fm.mock.lastCall[1].body.entries())
           .reduce((acc, f) => ({ ...acc, [f[0]]: f[1] }), {})
 }
+
+// jest.spyOn(require('../../hooks/useRequest'), 'default').mockReturnValue({
+//   CallRequest: fetchMock
+// })

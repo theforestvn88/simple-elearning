@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import Paginaton from "./Pagination"
-import useApiQuery from "../hooks/useApiQuery"
+import Paginaton from "../Pagination"
+import useApiQuery from "../../hooks/useApiQuery"
 
 const Assignments = () => {
     const { setQuery, responseData } = useApiQuery('/assignments')
@@ -37,15 +37,15 @@ const Assignments = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {responseData.data.assignments && responseData.data.assignments.map((assignment) => <AssignmentLink assignment={assignment} />)}
+                            {responseData.data?.assignments && responseData.data?.assignments.map((assignment) => <AssignmentLink assignment={assignment} />)}
                         </tbody>
                     </table>
 
                     <br />
 
-                    {responseData.data.pagination && 
+                    {responseData.data?.pagination && 
                         <Paginaton
-                            pagination={responseData.data.pagination}  
+                            pagination={responseData.data?.pagination}  
                             currentPage={currPage} 
                             selectedPage={setCurrPage} />}
                 </>

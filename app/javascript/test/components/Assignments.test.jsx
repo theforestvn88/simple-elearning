@@ -1,10 +1,10 @@
 import React, { act } from 'react'
-import { fireEvent, render, screen, cleanup } from '@testing-library/react'
-import { fetchMock, fetchMockReturn } from '../mocks/fetchMock'
-import Assignments from '../../components/Assignments'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AppProvider from '../../context/AppProvider'
 import { PaginationTests } from '../common/PaginationTests'
+import Assignments from '../../components/assignment/Assignments'
+import { RequireAuthorizedApiSpy, MockApiReturn, mockAuth } from '../mocks/useAppContextMock'
 
 describe('Assignments', () => {
     const fakeAssignments = [
@@ -21,7 +21,8 @@ describe('Assignments', () => {
     const FakePagination = { pages: ['1', '2', 'gap', '3', '4'], total: 10 }
 
     beforeEach(() => {
-        fetchMockReturn({assignments: fakeAssignments, pagination: FakePagination })
+        mockAuth({token: 'xxx', user: { name: 'Instructor 1' }})
+        MockApiReturn({assignments: fakeAssignments, pagination: FakePagination })
     })
 
     afterEach(() => {
@@ -32,9 +33,8 @@ describe('Assignments', () => {
     it('show assignments list', async () => {
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>))
 
-        expect(fetchMock).toHaveBeenCalledWith(
-            '/api/v1/instructor/meta/assignments?page=1', 
-            {"body": null, "headers": {"Content-Type": "application/json"}, "method": "GET"}
+        expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
+            "GET", "/api/v1/subject/identify/assignments", {"page": 1}
         )
 
         fakeAssignments.forEach((assignment) => {
@@ -43,5 +43,5 @@ describe('Assignments', () => {
         })
     })
 
-    PaginationTests(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>, '/assignments')
+    PaginationTests(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>, 'subject/identify/assignments')
 })
