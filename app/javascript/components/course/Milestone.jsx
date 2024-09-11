@@ -62,16 +62,16 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     const LessonsList = () => (
         <div>
             {milestone.lessons?.map((lesson) => (
-                <div>
-                    <Link to={`milestones/${milestone.id}/lessons/${lesson.id}`} key={lesson.id}>
+                <div key={lesson.id}>
+                    <Link to={`milestones/${milestone.id}/lessons/${lesson.id}`}>
                         {lesson.name}
                     </Link>
                 </div>
             ))}
             <div>
-            {milestone.can_edit && <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light" data-testid="add-new-lesson">
-                    Add Lesson
-            </Link>}
+                {milestone.can_edit && <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light" data-testid="add-new-lesson">
+                        Add Lesson
+                </Link>}
             </div>
         </div>
     )

@@ -1,17 +1,12 @@
-import React, { useMemo, useRef } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import React, { useRef } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useAppContext } from "../../context/AppProvider"
+import usePathFinder from "../../hooks/usePathFinder"
 
 const LogIn = ({showSignUp = true}) => {
     const navigate = useNavigate()
-    const location = useLocation()
-    const BaseIndex = useMemo(() => {
-        const parts = location.pathname.split("/")
-        const authIndex = parts.findIndex(part => part == "auth")
-        return authIndex - parts.length
-    }, [location.pathname])
-
     const { auth } = useAppContext()
+    const { authSuccessPath } = usePathFinder()
 
     const emailRef = useRef(null)
     const passwordRef = useRef(null)
@@ -22,7 +17,7 @@ const LogIn = ({showSignUp = true}) => {
         const loginParams = { email: emailRef.current.value, password: passwordRef.current.value }
         auth.login(loginParams).then((response) => {
             if (response.token) {
-                navigate(BaseIndex)
+                navigate(authSuccessPath)
             }
         })
         .catch((error) => console.log(error))

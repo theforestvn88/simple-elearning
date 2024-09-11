@@ -8,7 +8,6 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
     const lessonData = new FormData()
 
     const onChange = (event) => {
-        console.log(event)
         lessonData.set(`lesson[${event.target.name}]`, event.target.value)
     }
 
