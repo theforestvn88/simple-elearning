@@ -11,6 +11,10 @@ export const MockApiReturn = (res) => {
     RequireAuthorizedApiSpy.mockRestore()
     RequireAuthorizedApiSpy.mockImplementation(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(res) }))
 }
+export const getSubmitBodyFromApiSpy = () => {
+    return Array.from(RequireAuthorizedApiSpy.mock.lastCall[2].entries())
+          .reduce((acc, f) => ({ ...acc, [f[0]]: f[1] }), {})
+}
 
 export const mockAuth = (authInfo, subject = 'subject', identify = 'identify') => {
     jest.spyOn(require('../../context/AppProvider'), 'useAppContext').mockReturnValue({
@@ -29,5 +33,3 @@ export const mockAuth = (authInfo, subject = 'subject', identify = 'identify') =
         RequireAuthorizedApi: RequireAuthorizedApiSpy
     })
 }
-
-mockAuth({})

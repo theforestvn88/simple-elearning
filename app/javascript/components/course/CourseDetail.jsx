@@ -3,6 +3,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import MilestoneForm from './MilestoneForm'
 import { useAppContext } from '../../context/AppProvider'
 import Milestone from './Milestone'
+import Modal from '../Modal'
+import AssignmentForm from '../assignment/AssignmentForm'
 
 const CourseDetail = () => {
     const navigate = useNavigate()
@@ -69,6 +71,20 @@ const CourseDetail = () => {
             </div>
             <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center justify-content-end">
+                    {course.can_edit && (
+                        <button data-bs-toggle="modal" data-bs-target="#assignmentModal" className="ms-3 btn btn-light">
+                            Assign
+                        </button>
+                    )}
+
+                    {course.can_edit && 
+                        <Modal
+                            id="assignmentModal"
+                            title="Add Assignment">
+                            <AssignmentForm assignaleType="course" assignaleId={course.id} onSubmitSuccess={()=>{}} />
+                        </Modal>
+                    }
+
                     {course.can_edit && <Link to={`edit`} className="btn btn-light" data-testid="edit-course">
                         Edit
                     </Link>}

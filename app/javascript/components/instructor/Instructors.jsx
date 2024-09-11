@@ -48,7 +48,7 @@ const Instructors = () => {
     
                 <br />
     
-                {responseData.data.pagination &&
+                {responseData.data?.pagination &&
                     <Paginaton 
                         pagination={responseData.data.pagination} 
                         currentPage={currPage} 

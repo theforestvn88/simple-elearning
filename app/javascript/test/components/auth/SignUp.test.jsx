@@ -3,7 +3,7 @@ import { fireEvent, render, screen, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AppProvider from '../../../context/AppProvider'
 import SignUp from '../../../components/auth/SignUp'
-import { signupSpy } from '../../mocks/useAppContextMock'
+import { mockAuth, signupSpy } from '../../mocks/useAppContextMock'
 
 describe('LogIn', () => {
     afterEach(() => {
@@ -12,6 +12,8 @@ describe('LogIn', () => {
     })
 
     it('call signup api', async () => {
+        mockAuth({})
+        
         await act( async () => render(<MemoryRouter><AppProvider><SignUp /></AppProvider></MemoryRouter>))
 
         await act( async () => {

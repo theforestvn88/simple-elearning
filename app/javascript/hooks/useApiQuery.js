@@ -7,7 +7,7 @@ const useApiQuery = (path, requiredAuthorized = true, apiVersion = 1) => {
     const { subject, identify, RequireAuthorizedApi } = useAppContext()
     
     const [query, setQuery] = useState(null)
-    const [responseData, setResponseData] = useState({ loading: false, error: null, data: {} })
+    const [responseData, setResponseData] = useState({ loading: false, error: null, data: null })
 
     useEffect(() => {
         if (query === null) return

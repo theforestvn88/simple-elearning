@@ -8,7 +8,7 @@ import useApiQuery from '../../hooks/useApiQuery'
 
 const CoursesList = () => {
   const { auth } = useAppContext()
-  const { setQuery, responseData } = useApiQuery('/courses')
+  const { setQuery, responseData } = useApiQuery('courses', false)
   const [currPage, setCurrPage] = useState(1)
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const CoursesList = () => {
     setQuery({page: currPage})
   }, [currPage])
 
-  const coursesList = responseData.data.courses?.map((course, index) => (
+  const coursesList = responseData.data?.courses?.map((course, index) => (
     <div key={index} className="card px-0 my-1 mx-2 border-secondary" style={{width: '18rem'}}>
       {course.cover ? (
         <img className="card-header p-0 card-img-top img-fluid w-100" src={course.cover.url} />
@@ -38,7 +38,7 @@ const CoursesList = () => {
   ))
 
   const emptyList = (
-    <div className="vw-100 vh-50 d-flex align-items-center justify-content-center">
+    <div className="w-100 vh-50 d-flex align-items-center justify-content-center">
       <h4>No course!</h4>
     </div>
   )
@@ -55,12 +55,12 @@ const CoursesList = () => {
             </Link>
           </div>
           <div className="container-fluid d-flex justify-content-start flex-wrap">
-            {(responseData.data.courses && responseData.data.courses.length > 0) ? coursesList : emptyList}
+            {(responseData.data?.courses && responseData.data.courses.length > 0) ? coursesList : emptyList}
           </div>
 
           <br />
 
-          {responseData.data.pagination && (
+          {responseData.data?.pagination && (
             <Paginaton 
               pagination={responseData.data.pagination} 
               currentPage={currPage} 

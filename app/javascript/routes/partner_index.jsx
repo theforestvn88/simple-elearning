@@ -1,7 +1,5 @@
 import React from "react"
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
-import Auth from "../components/auth/Auth"
-import LogIn from "../components/auth/LogIn"
 import Partner from "../components/Partner.jsx"
 import PartnerCourses from "../components/course/PartnerCourses.jsx"
 import CoursesList from "../components/course/CoursesList.jsx"
@@ -10,7 +8,6 @@ import EditCourse from "../components/course/EditCourse.jsx"
 import CourseDetail from "../components/course/CourseDetail.jsx"
 import NewLesson from "../components/course/NewLesson.jsx"
 import Lesson from "../components/course/Lesson.jsx"
-import Assignments from "../components/Assignments.jsx"
 import Account from "../components/account/Account.jsx"
 import Profile from "../components/account/Profile.jsx"
 import Settings from "../components/account/Setting.jsx"
@@ -22,6 +19,7 @@ import BillingSetting from "../components/account/BillingSetting.jsx"
 import PartnerDashBoard from "../components/PartnerDashboard.jsx"
 import Instructors from "../components/instructor/Instructors.jsx"
 import NewInstructor from "../components/instructor/NewInstructor.jsx"
+import Assignments from "../components/assignment/Assignments.jsx"
 
 const PartnerRouter = createBrowserRouter(
     createRoutesFromElements(
