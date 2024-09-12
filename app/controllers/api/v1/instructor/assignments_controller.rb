@@ -13,17 +13,16 @@ module Api
                 end
 
                 def create
-                    assignable = assigment_params[:assignable_type].classify.constantize.find(assigment_params[:assignable_id])
-                    assignee = assigment_params[:assignee_type].classify.constantize.find(assigment_params[:assignee_id])
-                    assignment = Assignment.new(assignable: assignable, assignee: assignee)
+                    @assignable = assigment_params[:assignable_type].classify.constantize.find(assigment_params[:assignable_id])
+                    @assignee = assigment_params[:assignee_type].classify.constantize.find(assigment_params[:assignee_id])
+                    @assignment = Assignment.new(assignable: @assignable, assignee: @assignee)
                     
-                    authorize assignment
+                    authorize @assignment
                     
-                    if assignment.save
-                        ::AssignmentMailer.with(assignment: assignment).inform_new_assignment.deliver_later
-                        head :created
+                    if @assignment.save
+                        ::AssignmentMailer.with(assignment: @assignment).inform_new_assignment.deliver_later
                     else
-                        render json: assignment.errors, status: :unprocessable_entity
+                        render json: @assignment.errors, status: :unprocessable_entity
                     end
                 rescue Pundit::NotAuthorizedError
                     response_unauthorized

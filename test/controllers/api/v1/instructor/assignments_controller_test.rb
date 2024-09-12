@@ -58,7 +58,13 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
                 as: :json
         end
 
-        assert_response :created
+        assert_response :success
+        assert_equal response.parsed_body, {
+            'assignee' => {
+                'id' => @professor.id,
+                'name' => @professor.name
+            }
+        }
     end
 
     test 'assign an instructor to milestone' do
@@ -78,7 +84,13 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
                 as: :json
         end
 
-        assert_response :created
+        assert_response :success
+        assert_equal response.parsed_body, {
+            'assignee' => {
+                'id' => @professor.id,
+                'name' => @professor.name
+            }
+        }
     end
 
     test 'assign an instructor to lesson' do
@@ -98,7 +110,13 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
                 as: :json
         end
 
-        assert_response :created
+        assert_response :success
+        assert_equal response.parsed_body, {
+            'assignee' => {
+                'id' => @lecturer.id,
+                'name' => @lecturer.name
+            }
+        }
     end
 
     test 'create assignment with invalid params' do

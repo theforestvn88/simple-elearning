@@ -19,9 +19,19 @@ class LessonTest < ActiveSupport::TestCase
   setup do
     @partner = create(:partner)
     @instructor = create(:instructor, partner: @partner, rank: :administrator)
+    @instructor2 = create(:instructor, partner: @partner, rank: :professor)
+    @instructor3 = create(:instructor, partner: @partner, rank: :lecturer)
     @course = create(:course, instructor: @instructor, partner: @partner)
     @milestone = create(:milestone, instructor: @instructor, course: @course)
     @milestone2 = create(:milestone, instructor: @instructor, course: @course)
+  end
+
+  test 'has many assignees' do
+    lesson = create(:lesson, instructor: @instructor, course: @course, milestone: @milestone, estimated_minutes: 60)
+    create(:assignment, assignee: @instructor2, assignable: lesson)
+    create(:assignment, assignee: @instructor3, assignable: lesson)
+
+    assert_equal lesson.assignees, [@instructor2, @instructor3]
   end
 
   test 'update milestone lesson counter when create new lesson' do

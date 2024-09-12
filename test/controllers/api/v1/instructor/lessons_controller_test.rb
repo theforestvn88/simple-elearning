@@ -45,6 +45,12 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
             'assigned' => true,
             'can_edit' => true,
             'can_delete' => false,
+            'assignees' => [
+                {
+                    'id' => @instructor3.id,
+                    'name' => @instructor3.name
+                }
+            ]
         }
     end
 

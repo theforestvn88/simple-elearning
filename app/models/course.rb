@@ -6,6 +6,7 @@ class Course < ApplicationRecord
 
     belongs_to :instructor
     belongs_to :partner
+    has_many :assignees, through: :assignments, source_type: "Instructor"
     has_many :milestones, dependent: :destroy # TODO: soft delete
     has_many :lessons, dependent: :destroy # TODO: soft delete
 

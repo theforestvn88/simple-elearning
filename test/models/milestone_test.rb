@@ -19,7 +19,17 @@ class MilestoneTest < ActiveSupport::TestCase
   setup do
     @partner = create(:partner)
     @instructor = create(:instructor, partner: @partner, rank: :administrator)
+    @instructor2 = create(:instructor, partner: @partner, rank: :professor)
+    @instructor3 = create(:instructor, partner: @partner, rank: :lecturer)
     @course = create(:course, instructor: @instructor, partner: @partner)
+  end
+
+  test 'has many assignees' do
+    milestone = create(:milestone, instructor: @instructor, course: @course)
+    create(:assignment, assignee: @instructor2, assignable: milestone)
+    create(:assignment, assignee: @instructor3, assignable: milestone)
+
+    assert_equal milestone.assignees, [@instructor2, @instructor3]
   end
 
   test 'created with default position' do

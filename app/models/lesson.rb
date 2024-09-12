@@ -6,7 +6,8 @@ class Lesson < ApplicationRecord
   belongs_to :milestone
   belongs_to :course
   belongs_to :instructor
-
+  has_many :assignees, through: :assignments, source_type: "Instructor"
+  
   has_rich_text :content
 
   validates :name, presence: true
