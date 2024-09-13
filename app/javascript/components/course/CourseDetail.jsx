@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import MilestoneForm from './MilestoneForm'
 import { useAppContext } from '../../context/AppProvider'
 import Milestone from './Milestone'
 import Modal from '../Modal'
 import AssignmentForm from '../assignment/AssignmentForm'
+import UserAvatar from '../UserAvatar'
+import Confirmation from '../Confirmation'
 
 const CourseDetail = () => {
     const navigate = useNavigate()
@@ -13,6 +15,7 @@ const CourseDetail = () => {
 
     const [course, setCourse] = useState({})
     const [showMilestoneForm, setShowMilestoneForm] = useState(false)
+    const closeModalRef = useRef()
 
     useEffect(() => {
         const courseUrl = `/api/v1/${subject}/${identify}/courses/${params.id}`
@@ -64,27 +67,48 @@ const CourseDetail = () => {
         })
     }
 
+    const onAddAssignmentSuccess = (newAssignment) => {
+        closeModalRef.current.click()
+
+        setCourse({
+            ...course,
+            assignees: course.assignees.concat(newAssignment.assignee)
+        })
+    }
+
+    const cancelAssignment = (assigneeId) => {
+        RequireAuthorizedApi(
+            'DELETE', 
+            `/api/v1/${subject}/${identify}/assignments/cancel`, 
+            { 
+                assignment: { 
+                    assignable_id: course.id,
+                    assignee_id: assigneeId 
+                }
+            }
+        )
+        .then((response) => {
+            if (response.ok) {
+                return response.json()
+            }
+            throw new Error('Something went wrong!')
+        })
+        .then((canceldAssignment) => {
+            setCourse({
+                ...course,
+                assignees: course.assignees.filter((assignee) => assignee.id != canceldAssignment.assignee.id)
+            })
+        })
+        .catch((error) => console.log(error))
+    }
+
     const CourseHeader = () => (
         <div>
             <div className="p-6">
-                <h1 className="display-4">{course.name}</h1>
+                <h1>{course.name}</h1>
             </div>
             <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center justify-content-end">
-                    {course.can_edit && (
-                        <button data-bs-toggle="modal" data-bs-target="#assignmentModal" className="ms-3 btn btn-light">
-                            Assign
-                        </button>
-                    )}
-
-                    {course.can_edit && 
-                        <Modal
-                            id="assignmentModal"
-                            title="Add Assignment">
-                            <AssignmentForm assignaleType="course" assignaleId={course.id} onSubmitSuccess={()=>{}} />
-                        </Modal>
-                    }
-
                     {course.can_edit && <Link to={`edit`} className="btn btn-light" data-testid="edit-course">
                         Edit
                     </Link>}
@@ -101,10 +125,55 @@ const CourseDetail = () => {
         </div>
     )
 
+    const Assignees = () => (
+        <>
+            <div className="border-bottom mb-3 mt-5">
+                <h4>Assignees</h4>
+            </div>
+            <div className="d-flex align-items-center justify-content-start">
+                {course.can_edit && (
+                    <button data-bs-toggle="modal" data-bs-target="#assignmentModal" className="mx-3 btn btn-secondary">
+                        +
+                    </button>
+                )}
+                <div>
+                    {course.assignees?.map((assignee) => (
+                        <div key={assignee.id} className="me-3 btn-group" role="group">
+                            <Link to={`/partners/${identify}/account/${assignee.id}/profile`} className="btn btn-light" type="button">
+                                <UserAvatar user={assignee} size={20} showName={true} />
+                            </Link>
+                            {course.can_edit && <button data-bs-toggle="modal" data-bs-target={`#cancelAssignment${assignee.id}Confirm`} className="btn btn-light" type="button">-</button>}
+                            {course.can_edit &&
+                                <Confirmation 
+                                    id={`cancelAssignment${assignee.id}Confirm`} 
+                                    title="Cancel Assignment"
+                                    description="Are you sure ?"
+                                    onConfirm={() => cancelAssignment(assignee.id)}
+                                />
+                            }
+                        </div>   
+                    ))}
+                </div>
+            </div>
+            {course.can_edit && 
+                <Modal
+                    id="assignmentModal"
+                    title="Add Assignment"
+                    closeModalRef={closeModalRef}>
+                    <AssignmentForm assignaleType="course" assignaleId={course.id} onSubmitSuccess={onAddAssignmentSuccess} />
+                </Modal>
+            }
+        </>
+    )
+
     return (
         <>
             <CourseHeader />
-
+            <Assignees />
+            
+            <div className="border-bottom mb-3 mt-5">
+                <h4>Milestones</h4>
+            </div>
             {course.milestones?.map((milestone) => (
                 <Milestone
                     key={milestone.id}
