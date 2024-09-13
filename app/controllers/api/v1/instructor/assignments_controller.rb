@@ -31,17 +31,29 @@ module Api
                 end
 
                 def destroy
-                    assignment = Assignment.find(params[:id])
-                    authorize assignment
+                    @assignment = Assignment.find(params[:id])
+                    authorize @assignment
 
-                    assignment.destroy
-                    ::AssignmentMailer.with(assignment: assignment).inform_cancel_assignment.deliver_later
+                    cancel_assignment(@assignment)
+                end
+
+                def cancel
+                    @assignment = Assignment.find_by!(assigment_params)
+                    authorize @assignment
+
+                    cancel_assignment(@assignment)
+                    render :destroy
                 end
 
                 private
 
                     def assigment_params
                         params.require(:assignment).permit(:assignable_id, :assignable_type, :assignee_id, :assignee_type)
+                    end
+
+                    def cancel_assignment(assignment)
+                        assignment.destroy
+                        ::AssignmentMailer.with(assignment: assignment).inform_cancel_assignment.deliver_later
                     end
             end
         end

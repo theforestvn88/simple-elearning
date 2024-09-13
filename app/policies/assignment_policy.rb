@@ -12,6 +12,10 @@ class AssignmentPolicy < ApplicationPolicy
         permitted?
     end
 
+    def cancel?
+        permitted?
+    end
+
     private
 
         def course

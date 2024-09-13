@@ -205,7 +205,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
             delete api_v1_instructor_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
-        assert_response :no_content
+        assert_response :success
     end
 
     test 'destroy assignment with invalid policy' do
@@ -231,6 +231,25 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         end
 
         mock_assignment_mailer.verify
+    end
+
+    test 'cancel assignment' do
+        assignment = Assignment.create(assignable: @course, assignee: @professor)
+        mock_assignment_mailer = Minitest::Mock.new
+        mock_assignment_mailer.expect :inform_cancel_assignment, mock_assignment_mailer, []
+        mock_assignment_mailer.expect :deliver_later, nil, []
+
+        token = instructor_sign_in(@admin)
+
+        ::AssignmentMailer.stub :with, mock_assignment_mailer do
+            assert_difference('Assignment.count', -1) do
+                delete cancel_api_v1_instructor_assignments_url(identify: @partner.id), params: {assignment: {assignee_id: @professor.id, assignable_id: @course.id}}, 
+                    headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            end
+        end
+
+        mock_assignment_mailer.verify
+        assert_response :success
     end
 
     test 'get instructor assignments' do

@@ -32,6 +32,11 @@ class AssignmentPolicyTest < ActiveSupport::TestCase
         refute_permit_policy @professor, @course_assigment, :destroy
         refute_permit_policy @other_instructor, @course_assigment, :destroy
         refute_permit_policy @user, @course_assigment, :destroy
+
+        assert_permit_policy @admin, @course_assigment, :cancel
+        refute_permit_policy @professor, @course_assigment, :cancel
+        refute_permit_policy @other_instructor, @course_assigment, :cancel
+        refute_permit_policy @user, @course_assigment, :cancel
     end
 
     test 'only partner-admin or course-assigned-instructors can assign an instructor to a milestone/lesson' do
@@ -52,6 +57,12 @@ class AssignmentPolicyTest < ActiveSupport::TestCase
         refute_permit_policy @lecturer, @milestone_assignment, :destroy
         refute_permit_policy @other_instructor, @milestone_assignment, :destroy
         refute_permit_policy @user, @milestone_assignment, :destroy
+
+        assert_permit_policy @admin, @milestone_assignment, :cancel
+        assert_permit_policy @professor, @milestone_assignment, :cancel
+        refute_permit_policy @lecturer, @milestone_assignment, :cancel
+        refute_permit_policy @other_instructor, @milestone_assignment, :cancel
+        refute_permit_policy @user, @milestone_assignment, :cancel
     end
 
     test 'only partner-admin or course-assigned-instructors or milestone-assigned-instructor can assign an instructor to a lesson' do
@@ -76,5 +87,12 @@ class AssignmentPolicyTest < ActiveSupport::TestCase
         refute_permit_policy @lecturer, @lesson_assignment, :destroy
         refute_permit_policy @other_instructor, @lesson_assignment, :destroy
         refute_permit_policy @user, @lesson_assignment, :destroy
+
+        assert_permit_policy @admin, @lesson_assignment, :cancel
+        assert_permit_policy @professor, @lesson_assignment, :cancel
+        assert_permit_policy @assistant_professor, @lesson_assignment, :cancel
+        refute_permit_policy @lecturer, @lesson_assignment, :cancel
+        refute_permit_policy @other_instructor, @lesson_assignment, :cancel
+        refute_permit_policy @user, @lesson_assignment, :cancel
     end
 end

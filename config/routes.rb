@@ -14,7 +14,11 @@ Rails.application.routes.draw do
             end
           end
           
-          resources :assignments, only: [:index, :create, :destroy]
+          resources :assignments, only: [:index, :create, :destroy] do
+            collection do
+              delete '/cancel', to: 'assignments#cancel'
+            end
+          end
 
           post '/presigned_url', to: 'direct_upload#create'
         end
