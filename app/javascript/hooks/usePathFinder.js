@@ -1,8 +1,10 @@
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useLocation } from "react-router-dom"
+import { useAppContext } from "../context/AppProvider"
 
 const usePathFinder = () => {
     const location = useLocation()
+    const { subject, identify } = useAppContext()
 
     const authSuccessPath = useMemo(() => {
         const parts = location.pathname.split("/")
@@ -13,8 +15,14 @@ const usePathFinder = () => {
         return authIndex >= 0 ? ('/' + parts.slice(0, authIndex).join("/")) : location.pathname
     }, [location.pathname])
 
+    const partnerInstructorProfilePath = useCallback((instructor) => `/partners/${identify}/account/${instructor.id}/profile`)
+
+    const cancelAssignmentApiUrl = useMemo(() => `/api/v1/${subject}/${identify}/assignments/cancel`)
+
     return {
-        authSuccessPath
+        authSuccessPath,
+        partnerInstructorProfilePath,
+        cancelAssignmentApiUrl
     }
 }
 

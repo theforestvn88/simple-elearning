@@ -227,7 +227,7 @@ describe('Course', () => {
 
             MockApiReturn({assignee: {id: 1}})
             await act(async () => {
-                fireEvent.click(screen.getByRole('button', {name: '-'}))
+                fireEvent.click(screen.getByRole('button', {name: 'x'}))
             })
             await act( async () => {
                 fireEvent.click(screen.getByRole('button', { name: 'Confirm'}))

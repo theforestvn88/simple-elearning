@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef } from "react"
 import Suggestion from "../Suggestion"
 import useApiQuery from "../../hooks/useApiQuery"
 import { useAppContext } from "../../context/AppProvider"
@@ -6,6 +6,7 @@ import { useAppContext } from "../../context/AppProvider"
 const AssignmentForm = ({assignaleType, assignaleId, onSubmitSuccess}) => {
     const { subject, identify, RequireAuthorizedApi } = useAppContext()
     const { setQuery, responseData } = useApiQuery('instructors')
+    const selectedInputRef = useRef()
     const assignmentData = new FormData()
 
     const queryInstructorByEmail = (searchKey) => {
@@ -39,6 +40,7 @@ const AssignmentForm = ({assignaleType, assignaleId, onSubmitSuccess}) => {
                 throw new Error('Something went wrong!')
             })
             .then((response) => {
+                selectedInputRef.current.value = ''
                 onSubmitSuccess(response)
             })
             .catch((error) => {
@@ -52,7 +54,7 @@ const AssignmentForm = ({assignaleType, assignaleId, onSubmitSuccess}) => {
             <form onSubmit={submit} data-testid="add-assignment-form">
                 <div className="form-group">
                     <label htmlFor="suggestionInput">Email</label>
-                    <Suggestion onQuery={queryInstructorByEmail} queryResult={responseData} textAttribute="email" onSelected={onInstructorSelected}/>
+                    <Suggestion selectedInputRef={selectedInputRef} onQuery={queryInstructorByEmail} queryResult={responseData} textAttribute="email" onSelected={onInstructorSelected} />
                 </div>
 
                 <input type="submit" value="Add" className="btn btn-dark mt-3" />

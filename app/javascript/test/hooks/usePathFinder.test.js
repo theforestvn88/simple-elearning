@@ -7,11 +7,12 @@ jest.mock('react-router-dom', () => ({
     useLocation: jest.fn(),
 }))
 
-describe('usePathFinder', () => {
-    afterEach(() => {
-        jest.restoreAllMocks()
-    })
+jest.spyOn(require('../../context/AppProvider'), 'useAppContext').mockReturnValue({
+    subject: "user",
+    identify: "*"
+})
 
+describe('usePathFinder', () => {
     it('after instructor auth success should back to the base path', () => {
         jest.spyOn(react_router, "useLocation").mockReturnValue({ pathname: '/partners/partner-zero/auth/login' })
 

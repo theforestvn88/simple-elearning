@@ -3,10 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import MilestoneForm from './MilestoneForm'
 import { useAppContext } from '../../context/AppProvider'
 import Milestone from './Milestone'
-import Modal from '../Modal'
-import AssignmentForm from '../assignment/AssignmentForm'
-import UserAvatar from '../UserAvatar'
-import Confirmation from '../Confirmation'
+import Assignees from '../assignment/Assignees'
 
 const CourseDetail = () => {
     const navigate = useNavigate()
@@ -68,38 +65,17 @@ const CourseDetail = () => {
     }
 
     const onAddAssignmentSuccess = (newAssignment) => {
-        closeModalRef.current.click()
-
         setCourse({
             ...course,
             assignees: course.assignees.concat(newAssignment.assignee)
         })
     }
 
-    const cancelAssignment = (assigneeId) => {
-        RequireAuthorizedApi(
-            'DELETE', 
-            `/api/v1/${subject}/${identify}/assignments/cancel`, 
-            { 
-                assignment: { 
-                    assignable_id: course.id,
-                    assignee_id: assigneeId 
-                }
-            }
-        )
-        .then((response) => {
-            if (response.ok) {
-                return response.json()
-            }
-            throw new Error('Something went wrong!')
+    const onCancelAssignmentSuccess = (canceldAssignment) => {
+        setCourse({
+            ...course,
+            assignees: course.assignees.filter((assignee) => assignee.id != canceldAssignment.assignee.id)
         })
-        .then((canceldAssignment) => {
-            setCourse({
-                ...course,
-                assignees: course.assignees.filter((assignee) => assignee.id != canceldAssignment.assignee.id)
-            })
-        })
-        .catch((error) => console.log(error))
     }
 
     const CourseHeader = () => (
@@ -125,51 +101,16 @@ const CourseDetail = () => {
         </div>
     )
 
-    const Assignees = () => (
-        <>
-            <div className="border-bottom mb-3 mt-5">
-                <h4>Assignees</h4>
-            </div>
-            <div className="d-flex align-items-center justify-content-start">
-                {course.can_edit && (
-                    <button data-bs-toggle="modal" data-bs-target="#assignmentModal" className="mx-3 btn btn-secondary">
-                        +
-                    </button>
-                )}
-                <div>
-                    {course.assignees?.map((assignee) => (
-                        <div key={assignee.id} className="me-3 btn-group" role="group">
-                            <Link to={`/partners/${identify}/account/${assignee.id}/profile`} className="btn btn-light" type="button">
-                                <UserAvatar user={assignee} size={20} showName={true} />
-                            </Link>
-                            {course.can_edit && <button data-bs-toggle="modal" data-bs-target={`#cancelAssignment${assignee.id}Confirm`} className="btn btn-light" type="button">-</button>}
-                            {course.can_edit &&
-                                <Confirmation 
-                                    id={`cancelAssignment${assignee.id}Confirm`} 
-                                    title="Cancel Assignment"
-                                    description="Are you sure ?"
-                                    onConfirm={() => cancelAssignment(assignee.id)}
-                                />
-                            }
-                        </div>   
-                    ))}
-                </div>
-            </div>
-            {course.can_edit && 
-                <Modal
-                    id="assignmentModal"
-                    title="Add Assignment"
-                    closeModalRef={closeModalRef}>
-                    <AssignmentForm assignaleType="course" assignaleId={course.id} onSubmitSuccess={onAddAssignmentSuccess} />
-                </Modal>
-            }
-        </>
-    )
-
     return (
         <>
             <CourseHeader />
-            <Assignees />
+            <Assignees 
+                assignees={course.assignees} 
+                can_edit={true} 
+                assignableId={course.id} assignableType="course"
+                onAddAssignmentSuccess={onAddAssignmentSuccess}
+                onCancelAssignmentSuccess={onCancelAssignmentSuccess}
+            />
             
             <div className="border-bottom mb-3 mt-5">
                 <h4>Milestones</h4>

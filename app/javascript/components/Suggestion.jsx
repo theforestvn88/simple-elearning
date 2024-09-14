@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 
-const Suggestion = ({onQuery, queryResult, textAttribute, selected, onSelected}) => {
-    const inputRef = useRef()
+const Suggestion = ({selectedInputRef, onQuery, queryResult, textAttribute, selected, onSelected}) => {
+    const inputRef = selectedInputRef || useRef()
     const suggestList = useRef()
     const [key, setKey] = useState(null)
     const [items, setItems] = useState(null)
@@ -22,14 +22,14 @@ const Suggestion = ({onQuery, queryResult, textAttribute, selected, onSelected})
 
     const onClick = (event) => {
         selected = queryResult.data[event.target.value]
-        onSelected(selected.id)
         setItems(null)
         inputRef.current.value = selected[textAttribute]
+        onSelected(selected.id)
     }
 
     return (
         <div className="suggestions-container">
-            <input ref={inputRef} id="suggestionInput" type="text" className="form-control" onChange={onChangeKey} />
+            <input ref={inputRef} id="suggestionInput" defaultValue="" type="text" className="form-control" onChange={onChangeKey} />
             {items && <ul ref={suggestList} className="suggestions list-unstyled">
                 {items.map((item, index) => (
                     <li key={index} value={index} className={selected === item ? 'suggestion-active' : ''} onClick={onClick}>
