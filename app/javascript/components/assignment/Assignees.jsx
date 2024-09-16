@@ -11,6 +11,8 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
     const { RequireAuthorizedApi } = useAppContext()
     const { partnerInstructorProfilePath, cancelAssignmentApiUrl } = usePathFinder()
     const closeModalRef = useRef()
+    const addAssignmentModalId = `assignmentModal-${assignableId}-${assignableType}`
+    const cancelAssignmentConfirmModalId = (assigneeId) => `cancelAssignment-${assignableId}-${assignableType}-${assigneeId}-Confirm`
 
     const addAssignmentSuccess =(newAssignment) => {
         closeModalRef.current.click()
@@ -24,6 +26,7 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
             { 
                 assignment: { 
                     assignable_id: assignableId,
+                    assignable_type: assignableType,
                     assignee_id: assigneeId 
                 }
             }
@@ -42,12 +45,9 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
 
     return (
         <>
-            <div className="border-bottom mb-3 mt-5">
-                <h4>Assignees</h4>
-            </div>
             <div className="d-flex align-items-center justify-content-start">
                 {can_edit && (
-                    <button data-bs-toggle="modal" data-bs-target="#assignmentModal" className="mx-3 btn btn-secondary">
+                    <button data-bs-toggle="modal" data-bs-target={`#${addAssignmentModalId}`} className="mx-3 btn btn-secondary">
                         +
                     </button>
                 )}
@@ -58,14 +58,14 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
                                 <UserAvatar user={assignee} size={20} showName={true} />
                             </Link>
                             {can_edit && 
-                                <button data-bs-toggle="modal" data-bs-target={`#cancelAssignment${assignee.id}Confirm`} className="btn btn-light" type="button">
+                                <button data-bs-toggle="modal" data-bs-target={`#${cancelAssignmentConfirmModalId(assignee.id)}`} className="btn btn-light" type="button">
                                     x
                                 </button>
                             }
                             {can_edit &&
                                 <Confirmation 
-                                    id={`cancelAssignment${assignee.id}Confirm`} 
-                                    title="Cancel Assignment"
+                                    id={cancelAssignmentConfirmModalId(assignee.id)} 
+                                    title={`Delete assignment from ${assignableType}[${assignableId}]`}
                                     description="Are you sure ?"
                                     onConfirm={() => cancelAssignment(assignee.id)}
                                 />
@@ -76,8 +76,8 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
             </div>
             {can_edit && 
                 <Modal
-                    id="assignmentModal"
-                    title="Add Assignment"
+                    id={addAssignmentModalId}
+                    title={`Add assignment to ${assignableType}[${assignableId}]`}
                     closeModalRef={closeModalRef}>
                     <AssignmentForm assignaleType={assignableType} assignaleId={assignableId} onSubmitSuccess={addAssignmentSuccess} />
                 </Modal>

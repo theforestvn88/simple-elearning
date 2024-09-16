@@ -71,10 +71,10 @@ const CourseDetail = () => {
         })
     }
 
-    const onCancelAssignmentSuccess = (canceldAssignment) => {
+    const onCancelAssignmentSuccess = (canceledAssignment) => {
         setCourse({
             ...course,
-            assignees: course.assignees.filter((assignee) => assignee.id != canceldAssignment.assignee.id)
+            assignees: course.assignees.filter((assignee) => assignee.id != canceledAssignment.assignee.id)
         })
     }
 
@@ -104,10 +104,15 @@ const CourseDetail = () => {
     return (
         <>
             <CourseHeader />
+
+            <div className="border-bottom mb-3 mt-5">
+                <h4>Assignees</h4>
+            </div>
+
             <Assignees 
                 assignees={course.assignees} 
-                can_edit={true} 
-                assignableId={course.id} assignableType="course"
+                can_edit={course.can_edit} 
+                assignableId={course.id} assignableType="Course"
                 onAddAssignmentSuccess={onAddAssignmentSuccess}
                 onCancelAssignmentSuccess={onCancelAssignmentSuccess}
             />

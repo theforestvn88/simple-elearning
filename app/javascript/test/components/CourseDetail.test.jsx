@@ -152,7 +152,7 @@ describe('Course', () => {
         })
     })
 
-    describe('Add Assigment', () => {
+    describe('Add Assigment to Course', () => {
         const aCourse = fakeCourses[2]
 
         beforeEach(async () => {
@@ -181,13 +181,18 @@ describe('Course', () => {
             await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
 
             MockApiReturn([{id: 1, email: 'prof1@example.com'}])
+            
+            await act(async () => {
+                fireEvent.click(screen.getAllByRole('button', {name: '+'})[0])
+            })
+
             await act(async () => {
                 fireEvent.change(screen.getByLabelText(/Email/i), {target: {value: 'prof1'}})
             })
             
             await act(async () => {
                 fireEvent.click(screen.getByText('prof1@example.com'))
-                fireEvent.submit(screen.getByTestId('add-assignment-form'))
+                fireEvent.submit(screen.getAllByTestId('add-assignment-form')[0])
             })
 
             expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
@@ -198,11 +203,11 @@ describe('Course', () => {
             expect(formData['assignment[assignee_id]']).toEqual('1')
             expect(formData['assignment[assignee_type]']).toEqual('instructor')
             expect(formData['assignment[assignable_id]']).toEqual(`${aCourse.id}`)
-            expect(formData['assignment[assignable_type]']).toEqual('course')
+            expect(formData['assignment[assignable_type]']).toEqual('Course')
         })
     })
 
-    describe('Cancel Assignment', () => {
+    describe('Cancel Course Assignment', () => {
         const aCourse = fakeCourses[2]
 
         beforeEach(async () => {
@@ -234,10 +239,12 @@ describe('Course', () => {
             })
 
             expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
-                "DELETE", "/api/v1/instructor/meta/assignments/cancel", {assignment: {assignee_id: 1, assignable_id: aCourse.id}}
+                "DELETE", "/api/v1/instructor/meta/assignments/cancel", {assignment: {assignee_id: 1, assignable_type: 'Course', assignable_id: aCourse.id}}
             )
 
             expect(screen.queryByText('an assignee')).not.toBeInTheDocument()
         })
     })
+
+    
 })
