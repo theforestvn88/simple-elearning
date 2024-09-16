@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import MilestoneForm from './MilestoneForm'
 import { useAppContext } from '../../context/AppProvider'
 import { Link } from 'react-router-dom'
+import Collapse from '../Collapse'
 
 const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     const {subject, identify, RequireAuthorizedApi} = useAppContext()
@@ -38,7 +39,9 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
 
     const MilestoneHeader = () => (
         <div className="d-flex align-items-center justify-content-between">
-            <div>{editMilestone.name}</div>
+            <div class="btn btn-link">
+                {editMilestone.name}
+            </div>
             <div className="d-flex align-items-center justify-content-end">
                 {milestone.can_edit && <button
                     type="button"
@@ -60,16 +63,16 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     )
 
     const LessonsList = () => (
-        <div>
+        <div className="ms-3">
             {milestone.lessons?.map((lesson) => (
-                <div key={lesson.id}>
+                <div key={lesson.id} className="mb-3">
                     <Link to={`milestones/${milestone.id}/lessons/${lesson.id}`}>
                         {lesson.name}
                     </Link>
                 </div>
             ))}
             <div>
-                {milestone.can_edit && <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light" data-testid="add-new-lesson">
+                {milestone.can_edit && <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light mt-2" data-testid="add-new-lesson">
                         Add Lesson
                 </Link>}
             </div>
@@ -87,10 +90,10 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
                     onSubmitError={() => {}}
                 />
             ) : (
-                <div>
+                <Collapse>
                     <MilestoneHeader />
                     <LessonsList />
-                </div>
+                </Collapse>
             )}
         </>
     )

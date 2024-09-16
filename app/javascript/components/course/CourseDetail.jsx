@@ -115,14 +115,17 @@ const CourseDetail = () => {
             <div className="border-bottom mb-3 mt-5">
                 <h4>Milestones</h4>
             </div>
-            {course.milestones?.map((milestone) => (
-                <Milestone
-                    key={milestone.id}
-                    courseId={course.id}
-                    milestone={milestone}
-                    onDeleteSuccess={onDeleteMilestoneSuccess}
-                />
-            ))}
+
+            <div id="milestones" className="accordion">
+                {course.milestones?.map((milestone) => (
+                    <Milestone
+                        key={milestone.id}
+                        courseId={course.id}
+                        milestone={milestone}
+                        onDeleteSuccess={onDeleteMilestoneSuccess}
+                    />
+                ))}
+            </div>
 
             {showMilestoneForm ? (
                 <MilestoneForm 
@@ -136,7 +139,7 @@ const CourseDetail = () => {
                 course.can_edit && 
                 <button
                     type="button"
-                    className="btn btn-danger"
+                    className="btn btn-danger mt-5"
                     onClick={addNewMileStone}
                     data-testid="add-new-milestone">
                     Add Milestone
