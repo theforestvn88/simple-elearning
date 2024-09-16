@@ -13,7 +13,7 @@ const Collapse = (props) => {
             <div className="card-header" role="button" onClick={toggleTarget}>
                 {props.children[0]}
             </div>
-            <div ref={targetRef} className="collapse show">
+            <div ref={targetRef} className="collapse">
                 <div className="card-body">
                     {props.children[1]}
                 </div>

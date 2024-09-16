@@ -21,6 +21,7 @@ export const fakeCourses = [
         assigned: true,
         can_edit: true,
         can_delete: true,
+        assignees: [],
         milestones: [
             {
                 id: 1,
@@ -28,6 +29,7 @@ export const fakeCourses = [
                 estimated_minutes: 60,
                 can_edit: true,
                 can_delete: true,
+                assignees: [],
                 lessons: [
                     {
                         id: 1,
@@ -35,12 +37,14 @@ export const fakeCourses = [
                         estimated_minutes: 60,
                         can_edit: true,
                         can_delete: true,
+                        assignees: [],
                     }
                 ]
             },
             {
                 id: 2,
-                name: "milestone2"
+                name: "milestone2",
+                assignees: [],
             }
         ]
     },
@@ -63,6 +67,7 @@ export const fakeCourses = [
                 url: 'partner2-avatar-url'
             }
         },
+        assignees: [],
         milestones: []
     },
     {
@@ -86,6 +91,7 @@ export const fakeCourses = [
         },
         can_edit: false,
         can_delete: false,
+        assignees: [],
         milestones: [
             {
                 id: 3,
@@ -93,6 +99,7 @@ export const fakeCourses = [
                 estimated_minutes: 60,
                 can_edit: true,
                 can_delete: false,
+                assignees: [],
                 lessons: [
                     {
                         id: 30,
@@ -100,6 +107,7 @@ export const fakeCourses = [
                         estimated_minutes: 60,
                         can_edit: true,
                         can_delete: true,
+                        assignees: [],
                     }
                 ]
             }

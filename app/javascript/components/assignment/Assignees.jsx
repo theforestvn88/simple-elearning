@@ -53,7 +53,7 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
                 )}
                 <div>
                     {assignees && assignees.map((assignee) => (
-                        <div key={assignee.id} className="me-3 btn-group" role="group">
+                        assignee && <div key={assignee.id} className="me-3 btn-group" role="group">
                             <Link to={partnerInstructorProfilePath(assignee)} className="btn btn-light" type="button">
                                 <UserAvatar user={assignee} size={20} showName={true} />
                             </Link>
@@ -70,7 +70,7 @@ const Assignees = ({assignees, assignableId, assignableType, can_edit, onAddAssi
                                     onConfirm={() => cancelAssignment(assignee.id)}
                                 />
                             }
-                        </div>   
+                        </div>
                     ))}
                 </div>
             </div>
