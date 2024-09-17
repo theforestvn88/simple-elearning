@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { useAppContext } from "../../context/AppProvider"
 import LessonForm from "./LessonForm"
 import usePathFinder from "../../hooks/usePathFinder"
+import Assignees from "../assignment/Assignees"
 
 const Lesson = () => {
     const navigate = useNavigate()
@@ -54,6 +55,20 @@ const Lesson = () => {
             .catch((error) => console.log(error))
     }
 
+    const onAddAssignmentSuccess = (newAssignment) => {
+        setLesson({
+            ...lesson,
+            assignees: lesson.assignees.concat(newAssignment.assignee)
+        })
+    }
+
+    const onCancelAssignmentSuccess = (canceledAssignment) => {
+        setLesson({
+            ...lesson,
+            assignees: lesson.assignees.filter((assignee) => assignee.id != canceledAssignment.assignee.id)
+        })
+    }
+
     return (
         <>  
             {lesson.loading ? (
@@ -92,6 +107,30 @@ const Lesson = () => {
                             </div>
                         </div>
                         <h6 className="text-nowrap bd-highlight" style={{width: '8rem'}}>estimated time: {lesson.estimated_minutes} minutes</h6>
+                        
+                        {lesson.can_edit ? (
+                        <>
+                            <div className="border-bottom mb-3 mt-5">
+                                <h4>Assignees</h4>
+                            </div>
+                            <Assignees 
+                                assignees={lesson.assignees} 
+                                can_edit={lesson.can_edit}
+                                assignableId={lesson.id} assignableType="Lesson"
+                                onAddAssignmentSuccess={onAddAssignmentSuccess}
+                                onCancelAssignmentSuccess={onCancelAssignmentSuccess}
+                            />
+                        </>) : (
+                        <>
+                            <div className="mb-3 mt-5 d-flex justify-content-start">
+                                <span>Instructors:</span>
+                                <Assignees
+                                    assignees={lesson.assignees} 
+                                    can_edit={false}
+                                />
+                            </div>
+                        </>)}
+
                         <div className="card mt-5">
                             <div className="card-body" dangerouslySetInnerHTML={{ __html: lesson.content }} />
                         </div>

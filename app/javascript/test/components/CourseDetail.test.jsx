@@ -5,6 +5,7 @@ import { fakeCourses } from '../mocks/fakeCourses'
 import AppProvider from '../../context/AppProvider'
 import CourseDetail from '../../components/course/CourseDetail'
 import { MockApiReturn, RequireAuthorizedApiSpy, getSubmitBodyFromApiSpy, mockAuth } from '../mocks/useAppContextMock'
+import { EditAssignmentTests } from '../common/EditAssignmentTests'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -152,13 +153,12 @@ describe('Course', () => {
         })
     })
 
-    describe('Add Assigment to Course', () => {
-        const aCourse = fakeCourses[2]
+    describe('Course Assignment', () => {
+        const aCourse = {...fakeCourses[2], can_edit: true, assignees: [{id: 1, name: 'an assignee'}]}
 
         beforeEach(async () => {
             jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
             mockAuth({token: 'xxx', user: {rank: 'administrator'}}, 'instructor', 'meta')
-            aCourse.can_edit = true
             MockApiReturn(aCourse)
         })
         
@@ -166,60 +166,25 @@ describe('Course', () => {
             jest.restoreAllMocks()
         })
 
-        it('partner instructors suggestions', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
-
-            MockApiReturn([{id: 1, email: 'prof1@example.com'}])
-            await act(async () => {
-                fireEvent.change(screen.getByLabelText(/Email/i), {target: {value: 'prof1'}})
-            })
-
-            expect(screen.getByText('prof1@example.com')).toBeInTheDocument()
-        })
-
-        it('submit assignment', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
-
-            MockApiReturn([{id: 1, email: 'prof1@example.com'}])
-            
-            await act(async () => {
-                fireEvent.click(screen.getAllByRole('button', {name: '+'})[0])
-            })
-
-            await act(async () => {
-                fireEvent.change(screen.getByLabelText(/Email/i), {target: {value: 'prof1'}})
-            })
-            
-            await act(async () => {
-                fireEvent.click(screen.getByText('prof1@example.com'))
-                fireEvent.submit(screen.getAllByTestId('add-assignment-form')[0])
-            })
-
-            expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
-                "POST", "/api/v1/instructor/meta/assignments", expect.any(FormData)
-            )
-
-            const formData = getSubmitBodyFromApiSpy()
-            expect(formData['assignment[assignee_id]']).toEqual('1')
-            expect(formData['assignment[assignee_type]']).toEqual('instructor')
-            expect(formData['assignment[assignable_id]']).toEqual(`${aCourse.id}`)
-            expect(formData['assignment[assignable_type]']).toEqual('Course')
-        })
+        EditAssignmentTests(
+            <MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>, 0, 
+            'instructor', aCourse.assignees[0], 
+            'Course', aCourse.id
+        )
     })
 
-    describe('Cancel Course Assignment', () => {
-        const aCourse = {...fakeCourses[2]}
+    describe('Milestone Assignment', () => {
+        const aCourse = {...fakeCourses[2], can_edit: true, assignees: [{id: 1, name: 'an assignee'}]}
+        aCourse.milestones[0].assignees = [
+            {
+                id: 1,
+                name: 'a milestone assignee'
+            }
+        ]
 
         beforeEach(async () => {
             jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
             mockAuth({token: 'xxx', user: {rank: 'administrator'}}, 'instructor', 'meta')
-            aCourse.can_edit = true
-            aCourse.assignees = [
-                {
-                    id: 1,
-                    name: 'an assignee'
-                }
-            ]
             MockApiReturn(aCourse)
         })
         
@@ -227,121 +192,10 @@ describe('Course', () => {
             jest.restoreAllMocks()
         })
 
-        it('confirm cancel assignment', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
-
-            MockApiReturn({assignee: {id: 1}})
-            await act(async () => {
-                fireEvent.click(screen.getByRole('button', {name: 'x'}))
-            })
-            await act( async () => {
-                fireEvent.click(screen.getByRole('button', { name: 'Confirm'}))
-            })
-
-            expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
-                "DELETE", "/api/v1/instructor/meta/assignments/cancel", {assignment: {assignee_id: 1, assignable_type: 'Course', assignable_id: aCourse.id}}
-            )
-
-            expect(screen.queryByText('an assignee')).not.toBeInTheDocument()
-        })
-    })
-
-    describe('Add Assignment to Milestone', () => {
-        const aCourse = fakeCourses[2]
-
-        beforeEach(async () => {
-            jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
-            mockAuth({token: 'xxx', user: {rank: 'administrator'}}, 'instructor', 'meta')
-            aCourse.can_edit = true
-            MockApiReturn(aCourse)
-        })
-        
-        afterEach(() => {
-            jest.restoreAllMocks()
-        })
-
-        it('partner instructors suggestions', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
-
-            MockApiReturn([{id: 1, email: 'prof1@example.com'}])
-
-            await act(async () => {
-                fireEvent.click(screen.getAllByRole('button', {name: '+'})[1])
-            })
-
-            await act(async () => {
-                fireEvent.change(screen.getByLabelText(/Email/i), {target: {value: 'prof1'}})
-            })
-
-            expect(screen.getByText('prof1@example.com')).toBeInTheDocument()
-        })
-
-        it('submit assignment', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
-
-            MockApiReturn([{id: 2, email: 'prof1@example.com'}])
-            
-            await act(async () => {
-                fireEvent.click(screen.getAllByRole('button', {name: '+'})[1])
-            })
-
-            await act(async () => {
-                fireEvent.change(screen.getByLabelText(/Email/i), {target: {value: 'prof1'}})
-            })
-            
-            await act(async () => {
-                fireEvent.click(screen.getByText('prof1@example.com'))
-                fireEvent.submit(screen.getAllByTestId('add-assignment-form')[1])
-            })
-
-            expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
-                "POST", "/api/v1/instructor/meta/assignments", expect.any(FormData)
-            )
-
-            const formData = getSubmitBodyFromApiSpy()
-            expect(formData['assignment[assignee_type]']).toEqual('instructor')
-            expect(formData['assignment[assignable_id]']).toEqual(`${aCourse.id}`)
-            expect(formData['assignment[assignable_type]']).toEqual('Milestone')
-        })
-    })
-
-    
-    describe('Cancel Milestone Assignment', () => {
-        const aCourse = {...fakeCourses[2]}
-
-        beforeEach(async () => {
-            jest.spyOn(react_router, "useParams").mockReturnValue({ id: 1 })
-            mockAuth({token: 'xxx', user: {rank: 'administrator'}}, 'instructor', 'meta')
-            aCourse.can_edit = true
-            aCourse.milestones[0].assignees = [
-                {
-                    id: 1,
-                    name: 'an assignee'
-                }
-            ]
-            MockApiReturn(aCourse)
-        })
-        
-        afterEach(() => {
-            jest.restoreAllMocks()
-        })
-
-        it('confirm cancel assignment', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
-
-            MockApiReturn({assignee: {id: 1}})
-            await act(async () => {
-                fireEvent.click(screen.getByRole('button', {name: 'x'}))
-            })
-            await act( async () => {
-                fireEvent.click(screen.getByRole('button', { name: 'Confirm'}))
-            })
-
-            expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
-                "DELETE", "/api/v1/instructor/meta/assignments/cancel", {assignment: {assignee_id: 1, assignable_type: 'Milestone', assignable_id: aCourse.milestones[0].id}}
-            )
-
-            expect(screen.queryByText('an assignee')).not.toBeInTheDocument()
-        })
+        EditAssignmentTests(
+            <MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>, 1,
+            'instructor', aCourse.milestones[0].assignees[0], 
+            'Milestone', aCourse.milestones[0].id
+        )
     })
 })

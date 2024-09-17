@@ -7,6 +7,8 @@ import { LessonFormCommonTests } from '../common/LessonFormTests'
 import AppProvider from '../../context/AppProvider'
 import LessonForm from '../../components/course/LessonForm'
 import Lesson from '../../components/course/Lesson'
+import { MockApiReturn, mockAuth } from '../mocks/useAppContextMock'
+import { EditAssignmentTests } from '../common/EditAssignmentTests'
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -22,7 +24,7 @@ describe('Lesson', () => {
             name: 'lesson 1', 
             estimated_minutes: 60,
             can_edit: true,
-            can_delete: true,
+            can_delete: true
         })
 
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
@@ -41,7 +43,7 @@ describe('Lesson', () => {
                 'method': 'GET'
             })
 
-        expect(screen.getByText('lesson 1')).toBeInTheDocument()
+        expect(screen.getByText('#1 lesson 1')).toBeInTheDocument()
     })
 
     it ('edit lesson', async () => {
@@ -110,4 +112,36 @@ describe('Lesson Permission', () => {
         await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
         expect(screen.queryByTestId('delete-lesson')).not.toBeInTheDocument()
     })
+})
+
+describe('Lesson Assignment', () => {
+    const fakeLesson = {
+        id: 1,
+        name: 'lesson 1', 
+        estimated_minutes: 60,
+        can_edit: true,
+        can_delete: true,
+        assignees: [
+            {
+                id: 1,
+                name: 'who'
+            }
+        ]
+    }
+
+    beforeEach(async () => {
+        jest.spyOn(react_router, "useParams").mockReturnValue({ course_id: 1, milestone_id: 1, id: 1 })
+        mockAuth({token: 'xxx', user: {rank: 'administrator'}}, 'instructor', 'meta')
+        MockApiReturn(fakeLesson)
+    })
+
+    afterEach(() => {
+        jest.restoreAllMocks()
+    })
+
+    EditAssignmentTests(
+        <MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>, 0,
+        'instructor', fakeLesson.assignees[0],
+        'Lesson', fakeLesson.id
+    )
 })
