@@ -119,6 +119,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                 {
                     'id' => @milestone1.id, 
                     'name' => @milestone1.name,
+                    'position' => @milestone1.position,
                     'can_edit' => true,
                     'can_delete' => true,
                     'assignees' => [
@@ -131,6 +132,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                         {
                             'id' => @lesson1.id,
                             'name' => @lesson1.name,
+                            'position' => @lesson1.position,
                             'can_edit' => true,
                             'can_delete' => true,
                             'assignees' => [
@@ -169,6 +171,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                 {
                     'id' => @milestone1.id, 
                     'name' => @milestone1.name,
+                    'position' => @milestone1.position,
                     'assigned' => true,
                     'can_edit' => true,
                     'can_delete' => false,
@@ -182,6 +185,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                         {
                             'id' => @lesson1.id,
                             'name' => @lesson1.name,
+                            'position' => @lesson1.position,
                             'can_edit' => true,
                             'can_delete' => true,
                             'assignees' => [
@@ -220,6 +224,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                 {
                     'id' => @milestone1.id, 
                     'name' => @milestone1.name,
+                    'position' => @milestone1.position,
                     'can_edit' => false,
                     'can_delete' => false,
                     'assignees' => [
@@ -232,6 +237,7 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
                         {
                             'id' => @lesson1.id,
                             'name' => @lesson1.name,
+                            'position' => @lesson1.position,
                             'assigned' => true,
                             'can_edit' => true,
                             'can_delete' => false,

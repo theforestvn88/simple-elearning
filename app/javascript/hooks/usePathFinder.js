@@ -17,11 +17,13 @@ const usePathFinder = () => {
 
     const partnerInstructorProfilePath = useCallback((instructor) => `/partners/${identify}/account/${instructor.id}/profile`)
 
+    const coursePath = useCallback((courseId) => `/partners/${identify}/courses/${courseId}`)
     const cancelAssignmentApiUrl = useMemo(() => `/api/v1/${subject}/${identify}/assignments/cancel`)
 
     return {
         authSuccessPath,
         partnerInstructorProfilePath,
+        coursePath,
         cancelAssignmentApiUrl
     }
 }

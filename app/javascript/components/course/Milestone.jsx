@@ -54,8 +54,9 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
 
     const MilestoneHeader = () => (
         <div className="d-flex align-items-center justify-content-between">
-            <div className="btn btn-link d-flex align-items-center justify-content-start">
-                <h6>{editMilestone.name}</h6>
+            <div className="d-flex align-items-center justify-content-start">
+                <h6>{`#${editMilestone.position}`}</h6>
+                <h6 className="btn btn-link">{editMilestone.name}</h6>
             </div>
             <div className="d-flex align-items-center justify-content-end">
                 {milestone.can_edit && <button
@@ -79,27 +80,34 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
 
     const LessonsList = () => (
         <div className="ms-3">
-            <div className="mb-3 d-flex justify-content-start">
-                <span>Assignees:</span>
-                <Assignees
-                    assignees={editMilestone.assignees} 
-                    can_edit={editMilestone.can_edit} 
-                    assignableId={editMilestone.id} assignableType="Milestone"
-                    onAddAssignmentSuccess={onAddAssignmentSuccess}
-                    onCancelAssignmentSuccess={onCancelAssignmentSuccess}
-                />
-            </div>
-
-            {milestone.lessons?.map((lesson) => (
-                <div key={lesson.id} className="mb-3">
-                    <Link to={`milestones/${milestone.id}/lessons/${lesson.id}`}>
-                        {lesson.name}
-                    </Link>
-                </div>
-            ))}
+            <table className="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Lesson</th>
+                        <th scope="col">Assignees</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {milestone.lessons?.map((lesson) => (
+                        <tr key={lesson.id} className="mb-3">
+                            <th scope="row">{lesson.position}</th>
+                            <td>
+                                <Link to={`milestones/${milestone.id}/lessons/${lesson.id}`}>{lesson.name}</Link>
+                            </td>
+                            <td>
+                                <Assignees
+                                    assignees={lesson.assignees} 
+                                    can_edit={false}
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
             <div>
                 {milestone.can_edit && <Link to={`milestones/${milestone.id}/lessons/new`} className="btn btn-light mt-2" data-testid="add-new-lesson">
-                        Add Lesson
+                    Add Lesson
                 </Link>}
             </div>
         </div>
@@ -118,7 +126,19 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
             ) : (
                 <Collapse>
                     <MilestoneHeader />
-                    <LessonsList />
+                    <div>
+                        <div className="mb-3 d-flex justify-content-start">
+                            <span>Assignees:</span>
+                            <Assignees
+                                assignees={editMilestone.assignees} 
+                                can_edit={editMilestone.can_edit} 
+                                assignableId={editMilestone.id} assignableType="Milestone"
+                                onAddAssignmentSuccess={onAddAssignmentSuccess}
+                                onCancelAssignmentSuccess={onCancelAssignmentSuccess}
+                            />
+                        </div>
+                        <LessonsList />
+                    </div>
                 </Collapse>
             )}
         </>

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { useAppContext } from "../../context/AppProvider"
 import LessonForm from "./LessonForm"
+import usePathFinder from "../../hooks/usePathFinder"
 
 const Lesson = () => {
     const navigate = useNavigate()
     const params = useParams()
     const {subject, identify, RequireAuthorizedApi} = useAppContext()
+    const { coursePath } = usePathFinder()
     
     const [lesson, setLesson] = useState({loading: true, edit: false})
 
@@ -67,13 +69,11 @@ const Lesson = () => {
                     />
                 ) : (
                     <div>
-                        <div className="p-6">
-                            <h1 className="display-4">{lesson.name}</h1>
-                            <h6 className="display-4">estimated time: {lesson.estimated_minutes} minutes</h6>
-                            <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
-                        </div>
+                        <Link to={coursePath(lesson.course_id)}>Back to course</Link>
+                        <h1 className="text-capitalize text-decoration-underline">{`#${lesson.id} ${lesson.name}`}</h1>
                         <div className="d-flex align-items-center justify-content-between">
-                            <div className="d-flex align-items-center justify-content-end">
+                            {lesson.created_time && <div className="fst-italic">created: {lesson.created_time}, updated: {lesson.updated_time}</div>}
+                            <div className="d-flex align-items-center justify-content-end btn-group" role="group">
                                 {lesson.can_edit && <button
                                     type="button"
                                     className="btn btn-light"
@@ -90,6 +90,10 @@ const Lesson = () => {
                                     Delete
                                 </button>}
                             </div>
+                        </div>
+                        <h6 className="text-nowrap bd-highlight" style={{width: '8rem'}}>estimated time: {lesson.estimated_minutes} minutes</h6>
+                        <div className="card mt-5">
+                            <div className="card-body" dangerouslySetInnerHTML={{ __html: lesson.content }} />
                         </div>
                     </div>
                 )

@@ -36,12 +36,16 @@ class ApiV1InstructorLessonsControllerTest < ActionDispatch::IntegrationTest
             'id' => @lesson.id,
             'name' => @lesson.name,
             'estimated_minutes' => @lesson.estimated_minutes,
+            "course_id" => @lesson.course_id,
+            "milestone_id" => @lesson.milestone_id,
             'content' => '',
             'instructor' => {
                 'id' => @instructor.id,
                 'name' => @instructor.name,
                 'avatar' => { "url" => rails_blob_path(@instructor.avatar, only_path: true) }
             },
+            'created_time' => 'less than a minute',
+            'updated_time' => 'less than a minute',
             'assigned' => true,
             'can_edit' => true,
             'can_delete' => false,

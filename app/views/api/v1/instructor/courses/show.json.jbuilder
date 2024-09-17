@@ -6,14 +6,14 @@ json.can_edit policy.course_level_permission?(@course)
 json.can_delete policy.partner_admin?
 json.milestones do
     json.array! @course.milestones do |milestone|
-        json.extract! milestone, :id, :name
+        json.extract! milestone, :id, :name, :position
         json.assigned true if policy.milestone_assigned_instructor?(milestone)
         json.can_edit policy.milestone_level_permission?(milestone)
         json.can_delete policy.course_level_permission?(@course)
         json.partial! 'api/v1/instructor/assignments/assignees', assignable: milestone
         json.lessons do
             json.array! milestone.lessons do |lesson|
-                json.extract! lesson, :id, :name
+                json.extract! lesson, :id, :name, :position
                 json.assigned true if policy.lesson_assigned_instructor?(lesson)
                 json.can_edit policy.lesson_level_permission?(lesson)
                 json.can_delete policy.milestone_level_permission?(milestone)
