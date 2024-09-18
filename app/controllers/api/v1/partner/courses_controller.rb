@@ -1,7 +1,7 @@
 module Api
     module V1
-        module Instructor
-            class CoursesController < ::InstructorApiController
+        module Partner
+            class CoursesController < ::PartnerApiController
                 before_action :authenticate!
                 before_action :set_course, only: %i[show update destroy]
 
@@ -22,7 +22,7 @@ module Api
                     authorize @course
 
                     if @course.save
-                        render :show, status: :created, location: api_v1_instructor_course_url(id: @course.id, identify: current_user.id)
+                        render :show, status: :created, location: api_v1_partner_course_url(id: @course.id, identify: current_user.id)
                     else
                         render json: @course.errors, status: :unprocessable_entity
                     end
@@ -32,7 +32,7 @@ module Api
                     authorize @course
 
                     if @course.update(course_params)
-                        render :show, status: :ok, location: api_v1_instructor_course_url(@course)
+                        render :show, status: :ok, location: api_v1_partner_course_url(@course)
                     else
                         render json: @course.errors, status: :unprocessable_entity
                     end

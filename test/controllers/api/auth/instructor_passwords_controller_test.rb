@@ -11,8 +11,8 @@ class ApiAuthInstructorSessionsControllerTest < ActionDispatch::IntegrationTest
         sleep 0.1
         token2 = instructor_sign_in(@instructor)#sign_in(@user.email, @user.password)
 
-        update_pass_api_path = "/api/auth/instructor/#{@instructor.partner.slug}/password/update"
-        refresh_token_api_path = "/api/auth/instructor/#{@instructor.partner.slug}/refresh_token"
+        update_pass_api_path = "/api/auth/partner/#{@instructor.partner.slug}/password/update"
+        refresh_token_api_path = "/api/auth/partner/#{@instructor.partner.slug}/refresh_token"
         
         put update_pass_api_path, 
             headers: { "X-Auth-Token" => "Bearer #{token2}" }, 

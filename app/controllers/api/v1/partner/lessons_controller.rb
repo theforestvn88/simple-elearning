@@ -1,7 +1,7 @@
 module Api
     module V1
-        module Instructor
-            class LessonsController < ::InstructorApiController
+        module Partner
+            class LessonsController < ::PartnerApiController
                 before_action :authenticate!
                 before_action :set_milestone
                 before_action :set_lesson, except: [:create]

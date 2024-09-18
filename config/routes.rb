@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       resources :users, only: [:show, :update, :destroy]
       resources :instructors, only: [:index, :create, :show, :update, :destroy]
 
-      namespace :instructor do
+      namespace :partner do
         scope '/:identify' do
           resources :courses, except: [:edit] do
             resources :milestones, only: [:create, :update, :destroy] do
@@ -55,7 +55,7 @@ Rails.application.routes.draw do
         put '/password/update', to: 'passwords#update'
       end
 
-      scope '/instructor/:identify' do
+      scope '/partner/:identify' do
         post '/login', to: 'instructor_sessions#create'
         delete '/logout', to: 'instructor_sessions#destroy'
         post '/refresh_token', to: 'instructor_sessions#refresh'

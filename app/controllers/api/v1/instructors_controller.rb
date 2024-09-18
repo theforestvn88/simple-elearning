@@ -2,13 +2,13 @@
 
 module Api
     module V1
-        class InstructorsController < ::InstructorApiController
+        class InstructorsController < ::PartnerApiController
             before_action :authenticate!, except: [:index, :show]
             before_action :try_authenticate, only: [:index, :show]
             before_action :set_instructor, except: [:index, :create]
 
             def index
-                partner = Partner.find_by(slug: params[:partner_slug])
+                partner = ::Partner.find_by(slug: params[:partner_slug])
                 @instructors = ::Instructor.by_partner(partner.id).search_by(search_params).order_by_rank
                 @instructors = @instructors.limit(params[:limit]) if params.has_key?(:limit)
             end

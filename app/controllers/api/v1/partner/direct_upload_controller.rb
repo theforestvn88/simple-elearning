@@ -1,6 +1,6 @@
 module Api
     module V1
-        module Instructor
+        module Partner
             class DirectUploadController < ::Api::V1::DirectUploadController
                 include ::Api::Auth::SubjectInstructor
             end

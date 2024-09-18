@@ -13,7 +13,7 @@ class ApiV1DirectUploadControllerTest < ActionDispatch::IntegrationTest
 
         avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
 
-        post api_v1_instructor_presigned_url_path(identify: 'test', format: :json), 
+        post api_v1_partner_presigned_url_path(identify: 'test', format: :json), 
             headers: { 
                 "X-Auth-Token" => "Bearer #{token}",
             }, 
@@ -38,7 +38,7 @@ class ApiV1DirectUploadControllerTest < ActionDispatch::IntegrationTest
 
         avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
 
-        post api_v1_instructor_presigned_url_path(identify: 'test', format: :json), 
+        post api_v1_partner_presigned_url_path(identify: 'test', format: :json), 
             headers: { 
                 "X-Auth-Token" => "Bearer #{token}",
             }, 
@@ -60,7 +60,7 @@ class ApiV1DirectUploadControllerTest < ActionDispatch::IntegrationTest
     test 'anynomous user should be prevent' do
         avatar_file = fixture_file_upload(Rails.root.join('test', 'fixtures', 'files', 'images', 'test_img.png'), 'image/png')
 
-        post api_v1_instructor_presigned_url_path(identify: 'test', format: :json), 
+        post api_v1_partner_presigned_url_path(identify: 'test', format: :json), 
             headers: { 
                 "X-Auth-Token" => "Bearer fake-token",
             }, 

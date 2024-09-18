@@ -21,7 +21,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor2)
 
         assert_difference('Milestone.count') do
-            post api_v1_instructor_course_milestones_url(identify: @instructor.id, course_id: @course.id), 
+            post api_v1_partner_course_milestones_url(identify: @instructor.id, course_id: @course.id), 
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 params: { milestone: { name: 'new milestone' } }, 
                 as: :json
@@ -36,7 +36,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor3)
 
         assert_no_difference('Milestone.count') do
-            post api_v1_instructor_course_milestones_url(identify: @instructor.id, course_id: @course.id), 
+            post api_v1_partner_course_milestones_url(identify: @instructor.id, course_id: @course.id), 
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 params: { milestone: { name: 'new milestone' } }, 
                 as: :json
@@ -48,7 +48,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
     test 'other instructor not allowed to create milestone' do
         token = instructor_sign_in(@other_instructor)
 
-        post api_v1_instructor_course_milestones_url(identify: @other_instructor.id, course_id: @course.id), 
+        post api_v1_partner_course_milestones_url(identify: @other_instructor.id, course_id: @course.id), 
             headers: { "X-Auth-Token" => "Bearer #{token}" }, 
             params: { milestone: { name: 'new milestone' } }, 
             as: :json
@@ -59,7 +59,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
     test 'only assigned-instructor could update milestone' do
         token = instructor_sign_in(@instructor3)
 
-        patch api_v1_instructor_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id),
+        patch api_v1_partner_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id),
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 params: { milestone: { name: 'updated' } }, 
                 as: :json
@@ -73,7 +73,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
     test 'other instructor not allowed to update milestone' do
         token = instructor_sign_in(@other_instructor)
 
-        patch api_v1_instructor_course_milestone_url(identify: @other_instructor.id, course_id: @course.id, id: @milestone.id),
+        patch api_v1_partner_course_milestone_url(identify: @other_instructor.id, course_id: @course.id, id: @milestone.id),
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 params: { milestone: { name: 'updated' } }, 
                 as: :json
@@ -85,7 +85,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor3)
 
         assert_difference('Milestone.count', 0) do
-            delete api_v1_instructor_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id), 
+            delete api_v1_partner_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id), 
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 as: :json
         end
@@ -95,7 +95,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@instructor2)
 
         assert_difference('Milestone.count', -1) do
-            delete api_v1_instructor_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id), 
+            delete api_v1_partner_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id), 
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 as: :json
         end
@@ -106,7 +106,7 @@ class ApiV1InstructorMilestonesControllerTest < ActionDispatch::IntegrationTest
     test 'other instructor not allowed to destroy milestone' do
         token = instructor_sign_in(@other_instructor)
 
-        delete api_v1_instructor_course_milestone_url(identify: @other_instructor.id, course_id: @course.id, id: @milestone.id), 
+        delete api_v1_partner_course_milestone_url(identify: @other_instructor.id, course_id: @course.id, id: @milestone.id), 
             headers: { "X-Auth-Token" => "Bearer #{token}" }, 
             as: :json
 

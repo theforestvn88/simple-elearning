@@ -25,7 +25,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         policy_mock.expect :create?, true, []
 
         AssignmentPolicy.stub :new, policy_mock do
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                  headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                  params: { 
                     assignment: { 
@@ -45,7 +45,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@admin)
 
         assert_difference('Assignment.count') do
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                  headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                  params: { 
                     assignment: { 
@@ -71,7 +71,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@admin)
 
         assert_difference('Assignment.count') do
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                  headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                  params: { 
                     assignment: { 
@@ -97,7 +97,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@admin)
 
         assert_difference('Assignment.count') do
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                  headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                  params: { 
                     assignment: { 
@@ -123,7 +123,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@admin)
 
         assert_no_difference('Assignment.count') do
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                  headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                  params: { 
                     assignment: { 
@@ -143,7 +143,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@lecturer)
 
         assert_no_difference('Assignment.count') do
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                  headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                  params: { 
                     assignment: { 
@@ -166,7 +166,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         
         ::AssignmentMailer.stub :with, mock_assignment_mailer do
             token = instructor_sign_in(@admin)
-            post api_v1_instructor_assignments_url(identify: @partner.id), 
+            post api_v1_partner_assignments_url(identify: @partner.id), 
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
                 params: { 
                     assignment: { 
@@ -190,7 +190,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         policy_mock.expect :destroy?, true, []
 
         AssignmentPolicy.stub :new, policy_mock do
-            delete api_v1_instructor_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete api_v1_partner_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         policy_mock.verify
@@ -202,7 +202,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@admin)
 
         assert_difference('Assignment.count', -1) do
-            delete api_v1_instructor_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete api_v1_partner_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         assert_response :success
@@ -213,7 +213,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         token = instructor_sign_in(@lecturer)
 
         assert_no_difference('Assignment.count') do
-            delete api_v1_instructor_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete api_v1_partner_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         assert_response :unauthorized
@@ -227,7 +227,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         ::AssignmentMailer.stub :with, mock_assignment_mailer do
             assignment = Assignment.create(assignable: @course, assignee: @professor)
             token = instructor_sign_in(@admin)
-            delete api_v1_instructor_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+            delete api_v1_partner_assignment_url(identify: @partner.id, id: assignment.id), headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
         end
 
         mock_assignment_mailer.verify
@@ -243,7 +243,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
 
         ::AssignmentMailer.stub :with, mock_assignment_mailer do
             assert_difference('Assignment.count', -1) do
-                delete cancel_api_v1_instructor_assignments_url(identify: @partner.id), params: {assignment: {assignee_id: @professor.id, assignable_id: @course.id}}, 
+                delete cancel_api_v1_partner_assignments_url(identify: @partner.id), params: {assignment: {assignee_id: @professor.id, assignable_id: @course.id}}, 
                     headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
             end
         end
@@ -261,7 +261,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         another_assignment = create(:assignment, assignable: @lesson, assignee: @lecturer)
 
         token = instructor_sign_in(@professor)
-        get api_v1_instructor_assignments_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        get api_v1_partner_assignments_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
 
         assert_response :success
         assert_equal response.parsed_body['assignments'], assignments.sort_by(&:updated_at).reverse.map { |assignment|
@@ -277,7 +277,7 @@ class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
         }
 
         token = instructor_sign_in(@lecturer)
-        get api_v1_instructor_assignments_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+        get api_v1_partner_assignments_url, headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
 
         assert_response :success
         assert_equal response.parsed_body['assignments'], [

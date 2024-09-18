@@ -2,8 +2,8 @@
 
 module Api
     module V1
-        module Instructor
-            class AssignmentsController < ::InstructorApiController
+        module Partner
+            class AssignmentsController < ::PartnerApiController
                 helper AssignmentHelper
                 before_action :authenticate!
 

@@ -7,7 +7,7 @@ class ApiAuthInstructorSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'instructor login to his partner page' do
-    post "/api/auth/instructor/#{@instructor.partner.slug}/login", params: { email: @instructor.email, password: @instructor.password }, as: :json
+    post "/api/auth/partner/#{@instructor.partner.slug}/login", params: { email: @instructor.email, password: @instructor.password }, as: :json
 
     assert_response :success
     assert response.parsed_body['token'].present?
@@ -19,7 +19,7 @@ class ApiAuthInstructorSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'instructor login to other partner page' do
-    post "/api/auth/instructor/another-partner-page/login", params: { email: @instructor.email, password: @instructor.password }, as: :json
+    post "/api/auth/partner/another-partner-page/login", params: { email: @instructor.email, password: @instructor.password }, as: :json
 
     assert_response :forbidden
   end
@@ -29,20 +29,20 @@ class ApiAuthInstructorSessionsControllerTest < ActionDispatch::IntegrationTest
     sleep 0.1
     token2 = instructor_sign_in(@instructor)
 
-    delete "/api/auth/instructor/#{@instructor.partner.slug}/logout", headers: { "X-Auth-Token" => "Bearer #{token1}" }
+    delete "/api/auth/partner/#{@instructor.partner.slug}/logout", headers: { "X-Auth-Token" => "Bearer #{token1}" }
     assert_response :success
 
-    post "/api/auth/instructor/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token1}" }, as: :json
+    post "/api/auth/partner/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token1}" }, as: :json
     assert_response :unauthorized
 
-    post "/api/auth/instructor/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token2}" }, as: :json
+    post "/api/auth/partner/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token2}" }, as: :json
     assert_response :unauthorized
   end
 
   test 'refresh token' do
     token = instructor_sign_in(@instructor)
 
-    post "/api/auth/instructor/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
+    post "/api/auth/partner/#{@instructor.partner.slug}/refresh_token", headers: { "X-Auth-Token" => "Bearer #{token}" }, as: :json
     
     assert_response :success
     assert response.parsed_body['token'].present?

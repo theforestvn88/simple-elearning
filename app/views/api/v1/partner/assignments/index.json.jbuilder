@@ -1,5 +1,5 @@
 json.assignments do
-    json.array! @assignments, partial: 'api/v1/instructor/assignments/assignment', as: :assignment
+    json.array! @assignments, partial: 'api/v1/partner/assignments/assignment', as: :assignment
 end
 
 json.pagination do

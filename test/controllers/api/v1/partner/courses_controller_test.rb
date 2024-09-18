@@ -27,8 +27,8 @@ class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
         @lesson1 = create(:lesson, instructor: @instructor1, course: @course1, milestone: @milestone1, estimated_minutes: 60)
         create(:assignment, assignable: @lesson1, assignee: @instructor5)
 
-        @partner_courses_url = api_v1_instructor_courses_url(identify: @partner.id)
-        @instructor_course1_url = api_v1_instructor_course_url(id: @course1.id, identify: @partner.id)
+        @partner_courses_url = api_v1_partner_courses_url(identify: @partner.id)
+        @instructor_course1_url = api_v1_partner_course_url(id: @course1.id, identify: @partner.id)
     end
 
     test 'require signin as instructor' do
