@@ -27,7 +27,7 @@ describe('Lesson', () => {
             can_delete: true
         })
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
     })
 
     afterEach(() => {
@@ -36,7 +36,7 @@ describe('Lesson', () => {
     
     it('show lesson info', async () => {
         expect(fetchMock).toHaveBeenCalledWith(
-            '/api/v1/instructor/meta/courses/1/milestones/1/lessons/1', 
+            '/api/v1/partner/meta/courses/1/milestones/1/lessons/1', 
             {
                 'body': null, 
                 'headers': {'Content-Type': 'application/json', 'X-Auth-Token': 'xxx'}, 
@@ -63,7 +63,7 @@ describe('Lesson', () => {
         })
 
         expect(fetchMock).toHaveBeenCalledWith(
-            '/api/v1/instructor/meta/courses/1/milestones/1/lessons/1', 
+            '/api/v1/partner/meta/courses/1/milestones/1/lessons/1', 
             {
                 'body': "{}", 
                 'headers': {'Content-Type': 'application/json', 'X-Auth-Token': 'xxx'}, 
@@ -75,7 +75,7 @@ describe('Lesson', () => {
 describe('EditLessonForm', () => {
     LessonFormCommonTests(
         <MemoryRouter>
-            <AppProvider subject='instructor' identify='meta'>
+            <AppProvider subject='partner' identify='meta'>
                 <LessonForm submitEndPoint={'/api/v1/instructor/meta/courses/1/milestones/1/lessons/1'} submitMethod={'PUT'} />
             </AppProvider>
         </MemoryRouter>, 
@@ -104,12 +104,12 @@ describe('Lesson Permission', () => {
     })
 
     it('should not show Edit button when user is not allowed to edit lesson', async () => {
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
         expect(screen.queryByTestId('edit-lesson')).not.toBeInTheDocument()
     })
 
     it('should not show Delete button when user is not allowed to delete lesson', async () => {
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Lesson /></AppProvider></MemoryRouter>))
         expect(screen.queryByTestId('delete-lesson')).not.toBeInTheDocument()
     })
 })
@@ -140,7 +140,7 @@ describe('Lesson Assignment', () => {
     })
 
     EditAssignmentTests(
-        <MemoryRouter><AppProvider subject='instructor' identify='meta'><Lesson /></AppProvider></MemoryRouter>, 0,
+        <MemoryRouter><AppProvider subject='partner' identify='meta'><Lesson /></AppProvider></MemoryRouter>, 0,
         'instructor', fakeLesson.assignees[0],
         'Lesson', fakeLesson.id
     )

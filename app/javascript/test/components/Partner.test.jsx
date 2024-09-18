@@ -17,7 +17,7 @@ describe('Partner', () => {
         localStorageMockReturn({})
         fetchMockReturn([])
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Partner /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Partner /></AppProvider></MemoryRouter>))
 
         verifyThatLoginPageWithoutSignUpOnScreen(screen)
     })
@@ -26,7 +26,7 @@ describe('Partner', () => {
         localStorageMockReturn({token: 'xxx', token_expire_at: (new Date(Date.now() - 1000*60)).toUTCString()})
         fetchMockReturn([])
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Partner /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Partner /></AppProvider></MemoryRouter>))
 
         verifyThatLoginPageWithoutSignUpOnScreen(screen)
     })
@@ -34,9 +34,9 @@ describe('Partner', () => {
     it('slient refresh will-expired-token', async () => {
         localStorageMockReturn({token: 'xxx', token_expire_at: (new Date(Date.now() + 1000*60*60)).toUTCString()})
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Partner /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Partner /></AppProvider></MemoryRouter>))
 
-        expect(fetchMock).toHaveBeenCalledWith('/api/auth/instructor/meta/refresh_token', {
+        expect(fetchMock).toHaveBeenCalledWith('/api/auth/partner/meta/refresh_token', {
             "method": "POST",
             "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"},
             "body": "{}"
@@ -46,9 +46,9 @@ describe('Partner', () => {
     it('no need to refresh long-life-token', async () => {
         localStorageMockReturn({token: 'xxx', token_expire_at: (new Date(Date.now() + 1000*60*60*3)).toUTCString()})
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Partner /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Partner /></AppProvider></MemoryRouter>))
 
-        expect(fetchMock).not.toHaveBeenCalledWith('/api/auth/instructor/meta/refresh_token', {
+        expect(fetchMock).not.toHaveBeenCalledWith('/api/auth/partner/meta/refresh_token', {
             "method": "POST",
             "headers": {"Content-Type": "application/json", "X-Auth-Token": "xxx"},
             "body": "{}"

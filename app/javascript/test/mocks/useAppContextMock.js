@@ -16,10 +16,11 @@ export const getSubmitBodyFromApiSpy = () => {
           .reduce((acc, f) => ({ ...acc, [f[0]]: f[1] }), {})
 }
 
-export const mockAuth = (authInfo, subject = 'subject', identify = 'identify') => {
+export const mockAuth = (authInfo, subject = 'subject', identify = 'identify', userType = 'instructor') => {
     jest.spyOn(require('../../context/AppProvider'), 'useAppContext').mockReturnValue({
         subject,
         identify,
+        userType,
         auth: {
             info: authInfo,
             login: loginSpy,

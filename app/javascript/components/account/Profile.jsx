@@ -7,12 +7,14 @@ import Confirmation from "../Confirmation"
 import Spinner from "../Spinner"
 import Overlay from "../Overlay"
 import UserAvatar from "../UserAvatar"
+import usePathFinder from "../../hooks/usePathFinder"
 
 const Profile = () => {
     const navigate = useNavigate()
+    const params = useParams()
     const { QueryApi } = useApi()
     const { subject, auth, clearAuth, RequireAuthorizedApi } = useAppContext()
-    const params = useParams()
+    const { profileApiUrl } = usePathFinder()
 
     const [editMode, setEditMode] = useState(false)
 
@@ -31,7 +33,7 @@ const Profile = () => {
     const deleteAccount = () => {
         setOnDeleteAccount(true)
 
-        RequireAuthorizedApi('DELETE', `/api/v1/${subject}s/${profile.id}`)
+        RequireAuthorizedApi('DELETE', profileApiUrl(profile.id))
             .then((response) => {
                 if (response.ok) {
                     setOnDeleteAccount(false)
@@ -51,7 +53,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        QueryApi(`/api/v1/${subject}s/${params.id}`, {}, {'X-Auth-Token': auth.info.token})
+        QueryApi(profileApiUrl(params.id), {}, {'X-Auth-Token': auth.info.token})
             .then((response) => {
                 if (response.ok) {
                     return response.json()

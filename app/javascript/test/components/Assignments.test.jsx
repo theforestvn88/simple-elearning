@@ -31,7 +31,7 @@ describe('Assignments', () => {
     })
     
     it('show assignments list', async () => {
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Assignments /></AppProvider></MemoryRouter>))
 
         expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
             "GET", "/api/v1/subject/identify/assignments", {"page": 1}
@@ -43,5 +43,5 @@ describe('Assignments', () => {
         })
     })
 
-    PaginationTests(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Assignments /></AppProvider></MemoryRouter>, 'subject/identify/assignments')
+    PaginationTests(<MemoryRouter><AppProvider subject='partner' identify='meta'><Assignments /></AppProvider></MemoryRouter>, 'subject/identify/assignments')
 })

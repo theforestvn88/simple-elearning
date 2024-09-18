@@ -1,25 +1,27 @@
-import React, { useRef, useState } from "react"
+import React, { useState } from "react"
 import { useAppContext } from "../../context/AppProvider"
 import { useNavigate } from "react-router-dom"
 import SingleFileUploader from "../SingleFileUploader"
+import usePathFinder from "../../hooks/usePathFinder"
 
 const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const navigate = useNavigate()
-    const { subject, RequireAuthorizedApi } = useAppContext()
+    const { userType, RequireAuthorizedApi } = useAppContext()
+    const { profileApiUrl } = usePathFinder()
 
     const [profile, setProfile] = useState({...userProfile})
 
     const updateProfile = new FormData()
     const onChangeInfo = (event) => {
-        updateProfile.set(`${subject}[${event.target.name}]`, event.target.value)
+        updateProfile.set(`${userType}[${event.target.name}]`, event.target.value)
     }
     
     const updateAvatar = (image) => {
-        updateProfile.set(`${subject}[avatar]`, image)
+        updateProfile.set(`${userType}[avatar]`, image)
     }
 
     const updateSocialLinks = (social_links) => {
-        updateProfile.set(`${subject}[social_links]`, social_links)
+        updateProfile.set(`${userType}[social_links]`, social_links)
 
         setProfile({
             ...profile,
@@ -44,7 +46,7 @@ const ProfileForm = ({userProfile, onSubmitSuccess}) => {
     const updateSubmit = async (event) => {
         event.preventDefault()
 
-        RequireAuthorizedApi('PUT', `/api/v1/${subject}s/${profile.id}`, updateProfile)
+        RequireAuthorizedApi('PUT', profileApiUrl(profile.id), updateProfile)
             .then((response) => {
                 if (response.ok) {
                     return response.json()

@@ -5,11 +5,16 @@ const usePermission = () => {
     const { auth } = useAppContext()
 
     const AdministratorRank = 'administrator'
-    const canCreateInstructor = useCallback(() => {
+    const isAdmin = useCallback(() => {
         return auth?.info?.user?.rank === AdministratorRank
     }, [auth.info])
 
+    const canCreateInstructor = useCallback(() => {
+        return isAdmin()
+    }, [])
+
     return {
+        isAdmin,
         canCreateInstructor
     }
 }

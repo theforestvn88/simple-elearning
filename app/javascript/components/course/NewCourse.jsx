@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CourseForm from './CourseForm'
-import { useAppContext } from '../../context/AppProvider'
+import usePathFinder from '../../hooks/usePathFinder'
 
 const NewCourse = () => {
   const navigate = useNavigate()
-  const { subject, identify } = useAppContext()
+  const { newCourseApiUrl } = usePathFinder()
   const [course, setCourse] = useState({ name: '', summary: '', description: '' })
 
   const onSubmitSuccess = (responseCourse) => {
@@ -22,7 +22,7 @@ const NewCourse = () => {
       <h1 className="font-weight-normal mb-5">Add a new course</h1>
       <CourseForm
         course={course}
-        submitEndPoint={`/api/v1/${subject}/${identify}/courses`}
+        submitEndPoint={newCourseApiUrl}
         submitMethod={'POST'}
         onSubmitSuccess={onSubmitSuccess}
         onSubmitError={onSubmitError}

@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import MilestoneForm from './MilestoneForm'
 import { useAppContext } from '../../context/AppProvider'
 import Milestone from './Milestone'
 import Assignees from '../assignment/Assignees'
+import usePathFinder from '../../hooks/usePathFinder'
 
 const CourseDetail = () => {
     const navigate = useNavigate()
     const params = useParams()
-    const {subject, identify, RequireAuthorizedApi} = useAppContext()
+    const { RequireAuthorizedApi } = useAppContext()
+    const { courseApiUrl, addMilestoneApiUrl } = usePathFinder()
 
     const [course, setCourse] = useState({})
     const [showMilestoneForm, setShowMilestoneForm] = useState(false)
-    const closeModalRef = useRef()
 
     useEffect(() => {
-        const courseUrl = `/api/v1/${subject}/${identify}/courses/${params.id}`
-        RequireAuthorizedApi('GET', courseUrl)
+        RequireAuthorizedApi('GET', courseApiUrl(params.id))
             .then((res) => {
                 if (res.ok) {
                     return res.json()
@@ -31,9 +31,7 @@ const CourseDetail = () => {
     const onDeleteCourse = (event) => {
         event.preventDefault()
 
-        const deleteCourseUrl = `/api/v1/${subject}/${identify}/courses/${course.id}`
-
-        RequireAuthorizedApi('DELETE', deleteCourseUrl)
+        RequireAuthorizedApi('DELETE', courseApiUrl(course.id))
             .then((response) => {
                 if (response.ok) {
                     navigate('/courses')
@@ -136,7 +134,7 @@ const CourseDetail = () => {
                 <MilestoneForm 
                     milestone={{}} 
                     submitMethod={'POST'}
-                    submitEndpoint={`/api/v1/${subject}/${identify}/courses/${course.id}/milestones`}
+                    submitEndpoint={addMilestoneApiUrl(course.id)}
                     onSubmitSuccess={onAddNewMilestoneSuccess} 
                     onSubmitError={() => {}}
                 />

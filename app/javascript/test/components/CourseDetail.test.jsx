@@ -19,7 +19,7 @@ describe('Course', () => {
             mockAuth({token: 'xxx'})
             MockApiReturn(fakeCourses[0])
 
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
         })
 
         afterEach(() => {
@@ -53,7 +53,7 @@ describe('Course', () => {
             mockAuth({token: 'xxx'})
             MockApiReturn(fakeCourses[0])
 
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
         })
 
         afterEach(() => {
@@ -117,28 +117,28 @@ describe('Course', () => {
         })
 
         it('should not show Delete button if user is not allowed to edit course', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
             expect(screen.queryByTestId('delete-course')).not.toBeInTheDocument()
         })
 
         it('should not show Edit button if user is not allowed to edit course', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
             expect(screen.queryByTestId('edit-course')).not.toBeInTheDocument()
         })
 
         it('should not show Add Milestone if user is not allowed to edit course', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
             expect(screen.queryByTestId('add-new-milestone')).not.toBeInTheDocument()
         })
 
         it('should not show Delete Milestone if user is not allowed to edit course (delete milestone)', async () => {
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
             expect(screen.queryByTestId('delete-milestone')).not.toBeInTheDocument()
         })
 
         it('should not show Edit Milestone if user is allowed to edit milestone', async () => {
             aCourse.milestones[0].can_edit = false
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
 
             expect(screen.queryByTestId('edit-milestone')).not.toBeInTheDocument()
             aCourse.milestones[0].can_edit = true
@@ -146,7 +146,7 @@ describe('Course', () => {
         
         it('should not show Add New Lesson if user is allowed to edit milestone', async () => {
             aCourse.milestones[0].can_edit = false
-            await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
+            await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>))
 
             expect(screen.queryByTestId('add-new-lesson')).not.toBeInTheDocument()
             aCourse.milestones[0].can_edit = true
@@ -167,7 +167,7 @@ describe('Course', () => {
         })
 
         EditAssignmentTests(
-            <MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>, 0, 
+            <MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>, 0, 
             'instructor', aCourse.assignees[0], 
             'Course', aCourse.id
         )
@@ -193,7 +193,7 @@ describe('Course', () => {
         })
 
         EditAssignmentTests(
-            <MemoryRouter><AppProvider subject='instructor' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>, 1,
+            <MemoryRouter><AppProvider subject='partner' identify='meta'><CourseDetail /></AppProvider></MemoryRouter>, 1,
             'instructor', aCourse.milestones[0].assignees[0], 
             'Milestone', aCourse.milestones[0].id
         )

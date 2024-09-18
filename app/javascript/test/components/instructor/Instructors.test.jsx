@@ -26,7 +26,7 @@ describe('Instructors', () => {
     it('Show Instructors List', async () => {
         mockAuth({token: 'xxx', user: { id: 1, name: 'User1', rank: 'administrator' }}, 'instructor', 'meta')
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Instructors /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Instructors /></AppProvider></MemoryRouter>))
 
         expect(RequireAuthorizedApiSpy).toHaveBeenCalledWith(
             'GET', '/api/v1/instructors', {'partner_slug': 'meta'}
@@ -43,7 +43,7 @@ describe('Instructors', () => {
     it('not allow normal instructor add new instructor', async () => {
         mockAuth({token: 'xxx', user: { id: 1, name: 'User1', rank: 'professor' }})
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><Instructors /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><Instructors /></AppProvider></MemoryRouter>))
 
         expect(screen.queryByText('Add New Instructor')).not.toBeInTheDocument()
     })

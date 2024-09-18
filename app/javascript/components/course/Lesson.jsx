@@ -8,14 +8,14 @@ import Assignees from "../assignment/Assignees"
 const Lesson = () => {
     const navigate = useNavigate()
     const params = useParams()
-    const {subject, identify, RequireAuthorizedApi} = useAppContext()
+    const { RequireAuthorizedApi } = useAppContext()
+    const { lessonApiUrl } = usePathFinder()
     const { coursePath } = usePathFinder()
     
     const [lesson, setLesson] = useState({loading: true, edit: false})
 
     useEffect(() => {
-        const lessonUrl = `/api/v1/${subject}/${identify}/courses/${params.course_id}/milestones/${params.milestone_id}/lessons/${params.id}`
-        RequireAuthorizedApi('GET', lessonUrl)
+        RequireAuthorizedApi('GET', lessonApiUrl(params.course_id, params.milestone_id, params.id))
             .then((res) => {
                 if (res.ok) {
                     return res.json()
@@ -43,9 +43,7 @@ const Lesson = () => {
     const onDeleteLesson = (event) => {
         event.preventDefault()
 
-        const deleteLessonUrl = `/api/v1/${subject}/${identify}/courses/${params.course_id}/milestones/${params.milestone_id}/lessons/${params.id}`
-
-        RequireAuthorizedApi('DELETE', deleteLessonUrl)
+        RequireAuthorizedApi('DELETE', lessonApiUrl(params.course_id, params.milestone_id, params.id))
             .then((response) => {
                 if (response.ok) {
                     navigate(`/courses/${params.course_id}`)
@@ -77,7 +75,7 @@ const Lesson = () => {
                 lesson.edit ? (
                     <LessonForm
                         lesson={lesson}
-                        submitEndPoint={`/api/v1/${subject}/${identify}/courses/${params.course_id}/milestones/${params.milestone_id}/lessons/${lesson.id}`}
+                        submitEndPoint={lessonApiUrl(params.course_id, params.milestone_id, lesson.id)}
                         submitMethod={'PUT'}
                         onSubmitSuccess={onUpdateSuccess}
                         onSubmitError={onUpdateError}

@@ -11,7 +11,7 @@ describe('Add New Instructor', () => {
         localStorageMockReturn({token: 'xxx'})
         fetchMockReturn({id: 1})
         
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><NewInstructor /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><NewInstructor /></AppProvider></MemoryRouter>))
 
         fireEvent.change(screen.getByLabelText('Email'), {target: {value: 'ins1@example.com'}})
         fireEvent.change(screen.getByLabelText('Name'), {target: {value: 'Instructor1'}})

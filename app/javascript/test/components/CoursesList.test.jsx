@@ -21,7 +21,7 @@ describe('CoursesList', () => {
     })
 
     it('should show courses list', async () => {
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='meta'><CoursesList /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='meta'><CoursesList /></AppProvider></MemoryRouter>))
 
         expect(fetchMock).toHaveBeenCalledWith(
             "/api/v1/courses?page=1", 
@@ -35,7 +35,7 @@ describe('CoursesList', () => {
     })
 
     PaginationTests(
-        <MemoryRouter><AppProvider subject='instructor' identify='meta'><CoursesList /></AppProvider></MemoryRouter>, 
+        <MemoryRouter><AppProvider subject='partner' identify='meta'><CoursesList /></AppProvider></MemoryRouter>, 
         'courses',
         false // NO required authorized
     )

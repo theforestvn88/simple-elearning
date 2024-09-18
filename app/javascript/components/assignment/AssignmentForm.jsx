@@ -4,7 +4,7 @@ import useApiQuery from "../../hooks/useApiQuery"
 import { useAppContext } from "../../context/AppProvider"
 
 const AssignmentForm = ({assignaleType, assignaleId, onSubmitSuccess}) => {
-    const { subject, identify, RequireAuthorizedApi } = useAppContext()
+    const { subject, identify, userType, RequireAuthorizedApi } = useAppContext()
     const { setQuery, responseData } = useApiQuery('instructors')
     const selectedInputRef = useRef()
     const assignmentData = new FormData()
@@ -24,7 +24,7 @@ const AssignmentForm = ({assignaleType, assignaleId, onSubmitSuccess}) => {
     const submit = async (event) => {
         event.preventDefault()
 
-        assignmentData.set('assignment[assignee_type]', subject)
+        assignmentData.set('assignment[assignee_type]', userType)
         assignmentData.set('assignment[assignable_type]', assignaleType)
         assignmentData.set('assignment[assignable_id]', assignaleId)
 

@@ -42,7 +42,7 @@ describe('LogIn', () => {
     it('with title and base path', async () => {
         mockAuth({token: 'xxx', user: { name: 'Instructor 1' }})
 
-        await act( async () => render(<MemoryRouter><AppProvider subject='instructor' identify='red-devil'><Nav title='red devil' basePath='/partners/red-devil' /></AppProvider></MemoryRouter>))
+        await act( async () => render(<MemoryRouter><AppProvider subject='partner' identify='red-devil'><Nav title='red devil' basePath='/partners/red-devil' /></AppProvider></MemoryRouter>))
 
         expect(screen.getByRole('link', { name: 'red devil', to: '/partners/red-devil'})).toHaveClass('partner-title')
         expect(screen.getByRole('button', { name: 'Log Out'})).toBeInTheDocument()

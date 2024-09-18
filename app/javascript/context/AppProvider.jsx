@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react"
+import React, { createContext, useContext, useMemo } from "react"
 import useAuth from "../hooks/useAuth"
 
 const AppContext = createContext()
@@ -18,10 +18,19 @@ const AppProvider = ({ subject, identify, children }) => {
         RequireAuthorizedApi
     } = useAuth(subject, identify)
     
+    const userType = useMemo(() => {
+        if (subject === 'partner') {
+            return 'instructor'
+        } else {
+            return 'user'
+        }
+    })
+
     return (
         <AppContext.Provider value={{
             subject,
-            identify, 
+            identify,
+            userType, 
             auth: { 
                 info: authInfo, 
                 login, 

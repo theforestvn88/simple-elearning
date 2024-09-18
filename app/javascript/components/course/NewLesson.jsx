@@ -1,15 +1,15 @@
-import React, { useState } from "react"
+import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { useAppContext } from "../../context/AppProvider"
+import usePathFinder from "../../hooks/usePathFinder"
 import LessonForm from "./LessonForm"
 
 const NewLesson = () => {
     const navigate = useNavigate()
     const params = useParams()
-    const { subject, identify } = useAppContext()
+    const { newLessonApiUrl, lessonPath } = usePathFinder()
 
     const onSubmitSuccess = (responseLesson) => {
-        navigate(`milestones/${params.milestone_id}/lessons/${responseLesson.id}`)
+        navigate(lessonPath(params.course_id, params.milestone_id, responseLesson.id))
     }
 
     const onSubmitError = (error) => {
@@ -21,7 +21,7 @@ const NewLesson = () => {
             <h1 className="font-weight-normal mb-5">Add new lesson</h1>
             <LessonForm
                 lesson={{name: '', estimated_minutes: 0}}
-                submitEndPoint={`/api/v1/${subject}/${identify}/courses/${params.course_id}/milestones/${params.milestone_id}/lessons`}
+                submitEndPoint={newLessonApiUrl(params.course_id, params.milestone_id)}
                 submitMethod={'POST'}
                 onSubmitSuccess={onSubmitSuccess}
                 onSubmitError={onSubmitError}

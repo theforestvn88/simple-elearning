@@ -7,7 +7,7 @@ import LessonForm from '../../components/course/LessonForm'
 describe('NewLesson', () => {
     LessonFormCommonTests(
         <MemoryRouter>
-            <AppProvider subject='instructor' identify='meta'>
+            <AppProvider subject='partner' identify='meta'>
                 <LessonForm submitEndPoint={'/api/v1/instructor/meta/courses/1/milestones/1/lessons'} submitMethod={'POST'} />
             </AppProvider>
         </MemoryRouter>, 

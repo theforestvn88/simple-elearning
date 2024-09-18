@@ -4,10 +4,11 @@ import { useAppContext } from '../../context/AppProvider'
 import { Link } from 'react-router-dom'
 import Collapse from '../Collapse'
 import Assignees from '../assignment/Assignees'
+import usePathFinder from '../../hooks/usePathFinder'
 
 const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
-    const {subject, identify, RequireAuthorizedApi} = useAppContext()
-    const ApiEndPoint = `/api/v1/${subject}/${identify}/courses/${courseId}/milestones/${milestone.id}`
+    const { RequireAuthorizedApi } = useAppContext()
+    const { milestoneApiUrl } = usePathFinder()
     const [editMilestone, setEditMilestone] = useState({...milestone, edit: false})
 
     const onEditMilestone = (event) => {
@@ -26,7 +27,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     const onDeleteMilestone = (event) => {
         event.preventDefault()
 
-        RequireAuthorizedApi('DELETE', ApiEndPoint)
+        RequireAuthorizedApi('DELETE', milestoneApiUrl(courseId, milestone.id))
             .then((response) => {
                 if (response.ok) {
                     if (onDeleteSuccess) {
@@ -119,7 +120,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
                 <MilestoneForm 
                     milestone={editMilestone}
                     submitMethod={'PUT'}
-                    submitEndpoint={ApiEndPoint}
+                    submitEndpoint={milestoneApiUrl(courseId, milestone.id)}
                     onSubmitSuccess={onUpdateMilestoneSuccess} 
                     onSubmitError={() => {}}
                 />

@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { useAppContext } from '../../context/AppProvider'
 import useApi from '../../hooks/useApi'
+import usePathFinder from '../../hooks/usePathFinder'
 
 const CourseIntro = () => {
   const params = useParams()
-  const {subject, identify} = useAppContext()
+  const { courseApiUrl } = usePathFinder()
   const { QueryApi } = useApi()
 
   const [course, setCourse] = useState({})
 
   useEffect(() => {
-    const courseUrl = `/api/v1/${subject}/${identify}/courses/${params.id}`
-    QueryApi(courseUrl)
+    QueryApi(courseApiUrl(params.id))
       .then((res) => {
         if (res.ok) {
           return res.json()
