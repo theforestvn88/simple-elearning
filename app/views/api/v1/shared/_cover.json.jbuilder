@@ -1,5 +1,5 @@
 if cover.attached?
-    json.set! (name || 'cover'), \
+    json.set! ((defined?(name) && name) || 'cover'), \
         if defined?(only_url) && only_url
             {url: url_for(cover)}
         else
