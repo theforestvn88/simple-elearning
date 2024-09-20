@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'api_helper'
 
-class ApiV1InstructorCoursesControllerTest < ActionDispatch::IntegrationTest
+class ApiV1PartnerCoursesControllerTest < ActionDispatch::IntegrationTest
     setup do
         @partner = create(:partner)
         @instructor1 = create(:instructor, partner: @partner, rank: :administrator)

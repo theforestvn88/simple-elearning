@@ -21,6 +21,9 @@ Rails.application.routes.draw do
           end
 
           post '/presigned_url', to: 'direct_upload#create'
+
+          get '/', to: 'partners#show'
+          put '/update', to: 'partners#update'
         end
       end
 

@@ -3,7 +3,7 @@
 require 'test_helper'
 require 'api_helper'
 
-class ApiV1InstructorAssignmentsControllerTest < ActionDispatch::IntegrationTest
+class ApiV1PartnerAssignmentsControllerTest < ActionDispatch::IntegrationTest
     include AssignmentHelper
 
     setup do
