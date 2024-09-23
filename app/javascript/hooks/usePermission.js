@@ -13,9 +13,14 @@ const usePermission = () => {
         return isAdmin()
     }, [])
 
+    const canUpdatePartnerSettings = useCallback(() => {
+        return isAdmin()
+    })
+
     return {
         isAdmin,
-        canCreateInstructor
+        canCreateInstructor,
+        canUpdatePartnerSettings
     }
 }
 

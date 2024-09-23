@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import usePermission from '../hooks/usePermission'
 
 const PartnerDashBoard = () => {
     const location = useLocation()
@@ -7,6 +8,8 @@ const PartnerDashBoard = () => {
       const parts = location.pathname.split("/")
       return parts[3]
     }, [location.pathname])
+
+    const { canUpdatePartnerSettings } = usePermission()
 
     return (<>
         <div className="row flex-nowrap border border-1">
@@ -34,6 +37,13 @@ const PartnerDashBoard = () => {
                         Instructors
                       </Link>
                   </li>
+                  {canUpdatePartnerSettings() && <li className="nav-item">
+                      <Link 
+                        to={`settings`}
+                        className={currentTab=='settings' ? '' : 'text-decoration-none'}>
+                        Partner Settings
+                      </Link>
+                  </li>}
                 </ul>
               </div>
           </div>

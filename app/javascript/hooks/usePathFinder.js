@@ -15,6 +15,8 @@ const usePathFinder = () => {
         return authIndex >= 0 ? ('/' + parts.slice(0, authIndex).join("/")) : location.pathname
     }, [location.pathname])
 
+    const partnerApiUrl = useMemo(() => `/api/v1/partner/${identify}/`)
+    const partnerUpdateApiUrl = useMemo(() => `/api/v1/partner/${identify}/update`)
     const partnerInstructorProfilePath = useCallback((instructor) => `/partners/${identify}/account/${instructor.id}/profile`)
     const profileApiUrl = useCallback((profileId) => {
         if (subject === 'partner') {
@@ -36,6 +38,8 @@ const usePathFinder = () => {
 
     return {
         authSuccessPath,
+        partnerApiUrl,
+        partnerUpdateApiUrl,
         partnerInstructorProfilePath,
         profileApiUrl,
         newCourseApiUrl,

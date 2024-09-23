@@ -20,6 +20,7 @@ import PartnerDashBoard from "../components/PartnerDashboard.jsx"
 import Instructors from "../components/instructor/Instructors.jsx"
 import NewInstructor from "../components/instructor/NewInstructor.jsx"
 import Assignments from "../components/assignment/Assignments.jsx"
+import PartnerSettings from "../components/PartnerSettings.jsx"
 
 const PartnerRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -36,6 +37,10 @@ const PartnerRouter = createBrowserRouter(
                 <Route
                     path="/partners/:slug/instructors"
                     element={<Instructors />} 
+                />
+                <Route
+                    path="/partners/:slug/settings"
+                    element={<PartnerSettings />} 
                 />
                 <Route
                     path="/partners/:slug/instructors/new"
