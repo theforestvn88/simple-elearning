@@ -1,4 +1,4 @@
-json.extract! lesson, :id, :name, :estimated_minutes, :course_id, :milestone_id
+json.extract! lesson, :id, :name, :position, :estimated_minutes, :course_id, :milestone_id
 json.content lesson.content.to_s
 
 if lesson.instructor

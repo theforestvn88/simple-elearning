@@ -32,6 +32,7 @@ class ApiV1LessonsControllerTest < ActionDispatch::IntegrationTest
         assert_equal response.parsed_body, {
             "id" => @lessons.first.id,
             "name" => @lessons.first.name,
+            'position' => @lessons.first.position,
             "estimated_minutes" => @lessons.first.estimated_minutes,
             "course_id" => @course.id,
             "milestone_id" => @milestone.id,

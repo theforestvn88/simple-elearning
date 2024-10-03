@@ -63,7 +63,19 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
                     required
                     onChange={onChange}
                 />
-        
+
+                <label htmlFor="coursePosition">Position</label>
+                <input
+                    type="number"
+                    id="coursePosition"
+                    name="position"
+                    defaultValue={lesson?.position}
+                    placeholder="Position"
+                    className="form-control"
+                    required
+                    onChange={onChange}
+                />
+
                 <label htmlFor="courseEst">Lesson Estimated Time (in minutes)</label>
                 <input
                     type="number"
