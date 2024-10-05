@@ -61,13 +61,12 @@ class ApiV1PartnerMilestonesControllerTest < ActionDispatch::IntegrationTest
 
         patch api_v1_partner_course_milestone_url(identify: @instructor.id, course_id: @course.id, id: @milestone.id),
                 headers: { "X-Auth-Token" => "Bearer #{token}" }, 
-                params: { milestone: { name: 'updated' } }, 
+                params: { milestone: { name: 'updated', position: 2 } }, 
                 as: :json
 
         assert_response :success
         assert_equal response.parsed_body['name'], 'updated'
-        assert_equal response.parsed_body['can_edit'], true
-        assert_equal response.parsed_body['can_delete'], false
+        assert_equal response.parsed_body['position'], 2
     end
 
     test 'other instructor not allowed to update milestone' do

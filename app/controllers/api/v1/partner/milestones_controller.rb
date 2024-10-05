@@ -23,9 +23,7 @@ module Api
                 def update
                     authorize @milestone
 
-                    if @milestone.update(milestone_params)
-                        render @milestone
-                    else
+                    unless @milestone.update(milestone_params)
                         render json: @milestone.errors, status: :unprocessable_entity
                     end
                 end
@@ -47,7 +45,7 @@ module Api
                     end
 
                     def milestone_params
-                        params.require(:milestone).permit(:name)
+                        params.require(:milestone).permit(:name, :position)
                     end
 
                     def policy
