@@ -104,8 +104,9 @@ const Lesson = () => {
                                 </button>}
                             </div>
                         </div>
-                        <h6 className="text-nowrap bd-highlight" style={{width: '8rem'}}>estimated time: {lesson.estimated_minutes} minutes</h6>
-                        
+                        <h6 className="text-nowrap bd-highlight" style={{width: '8rem'}}>Estimated time: {lesson.estimated_minutes} minutes</h6>
+                        <h6>Position: {lesson.position}</h6>
+
                         {lesson.can_edit ? (
                         <>
                             <div className="border-bottom mb-3 mt-5">

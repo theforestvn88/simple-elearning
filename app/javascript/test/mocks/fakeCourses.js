@@ -25,6 +25,7 @@ export const fakeCourses = [
         milestones: [
             {
                 id: 1,
+                position: 1,
                 name: "milestone1",
                 estimated_minutes: 60,
                 can_edit: true,
@@ -43,6 +44,7 @@ export const fakeCourses = [
             },
             {
                 id: 2,
+                position: 2,
                 name: "milestone2",
                 assignees: [],
             }
@@ -95,6 +97,7 @@ export const fakeCourses = [
         milestones: [
             {
                 id: 3,
+                position: 1,
                 name: "milestone1",
                 estimated_minutes: 60,
                 can_edit: true,

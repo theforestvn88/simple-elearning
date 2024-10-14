@@ -58,22 +58,24 @@ describe('Course', () => {
 
         afterEach(() => {
             jest.restoreAllMocks()
+            RequireAuthorizedApiSpy.mockClear()
+            RequireAuthorizedApiSpy.mockRestore()
         })
 
         it('add new course milestone', async () => {
+            const fakeNewMilestone = {id: 6, position: 3, name: 'a new milestone'}
+            MockApiReturn(fakeNewMilestone)
+
             await act(async () => {
                 fireEvent.click(screen.getByRole('button', {name: 'Add Milestone'}))
             })
 
-            const fakeNewMilestone = {id: 6, name: 'a new milestone'}
-            MockApiReturn(fakeNewMilestone)
-
             await act(async () => {
                 fireEvent.change(screen.getByLabelText(/Name/i), {target: {value: fakeNewMilestone.name}})
-                fireEvent.click(screen.getByRole('button', {name: 'Submit'}))
+                fireEvent.submit(screen.getByTestId('milestone-form'))
             })
 
-            expect(screen.getByText(fakeNewMilestone.name)).toBeInTheDocument()
+            expect(screen.queryByText(fakeNewMilestone.name)).toBeInTheDocument()
         })
 
         it('edit course milestone', async () => {
@@ -86,10 +88,31 @@ describe('Course', () => {
 
             await act(async () => {
                 fireEvent.change(screen.getByLabelText(/Name/i), {target: {value: fakeUpdateMilestone.name}})
-                fireEvent.click(screen.getByRole('button', {name: 'Submit'}))
+                fireEvent.submit(screen.getByTestId('milestone-form'))
             })
 
-            expect(screen.getByText(fakeUpdateMilestone.name)).toBeInTheDocument()
+            expect(screen.getAllByRole("milestone-title")[0]).toHaveTextContent(`#${fakeCourses[0].milestones[0].position}${fakeUpdateMilestone.name}`)
+        })
+
+        it('change course milestone position', async () => {
+            await act(async () => {
+                fireEvent.click(screen.getAllByTestId('edit-milestone')[0])
+            })
+
+            const fakeUpdateMilestone = {id: 1, position: 2, name: 'updated'}
+            const fakeUpdatedPositionMilestones = {...fakeCourses[0], milestones: [fakeUpdateMilestone, {id: 2, position: 1, name: "milestone2"}]}
+            RequireAuthorizedApiSpy
+                .mockImplementationOnce(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(fakeUpdateMilestone) }))
+                .mockImplementationOnce(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(fakeUpdatedPositionMilestones) }))
+
+            await act(async () => {
+                fireEvent.change(screen.getByLabelText(/Position/i), {target: {value: fakeUpdateMilestone.position}})
+                fireEvent.change(screen.getByLabelText(/Name/i), {target: {value: fakeUpdateMilestone.name}})
+                fireEvent.submit(screen.getByTestId('milestone-form'))
+            })
+
+            expect(screen.getAllByRole("milestone-title")[0]).toHaveTextContent(`#2${fakeUpdateMilestone.name}`)
+            expect(screen.getAllByRole("milestone-title")[1]).toHaveTextContent(`#1milestone2`)
         })
 
         it('delete course milestone', async () => {

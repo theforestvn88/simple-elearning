@@ -33,7 +33,7 @@ const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess
     }
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} data-testid="milestone-form">
           <div className="form-group">
             <label htmlFor="milestoneName">Name</label>
             <input
@@ -42,6 +42,18 @@ const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess
               name="name"
               defaultValue={milestone.name}
               placeholder="Name"
+              className="form-control"
+              required
+              onChange={onChange}
+            />
+
+            <label htmlFor="milestonePosition">Position</label>
+            <input
+              type="number"
+              id="milestonePosition"
+              name="position"
+              defaultValue={milestone.position}
+              placeholder="Position"
               className="form-control"
               required
               onChange={onChange}

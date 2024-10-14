@@ -12,10 +12,12 @@ const CourseDetail = () => {
     const { RequireAuthorizedApi } = useAppContext()
     const { courseApiUrl, addMilestoneApiUrl } = usePathFinder()
 
-    const [course, setCourse] = useState({})
+    const [course, setCourse] = useState({reload: true})
     const [showMilestoneForm, setShowMilestoneForm] = useState(false)
 
     useEffect(() => {
+        if (!course.reload) return
+
         RequireAuthorizedApi('GET', courseApiUrl(params.id))
             .then((res) => {
                 if (res.ok) {
@@ -24,9 +26,11 @@ const CourseDetail = () => {
 
                 throw new Error('Something went wrong!')
             })
-            .then((course) => setCourse(course))
+            .then((responseCourse) => {
+                setCourse({...responseCourse, reload: false})
+            })
             .catch(() => {})
-    }, [params.id])
+    }, [params.id, course.reload])
 
     const onDeleteCourse = (event) => {
         event.preventDefault()
@@ -53,6 +57,19 @@ const CourseDetail = () => {
             milestones: [...course.milestones, newMilestone]
         })
         setShowMilestoneForm(false)
+    }
+
+    const onUpdateMilestoneSuccess = (updatedMilestone) => {
+        if (updatedMilestone.position) {
+            setCourse({...course, reload: true})
+        } else {
+            updatedMilestone = {...course.milestones.select((ms) => ms.id == updatedMilestone.id), ...updatedMilestone}
+            setCourse({
+                ...course, 
+                milestones: course.milestones.filter((ms) => ms.id != updatedMilestone.id).concat(updatedMilestone),
+                reload: false
+            })
+        }
     }
 
     const onDeleteMilestoneSuccess = (deletedMilestone) => {
@@ -99,6 +116,20 @@ const CourseDetail = () => {
         </div>
     )
 
+    const CourseMilestones = () => (
+        <div id="milestones" className="accordion">
+            {course.milestones?.map((milestone) => (
+                <Milestone
+                    key={milestone.id}
+                    courseId={course.id}
+                    milestone={milestone}
+                    onUpdateSuccess={onUpdateMilestoneSuccess}
+                    onDeleteSuccess={onDeleteMilestoneSuccess}
+                />
+            ))}
+        </div>
+    )
+
     return (
         <>
             <CourseHeader />
@@ -119,16 +150,7 @@ const CourseDetail = () => {
                 <h4>Milestones</h4>
             </div>
 
-            <div id="milestones" className="accordion">
-                {course.milestones?.map((milestone) => (
-                    <Milestone
-                        key={milestone.id}
-                        courseId={course.id}
-                        milestone={milestone}
-                        onDeleteSuccess={onDeleteMilestoneSuccess}
-                    />
-                ))}
-            </div>
+            <CourseMilestones />
 
             {showMilestoneForm ? (
                 <MilestoneForm 

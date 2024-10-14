@@ -18,7 +18,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     }
 
     const onUpdateMilestoneSuccess = (updatedMilestone) => {
-        setEditMilestone({...updatedMilestone, edit: false})
+        setEditMilestone({...editMilestone, ...updatedMilestone, edit: false})
         if (onUpdateSuccess) {
             onUpdateSuccess(updatedMilestone)
         }
@@ -55,7 +55,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
 
     const MilestoneHeader = () => (
         <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center justify-content-start">
+            <div className="d-flex align-items-center justify-content-start" role="milestone-title">
                 <h6>{`#${editMilestone.position}`}</h6>
                 <h6 className="btn btn-link">{editMilestone.name}</h6>
             </div>

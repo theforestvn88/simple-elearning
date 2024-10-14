@@ -16,14 +16,14 @@ const LessonForm = ({lesson, submitEndPoint, submitMethod, onSubmitSuccess, onSu
 
         RequireAuthorizedApi(submitMethod, submitEndPoint, lessonData)
             .then((response) => {
-            if (response.ok) {
-                return response.json()
-            } else if (response.status == 401) {
-                navigate('/auth/login')
-                return
-            }
-        
-            throw new Error('Something went wrong!')
+                if (response.ok) {
+                    return response.json()
+                } else if (response.status == 401) {
+                    navigate('/auth/login')
+                    return
+                }
+            
+                throw new Error('Something went wrong!')
             })
             .then((responseLesson) => {
                 if (onSubmitSuccess) {
