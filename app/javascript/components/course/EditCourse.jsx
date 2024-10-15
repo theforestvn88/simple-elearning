@@ -8,7 +8,7 @@ const EditCourse = () => {
   const navigate = useNavigate()
   const params = useParams()
   const { RequireAuthorizedApi } = useAppContext()
-  const { courseApiUrl } = usePathFinder()
+  const { courseApiUrl, coursePath } = usePathFinder()
   const [course, setCourse] = useState({})
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const EditCourse = () => {
 
   return (
     <>
+      <Link to={coursePath(course.id)}>Back to course</Link>
       <h1 className="font-weight-normal mb-5">Edit course</h1>
       <CourseForm
         course={course}

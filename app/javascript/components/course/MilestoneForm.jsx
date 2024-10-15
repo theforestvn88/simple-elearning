@@ -1,7 +1,7 @@
 import React from "react"
 import { useAppContext } from "../../context/AppProvider"
 
-const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess, onSubmitError}) => {
+const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess, onSubmitError, onCancel}) => {
     const { RequireAuthorizedApi } = useAppContext()
 
     const milestoneData = new FormData()
@@ -25,10 +25,14 @@ const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess
             throw new Error('Something went wrong!')
           })
           .then((responseMilestone) => {
-            onSubmitSuccess(responseMilestone)
+            if (onSubmitSuccess && (typeof onSubmitSuccess === 'function')) {
+              onSubmitSuccess(responseMilestone)
+            }
           })
           .catch((error) => {
-            onSubmitError(error)
+            if (onSubmitError && (typeof onSubmitError === 'function')) {
+              onSubmitError(error)
+            }
           })
     }
 
@@ -59,9 +63,14 @@ const MilestoneForm = ({milestone, submitMethod, submitEndpoint, onSubmitSuccess
               onChange={onChange}
             />
           </div>
-          <button type="submit" className="btn btn-dark mt-3">
-            Submit
-          </button>
+          <div className="form-row align-items-center mt-3">
+            <button type="submit" className="btn btn-dark col-auto me-2">
+              Submit
+            </button>
+            <button className="btn btn-light col-auto" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
         </form>
     )
 }

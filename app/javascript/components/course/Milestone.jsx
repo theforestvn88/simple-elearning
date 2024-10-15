@@ -11,6 +11,12 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
     const { milestoneApiUrl } = usePathFinder()
     const [editMilestone, setEditMilestone] = useState({...milestone, edit: false})
 
+    const onCancelEdit = (event) => {
+        event.preventDefault()
+
+        setEditMilestone({...editMilestone, edit: false})
+    }
+
     const onEditMilestone = (event) => {
         event.preventDefault()
 
@@ -62,7 +68,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
             <div className="d-flex align-items-center justify-content-end">
                 {milestone.can_edit && <button
                     type="button"
-                    className="btn btn-light"
+                    className="btn btn-light me-2"
                     onClick={onEditMilestone}
                     data-testid="edit-milestone">
                     Edit
@@ -122,7 +128,7 @@ const Milestone = ({courseId, milestone, onUpdateSuccess, onDeleteSuccess}) => {
                     submitMethod={'PUT'}
                     submitEndpoint={milestoneApiUrl(courseId, milestone.id)}
                     onSubmitSuccess={onUpdateMilestoneSuccess} 
-                    onSubmitError={() => {}}
+                    onCancel={onCancelEdit}
                 />
             ) : (
                 <Collapse>

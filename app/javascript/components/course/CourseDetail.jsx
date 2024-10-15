@@ -100,7 +100,7 @@ const CourseDetail = () => {
             </div>
             <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center justify-content-end">
-                    {course.can_edit && <Link to={`edit`} className="btn btn-light" data-testid="edit-course">
+                    {course.can_edit && <Link to={`edit`} className="btn btn-light me-2" data-testid="edit-course">
                         Edit
                     </Link>}
 
@@ -158,7 +158,7 @@ const CourseDetail = () => {
                     submitMethod={'POST'}
                     submitEndpoint={addMilestoneApiUrl(course.id)}
                     onSubmitSuccess={onAddNewMilestoneSuccess} 
-                    onSubmitError={() => {}}
+                    onCancel={() => setShowMilestoneForm(false)}
                 />
             ) : (
                 course.can_edit && 

@@ -1,12 +1,12 @@
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, Link } from "react-router-dom"
 import usePathFinder from "../../hooks/usePathFinder"
 import LessonForm from "./LessonForm"
 
 const NewLesson = () => {
     const navigate = useNavigate()
     const params = useParams()
-    const { newLessonApiUrl, lessonPath } = usePathFinder()
+    const { newLessonApiUrl, lessonPath, coursePath } = usePathFinder()
 
     const onSubmitSuccess = (responseLesson) => {
         navigate(lessonPath(params.course_id, params.milestone_id, responseLesson.id))
@@ -18,6 +18,7 @@ const NewLesson = () => {
 
     return (
         <>
+            <Link to={coursePath(params.course_id)}>Back to course</Link>
             <h1 className="font-weight-normal mb-5">Add new lesson</h1>
             <LessonForm
                 lesson={{name: '', estimated_minutes: 0}}
