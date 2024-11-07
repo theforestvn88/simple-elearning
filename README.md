@@ -1,1 +1,1 @@
-# rails-react-example
+# Simple Elearning
