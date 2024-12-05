@@ -1,1 +1,1 @@
-# Simple Elearning
+# Demo rails react
